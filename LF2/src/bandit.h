@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <UtilityClass.h>
+#include "UtilityClass.h"
 sf::Texture Loader;
 class Bandit {
 public:
@@ -14,7 +14,7 @@ public:
     Bandit()
         :Position(Vector2(0, 0)), Velocity(Vector2(10, 10)) {
         for (int i = 0; i < 3; i++) {
-            Loader.loadFromFile("../Bandit.png", sf::IntRect(80 * i + 320, 0, 80, 80));
+            Loader.loadFromFile("src/Resource/Bandit.png", sf::IntRect(80 * i + 320, 0, 80, 80));
             IdleSprite[i].setTexture(Loader);
         }
         CurrentSprite = IdleSprite[1];

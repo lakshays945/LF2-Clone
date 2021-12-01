@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <bandit.h>
-
+#include "bandit.h"
 static double DeltaTime = 0.016666667;
 const int resX = 1200;
 const int resY = 800;

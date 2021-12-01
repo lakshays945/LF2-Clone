@@ -51,7 +51,7 @@ END
 // PNG
 //
 
-IDB_PNG1                PNG                     "..\Bandit.png"
+IDB_PNG1                PNG                     "src/Resource/Bandit.png"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
