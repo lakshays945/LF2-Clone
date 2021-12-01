@@ -20,22 +20,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Math\Line.cpp" />
+    <ClCompile Include="src\Math\RealVector2D.cpp" />
+    <ClCompile Include="src\Math\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\bandit.h" />
-    <ClInclude Include="src\UtilityClass.h" />
+    <ClInclude Include="src\Math\Line.h" />
+    <ClInclude Include="src\Math\RealVector2D.h" />
+    <ClInclude Include="src\Math\Utilities.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LF2.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\Bandit.png">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </Image>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -158,9 +155,6 @@
     <PostBuildEvent>
       <Command>call $(SolutionDir)Scripts\PostBuild.bat "$(ProjectDir)dist\" "$(SolutionDir)bin\$(Platform)\$(Configuration)\"</Command>
     </PostBuildEvent>
-    <CustomBuildStep>
-      <Command>del $(SolutionDir)bin\ /s</Command>
-    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
