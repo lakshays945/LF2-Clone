@@ -42,7 +42,7 @@ Line LineFromPointAndSlope(float slope, RealVector2D& p) {
     float c = p.get_y() - slope * p.get_x();
     return Line(a, b, c);
 }
-bool ThreePointsCanIntersect(const RealVector2D& p1, const RealVector2D& p2, const RealVector2D& q) {
+bool LineSegmentCanIntersect(const RealVector2D& p1, const RealVector2D& p2, const RealVector2D& q) {
 
     Line l1 = LineFromPoints(p1, p2);
     if (l1.get_b() == 0) {

@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "bandit.h"
+#include "Players/bandit.h"
 static double DeltaTime = 0.016666667;
 const int resX = 1200;
 const int resY = 800;
@@ -55,7 +55,7 @@ int main(){
         Player.AddForce(DeltaTime);
         Player.Translate(DeltaTime);
         window.clear(sf::Color(50, 60, 30));
-        Player.Animate(window);
+        Player.Animate(window,DeltaTime);
         window.display();
     }
     return 0;
