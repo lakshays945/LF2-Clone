@@ -19,12 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FileSystem\FileSystemCommon.cpp" />
+    <ClCompile Include="src\FileSystem\FileSystemWindows.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Math\Line.cpp" />
     <ClCompile Include="src\Math\RealVector2D.cpp" />
     <ClCompile Include="src\Math\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\FileSystem\FileSystem.h" />
     <ClInclude Include="src\Players\bandit.h" />
     <ClInclude Include="src\Players\commom.h" />
     <ClInclude Include="src\Math\Line.h" />
@@ -146,6 +149,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,6 +170,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

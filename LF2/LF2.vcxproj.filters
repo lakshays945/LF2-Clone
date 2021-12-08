@@ -30,6 +30,12 @@
     <ClCompile Include="src\Math\Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\FileSystem\FileSystemCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileSystem\FileSystemWindows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Players\bandit.h">
@@ -48,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Players\commom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FileSystem\FileSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
