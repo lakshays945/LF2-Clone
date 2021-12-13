@@ -1,19 +1,19 @@
-#include "FileSystem.h"
+#include "FileBus.h"
 #include <filesystem>
 
-FileSystem::FileSystem() {
+FileBus::FileBus() {
 
 	this->fileHandle = FILE_HANDLE_INVALID;
 	this->fileMode = OpenMode::MODE_INVALID;
 	this->lastState = FileState::STATE_INVALID;
 }
 
-FileSystem::FileSystem(std::wstring path, OpenMode mode) {
+FileBus::FileBus(std::wstring path, OpenMode mode) {
 
-	FileSystem::FileSystem(path.c_str(), mode);
+	FileBus::FileBus(path.c_str(), mode);
 }
 
-FileSystem::FileSystem(const wchar_t* path_str, OpenMode mode) {
+FileBus::FileBus(const wchar_t* path_str, OpenMode mode) {
 
 	this->filePath.assign(path_str);
 	this->fileHandle = FILE_HANDLE_INVALID;
@@ -21,14 +21,14 @@ FileSystem::FileSystem(const wchar_t* path_str, OpenMode mode) {
 	this->lastState = FileState::STATE_IDLE;
 }
 
-bool FileSystem::PathIsAbsolute() {
+bool FileBus::PathIsAbsolute() {
 
 	std::filesystem::path base(filePath);
 	return base.is_absolute();
 
 }
 
-std::wstring FileSystem::GetAbsolutePath() {
+std::wstring FileBus::GetAbsolutePath() {
 
 	if (PathIsAbsolute())
 		return this->filePath;
@@ -37,7 +37,7 @@ std::wstring FileSystem::GetAbsolutePath() {
 	return std::filesystem::absolute(this->filePath).wstring();
 }
 
-bool FileSystem::FileExists() {
+bool FileBus::FileExists() {
 
 	if (lastState == FileState::STATE_MISSING)
 		return false;
@@ -51,7 +51,7 @@ bool FileSystem::FileExists() {
 	return true;
 }
 
-bool FileSystem::DeleteExisting() {
+bool FileBus::DeleteExisting() {
 
 	if (!FileExists()) {
 		//log : tried deleting a non existing file
@@ -67,7 +67,7 @@ bool FileSystem::DeleteExisting() {
 	return false;
 }
 
-std::wstring FileSystem::GetProperties(FileProperty property) {
+std::wstring FileBus::GetProperties(FileProperty property) {
 
 	if (!FileExists()) {
 		//log : tried access a non existing file
@@ -100,16 +100,16 @@ std::wstring FileSystem::GetProperties(FileProperty property) {
 	return ret;
 }
 
-size_t FileSystem::GetSize() {
+size_t FileBus::GetSize() {
 
 	if (!FileExists()){
 		//log : tried calling GetSize() on nonexisting file
-		return NULL;
+		return FILE_SIZE_INVALID;
 	}
 	return std::filesystem::file_size(GetAbsolutePath());
 }
 
-void FileSystem::ChangeSize(size_t new_size) {
+void FileBus::ChangeSize(size_t new_size) {
 
 	if (!FileExists()){
 		//log : tried calling ChangeSize() on nonexisting file

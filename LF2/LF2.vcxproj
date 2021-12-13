@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FileSystem\FileSystemCommon.cpp" />
-    <ClCompile Include="src\FileSystem\FileSystemWindows.cpp" />
+    <ClCompile Include="src\FileBus\FileBusCommon.cpp" />
+    <ClCompile Include="src\FileBus\FileBusWindows.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Math\Line.cpp" />
     <ClCompile Include="src\Math\RealVector2D.cpp" />
     <ClCompile Include="src\Math\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\FileSystem\FileSystem.h" />
+    <ClInclude Include="src\FileBus\FileBus.h" />
     <ClInclude Include="src\Players\bandit.h" />
     <ClInclude Include="src\Players\commom.h" />
     <ClInclude Include="src\Math\Line.h" />

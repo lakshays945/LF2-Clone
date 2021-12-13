@@ -30,10 +30,10 @@
     <ClCompile Include="src\Math\Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileSystem\FileSystemCommon.cpp">
+    <ClCompile Include="src\FileBus\FileBusCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\FileSystem\FileSystemWindows.cpp">
+    <ClCompile Include="src\FileBus\FileBusWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClInclude Include="src\Players\commom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\FileSystem\FileSystem.h">
+    <ClInclude Include="src\FileBus\FileBus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

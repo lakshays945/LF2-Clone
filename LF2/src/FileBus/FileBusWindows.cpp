@@ -1,10 +1,9 @@
-#include "FileSystem.h"
+#include "FileBus.h"
 #include <shlwapi.h>
-#include <pathcch.h>
 #include <filesystem>
 
 
-bool FileSystem::Open() {
+bool FileBus::Open() {
 
 	if (!FileExists()) {
 		//log : tried opening a non existing file
@@ -38,7 +37,7 @@ bool FileSystem::Open() {
 	return true;
 }
 
-bool FileSystem::Close() {
+bool FileBus::Close() {
 
 	if (this->fileHandle == FILE_HANDLE_INVALID) {
 		//log : tried closing non existing handle
@@ -54,7 +53,7 @@ bool FileSystem::Close() {
 	return true;
 }
 
-bool FileSystem::Create() {
+bool FileBus::Create() {
 
 	std::filesystem::path file(GetAbsolutePath());
 	std::filesystem::path folderPath = file.parent_path(); // "C:\path1\blah.test"	-->   "C:\path1"
@@ -95,7 +94,7 @@ bool FileSystem::Create() {
 	return true;
 }
 
-bool FileSystem::Rename(const wchar_t* new_name) {
+bool FileBus::Rename(const wchar_t* new_name) {
 
 	//while renaming the current file handle will need an update
 	Close();
