@@ -12,7 +12,7 @@ bool FileSystem::Open() {
 	}
 	std::filesystem::path file(GetAbsolutePath());
 	DWORD accessMode = NULL;
-	DWORD sharingMode = FILE_SHARE_READ; 
+	DWORD sharingMode = FILE_SHARE_READ;
 	DWORD creationFlag = OPEN_EXISTING;
 	DWORD attribute = FILE_ATTRIBUTE_NORMAL;
 
@@ -40,7 +40,7 @@ bool FileSystem::Open() {
 
 bool FileSystem::Close() {
 
-	if (this->fileHandle== FILE_HANDLE_INVALID) {
+	if (this->fileHandle == FILE_HANDLE_INVALID) {
 		//log : tried closing non existing handle
 		return false;
 	}
@@ -106,10 +106,15 @@ bool FileSystem::Rename(const wchar_t* new_name) {
 	}
 
 	std::wstring oldPath = GetAbsolutePath();
-	std::wstring newPath = GetProperties(FileProperty::PROPERTY_FILE_FOLDER_PATH);
+	std::wstring newPath = std::filesystem::path(oldPath).replace_filename(new_name);
 
-	newPath.append(new_name);
-	newPath.append(GetProperties(FileProperty::PROPERTY_FILE_EXTENSION));
+	//if the new file already exists then we will override it else _wrename fails
+	if (std::filesystem::exists(newPath))
+	{
+		std::filesystem::remove(newPath);
+		//log : deleted a file while renaming
+
+	}
 
 	if (_wrename(oldPath.c_str(), newPath.c_str()) != 0) {
 		//log : error when trying to rename file
