@@ -91,7 +91,7 @@ bool FileSystem::Create() {
 	//file_creation_success
 	this->fileHandle = (unsigned long)ret;
 	this->lastState = FileState::STATE_CREATING;
-	CloseHandle(ret);
+	//CloseHandle(ret);
 	return true;
 }
 
