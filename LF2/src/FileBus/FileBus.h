@@ -55,13 +55,13 @@ public:
 	bool DeleteExisting();
 	//returns properties of filePath
 	std::wstring GetProperties(FileProperty property);
-	bool WriteData();
-	bool WriteString();
-	bool ReadData();
-	bool ReadString();
+	//returns true if successfully wrote data to opened file
+	bool WriteData(size_t size, void* buffer);
+	//returns true if successfully read data from opened file
+	bool ReadData(size_t size,void* buffer);
 	//returns true if current file was successfully renamed
 	bool Rename(const wchar_t* new_name);
-	void SetPosition();
+	bool SetPosition(unsigned long offset);
 	//returns the size of the target file if present
 	size_t GetSize();
 	//changes the size of a regular file by truncation or zero-fill if present
