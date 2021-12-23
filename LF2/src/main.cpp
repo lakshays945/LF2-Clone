@@ -16,46 +16,14 @@ int main(){
                 window.close();
 
             if (event.type == sf::Event::KeyPressed) {
-                switch (event.key.code) {
-                case sf::Keyboard::W:
-                    Player.Up = 1;
-                    break;
-                case sf::Keyboard::S:
-                    Player.Down = 1;
-                    break;
-                case sf::Keyboard::A:
-                    Player.Left = 1;
-                    break;
-                case sf::Keyboard::D:
-                    Player.Right = 1;
-                    break;
-                default:
-                    break;
-                }
+                Player.Input_Manager.GetInputDown(event.key.code);
             }
             if (event.type == sf::Event::KeyReleased) {
-                switch (event.key.code) {
-                case sf::Keyboard::W:
-                    Player.Up = 0;
-                    break;
-                case sf::Keyboard::S:
-                    Player.Down = 0;
-                    break;
-                case sf::Keyboard::A:
-                    Player.Left = 0;
-                    break;
-                case sf::Keyboard::D:
-                    Player.Right = 0;
-                    break;
-                default:
-                    break;
-                }
+                Player.Input_Manager.GetInputUp(event.key.code);
             }
         }
-        Player.AddForce(DeltaTime);
-        Player.Translate(DeltaTime);
         window.clear(sf::Color(50, 60, 30));
-        Player.Animate(window,DeltaTime);
+        Player.Update(DeltaTime, window);
         window.display();
     }
     return 0;

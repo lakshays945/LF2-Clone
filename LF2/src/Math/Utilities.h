@@ -4,6 +4,7 @@
 #include <corecrt.h>
 
 #define Infinity RealVector2D(_CRT_INT_MAX, _CRT_INT_MAX);
+#define Gravity RealVector2D(0,980)
 
 RealVector2D IntersectTwoLines(Line& l1, Line& l2);
 float LineDistanceFromPoint2d(const Line l, const RealVector2D& p);

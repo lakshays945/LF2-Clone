@@ -25,6 +25,8 @@
     <ClCompile Include="src\Math\Line.cpp" />
     <ClCompile Include="src\Math\RealVector2D.cpp" />
     <ClCompile Include="src\Math\Utilities.cpp" />
+    <ClCompile Include="src\Players\bandit.cpp" />
+    <ClCompile Include="src\Players\common.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FileSystem\FileSystem.h" />
