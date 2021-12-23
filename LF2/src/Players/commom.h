@@ -40,7 +40,7 @@ private:
 	const bool IsChangePossible[7][7] = { {  0,       1,      1,       1,       1,        1,          1   },   //idle
 									      {  0,       0,      1,       1,       1,        1,          1   },   //walking
 									      {  0,       1,      0,       1,       1,        1,          1   },   //running
-									      {  0,       0,      1,       0,       0,        1,          1   },   //jumping
+									      {  0,       0,      0,       0,       0,        1,          1   },   //jumping
 									      {  0,       0,      0,       0,       0,        1,          1   },   //hitting
 									      {  0,       1,      1,       1,       1,        0,          1   },   //getting_hit
 									      {  0,       1,      1,       1,       1,        1,          0   }, };//falling
