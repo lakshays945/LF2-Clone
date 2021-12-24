@@ -4,7 +4,7 @@
 
 enum State {
 	IDLE = 0, WALKING = 1, RUNNING = 2, JUMPING = 3,
-	HITTING = 4, GETTING_HIT = 5, FALLING = 6
+	HITTING = 4, GETTING_HIT = 5, FALLING = 6, JUMPINGATTACK = 7, RUNATTACK = 8, CROUCH = 9
 }; //Handle with care dont change order (Can add on top of it)
 
 class Bandit;
@@ -36,14 +36,17 @@ private:
 	Bandit* Player = nullptr;//a pointer to player to which StateManager is assigned
 
 	//IsChangePossible[i][j] tells us if state change is possible from 'i' state to 'j' state
-									     //idle  walking  running  jumping  hitting  getting_hit  falling 
-	const bool IsChangePossible[7][7] = { {  0,       1,      1,       1,       1,        1,          1   },   //idle
-									      {  0,       0,      1,       1,       1,        1,          1   },   //walking
-									      {  0,       1,      0,       1,       1,        1,          1   },   //running
-									      {  0,       0,      0,       0,       0,        1,          1   },   //jumping
-									      {  0,       0,      0,       0,       0,        1,          1   },   //hitting
-									      {  0,       1,      1,       1,       1,        0,          1   },   //getting_hit
-									      {  0,       1,      1,       1,       1,        1,          0   }, };//falling
+									        //idle  walking  running  jumping  hitting  getting_hit  falling   //jumpattack  //runattack    //coruch
+	const bool IsChangePossible[10][10] = { {  0,       1,      1,       1,       1,        1,          1,          1,            1,         1        },   //idle
+										    {  0,       0,      1,       1,       1,        1,          1,          1,            1,         1        },   //walking
+										    {  0,       1,      0,       1,       1,        1,          1,          1,            1,         1        },   //running
+										    {  0,       0,      0,       0,       0,        1,          1,          1,            1,         1        },   //jumping
+										    {  0,       0,      0,       0,       0,        1,          1,          0,            1,         1        },   //hitting
+										    {  0,       1,      1,       1,       1,        0,          1,          1,            1,         1        },   //getting_hit
+										    {  0,       1,      1,       1,       1,        1,          0,          1,            1,         1        },   //falling
+										    {  0,       0,      0,       0,       0,        1,          1,          0,            1,         1        },   //jumpattack
+											{  0,       1,      1,       1,       1,        1,          1,          1,            0,         1        },   //runattack
+											{  0,       1,      1,       1,       1,        1,          1,          1,            1,         0        }, };//crouch
 
 public:
 

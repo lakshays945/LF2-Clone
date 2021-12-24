@@ -96,3 +96,8 @@ float RealVector2D::Angle()const {
 float RealVector2D::GetAngle(const RealVector2D& vec1, const RealVector2D& vec2)const {
 	return acos(Dot(vec1, vec2) / (Magnitude(vec1) * Magnitude(vec2)));
 }
+
+void RealVector2D::Set(const RealVector2D other) {
+	x = other.get_x();
+	y = other.get_y();
+}

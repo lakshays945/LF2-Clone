@@ -36,5 +36,5 @@ public:
 	float GetAngleFrom(const RealVector2D& vec)const;
 	float Angle()const;
 	float GetAngle(const RealVector2D& vec1, const RealVector2D& vec2)const;
-
+	void Set(const RealVector2D other);
 };

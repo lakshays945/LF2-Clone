@@ -17,7 +17,7 @@ int AnimationSheet::GetCorrectIndex() { //returns index of correct sprite
 }
 
 void InputManager::GetInputDown(sf::Keyboard::Key key) { //called when a key is pressed and does required stuff
-	if (IsPressed[key]) { //if key is already pressed there is no sense to register it again in GetInputDown fucntion
+	if (IsPressed[key] || key == -1) { //if key is already pressed there is no sense to register it again in GetInputDown fucntion
 		return;
 	}
 	IsPressed[key] = true;
@@ -27,7 +27,12 @@ void InputManager::GetInputDown(sf::Keyboard::Key key) { //called when a key is 
 	}
 	else {
 		//if single press is registered
-		Player->State_Manager.TryStateChange(KeyToState[key], LastPressed[key], KeyData[key]);
+		if (Player->CurrentState == JUMPING && KeyToState[key] == HITTING) {
+			Player->State_Manager.TryStateChange(JUMPINGATTACK, LastPressed[key], KeyData[key]);
+		}
+		else {
+			Player->State_Manager.TryStateChange(KeyToState[key], LastPressed[key], KeyData[key]);
+		}
 	}
 	LastPressed[key] = 0; //reset to 0 at end of fxn
 }

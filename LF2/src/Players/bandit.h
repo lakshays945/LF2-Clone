@@ -15,13 +15,19 @@ const double Attack3Times[3] = { 0.1,0.2,0.4 };
 const int JumpingLoactions[3][2] = { {80,480}, {160,480}, {80,480} };
 const double JumpingTimes[3] = {0.15,0.85,1.0};
 const int RunningLocations[4][2] = { {80,160}, {0,160}, {80,160}, {160,160} };
-const double RunningTimes[4] = { 0.2,0.4,0.6,0.8 };
-
+const double RunningTimes[4] = { 0.15,0.3,0.45,0.6 };
+const int JumpingAttackLocations[3][2] = { {560,240},{640,240}, { 560,240} };
+const double JumpingAttackTimes[3] = { 0.15,0.4,0.55 };
+const int CrouchLocations[1][2] = { {0,480} };
+const double CrouchTimes[1] = { 0.1 };
 class Bandit {
 public:
     RealVector2D Position;
+    RealVector2D LastPosition;
     RealVector2D Velocity;
     float MaxSpeed = 200;
+    double TimeSinceLastState = 0;
+    bool JustStateChanged = false;
     AnimationSheet IdleSheet; 
     AnimationSheet WalkingSheet; 
     AnimationSheet RunningSheet;
@@ -29,6 +35,7 @@ public:
     AnimationSheet HittingSheet[3]; 
     AnimationSheet Getting_HitSheet; 
     AnimationSheet FallingSheet; 
+    AnimationSheet JumpingAttackSheet;
     AnimationSheet* CurrentSheet;
     int Up = 0, Down = 0, Right = 0, Left = 0;
     int ComboStreak = 0; //the index of hitting_animation sheet
@@ -49,6 +56,7 @@ public:
         HittingSheet[2].AssignPlayer(this);
         Getting_HitSheet.AssignPlayer(this);
         FallingSheet.AssignPlayer(this);
+        JumpingAttackSheet.AssignPlayer(this);
         for (int i = 0; i < 4; i++) { //Setting textures for idle sheet
             IdleSheet.Textures.push_back(sf::Texture());
             IdleSheet.Sprites.push_back(sf::Sprite());
@@ -91,12 +99,20 @@ public:
             RunningSheet.DrawTimes.push_back(RunningTimes[i]);
             RunningSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(RunningLocations[i][0], RunningLocations[i][1], 80, 80));
         }
+        for (int i = 0; i < 3; i++) {
+            JumpingAttackSheet.Textures.push_back(sf::Texture());
+            JumpingAttackSheet.Sprites.push_back(sf::Sprite());
+            JumpingAttackSheet.DrawTimes.push_back(JumpingAttackTimes[i]);
+            JumpingAttackSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(JumpingAttackLocations[i][0], JumpingAttackLocations[i][1], 80, 80));
+        }
         IdleSheet.AssignTextures();
         WalkingSheet.AssignTextures();
         HittingSheet[0].AssignTextures();
         JumpingSheet.AssignTextures();
         RunningSheet.AssignTextures();
+        JumpingAttackSheet.AssignTextures();
         JumpingSheet.OneTime = true;
+        JumpingAttackSheet.OneTime = true;
         HittingSheet[0].OneTime = true;
         HittingSheet[1].AssignTextures();
         HittingSheet[1].OneTime = true;
@@ -109,6 +125,7 @@ public:
     void ChangeState(State state,const double lastPressed, const int data=0) {
         CurrentSheet->Time = 0; //resetting the sheet currently being used (as it will be changed soon)
         CurrentState = state;
+        TimeSinceLastState = 0;
         switch (state) {
         case IDLE:
             CurrentSheet = &IdleSheet;
@@ -121,6 +138,7 @@ public:
             CurrentSheet = &RunningSheet;
             break;
         case JUMPING:
+            LastPosition = Position + RealVector2D(Velocity.get_x(),Velocity.get_y());
             Jump(lastPressed);
             CurrentSheet = &JumpingSheet;
             break;
@@ -134,6 +152,9 @@ public:
         case FALLING:
             CurrentSheet = &FallingSheet;
             break;
+        case JUMPINGATTACK:
+            CurrentSheet = &JumpingAttackSheet;
+            break;
         default:
             break;
         }
@@ -142,6 +163,9 @@ public:
     //Determines which functions will be called acc. to the current state
     void Update(const double dt,sf::RenderWindow &window) { //temporary (isko better banana hai implementation wise) 
         Input_Manager.Update(dt);
+        if (TimeSinceLastState < 20) {
+            TimeSinceLastState += dt;
+        }
         switch (CurrentState) {
         case IDLE:
             AddForce(dt);
@@ -157,6 +181,10 @@ public:
         case JUMPING:
             Velocity = Velocity + Gravity*dt;
             Translate(dt);
+            if (TimeSinceLastState >= 1) {
+                Position.Set(LastPosition);
+                ///State_Manager.ForceStateChange(IDLE);
+            }
             break;
         case HITTING:
             break;
@@ -165,6 +193,10 @@ public:
             break;
         case FALLING:
             
+            break;
+        case JUMPINGATTACK:
+            Velocity = Velocity + Gravity * dt * (1/0.55);
+            Translate(dt);
             break;
         default:
             break;
@@ -186,7 +218,11 @@ public:
     }
 
     void Jump(const double lastPressed) { //temporary (isko better banana hai)
-        Velocity = RealVector2D(Velocity.get_x(), -500);
+        Velocity = RealVector2D(Velocity.get_x(), -500 + Velocity.get_y());
+    }
+
+    void JumpCalculation(const double dt, const double t) {
+        
     }
 
     void Run(const double lastPressed, int dir) { //temporary (isko better banana hai)
