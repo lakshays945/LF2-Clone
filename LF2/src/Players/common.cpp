@@ -4,6 +4,7 @@ int AnimationSheet::GetCorrectIndex() { //returns index of correct sprite
 		Time = 0;
 		if (OneTime) {
 			//On completion of an OneTime animation state of Player is changed to IDLE
+			Player->Stop();
 			Player->State_Manager.ForceStateChange(IDLE);
 		}
 		return 0;
@@ -17,7 +18,8 @@ int AnimationSheet::GetCorrectIndex() { //returns index of correct sprite
 }
 
 void InputManager::GetInputDown(sf::Keyboard::Key key) { //called when a key is pressed and does required stuff
-	if (IsPressed[key] || key == -1) { //if key is already pressed there is no sense to register it again in GetInputDown fucntion
+	
+	if (key == -1 || IsPressed[key]) { //if key is already pressed there is no sense to register it again in GetInputDown fucntion
 		return;
 	}
 	IsPressed[key] = true;

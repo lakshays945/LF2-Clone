@@ -1,6 +1,7 @@
 #pragma once
 #include "commom.h"
 #include "../Math/Utilities.h"
+#include <iostream>
 
 const double IdleTimes[4] = { 0.3,0.6,0.9,1.2 };
 const int IdleLoactions[4][2] = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
@@ -16,10 +17,10 @@ const int JumpingLoactions[3][2] = { {80,480}, {160,480}, {80,480} };
 const double JumpingTimes[3] = {0.15,0.85,1.0};
 const int RunningLocations[4][2] = { {80,160}, {0,160}, {80,160}, {160,160} };
 const double RunningTimes[4] = { 0.15,0.3,0.45,0.6 };
-const int JumpingAttackLocations[3][2] = { {560,240},{640,240}, { 560,240} };
-const double JumpingAttackTimes[3] = { 0.15,0.4,0.55 };
-const int CrouchLocations[1][2] = { {0,480} };
-const double CrouchTimes[1] = { 0.1 };
+const int JumpingAttackLocations[4][2] = { {560,240},{640,240}, { 560,240}, {160,480} };
+const double JumpingAttackTimes[4] = { 0.15,0.4,0.55,2 };
+const int DashLocations[1][2] = { {240,480} };
+const double DashTimes[1] = { 0.4 };
 class Bandit {
 public:
     RealVector2D Position;
@@ -36,6 +37,7 @@ public:
     AnimationSheet Getting_HitSheet; 
     AnimationSheet FallingSheet; 
     AnimationSheet JumpingAttackSheet;
+    AnimationSheet DashSheet;
     AnimationSheet* CurrentSheet;
     int Up = 0, Down = 0, Right = 0, Left = 0;
     int ComboStreak = 0; //the index of hitting_animation sheet
@@ -57,6 +59,7 @@ public:
         Getting_HitSheet.AssignPlayer(this);
         FallingSheet.AssignPlayer(this);
         JumpingAttackSheet.AssignPlayer(this);
+        DashSheet.AssignPlayer(this);
         for (int i = 0; i < 4; i++) { //Setting textures for idle sheet
             IdleSheet.Textures.push_back(sf::Texture());
             IdleSheet.Sprites.push_back(sf::Sprite());
@@ -99,11 +102,17 @@ public:
             RunningSheet.DrawTimes.push_back(RunningTimes[i]);
             RunningSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(RunningLocations[i][0], RunningLocations[i][1], 80, 80));
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             JumpingAttackSheet.Textures.push_back(sf::Texture());
             JumpingAttackSheet.Sprites.push_back(sf::Sprite());
             JumpingAttackSheet.DrawTimes.push_back(JumpingAttackTimes[i]);
             JumpingAttackSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(JumpingAttackLocations[i][0], JumpingAttackLocations[i][1], 80, 80));
+        }
+        for (int i = 0; i < 1; i++) {
+            DashSheet.Textures.push_back(sf::Texture());
+            DashSheet.Sprites.push_back(sf::Sprite());
+            DashSheet.DrawTimes.push_back(DashTimes[i]);
+            DashSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(DashLocations[i][0], DashLocations[i][1], 80, 80));
         }
         IdleSheet.AssignTextures();
         WalkingSheet.AssignTextures();
@@ -112,20 +121,21 @@ public:
         RunningSheet.AssignTextures();
         JumpingAttackSheet.AssignTextures();
         JumpingSheet.OneTime = true;
-        JumpingAttackSheet.OneTime = true;
+        //JumpingAttackSheet.OneTime = true;
         HittingSheet[0].OneTime = true;
         HittingSheet[1].AssignTextures();
         HittingSheet[1].OneTime = true;
         HittingSheet[2].AssignTextures();
         HittingSheet[2].OneTime = true;
+        DashSheet.AssignTextures();
+        DashSheet.OneTime = true;
         CurrentSheet = &IdleSheet;
     }
 
     //does things when state is changed (isko better banana hai and also have to add things in future)
-    void ChangeState(State state,const double lastPressed, const int data=0) {
+    void ChangeState(State state, const double lastPressed, const double data = 0) {
         CurrentSheet->Time = 0; //resetting the sheet currently being used (as it will be changed soon)
         CurrentState = state;
-        TimeSinceLastState = 0;
         switch (state) {
         case IDLE:
             CurrentSheet = &IdleSheet;
@@ -138,7 +148,7 @@ public:
             CurrentSheet = &RunningSheet;
             break;
         case JUMPING:
-            LastPosition = Position + RealVector2D(Velocity.get_x(),Velocity.get_y());
+            LastPosition = Position + Velocity;
             Jump(lastPressed);
             CurrentSheet = &JumpingSheet;
             break;
@@ -154,10 +164,21 @@ public:
             break;
         case JUMPINGATTACK:
             CurrentSheet = &JumpingAttackSheet;
+            return;//special
+        case DASH:
+            if (Velocity.get_y() > 400 && Velocity.get_y() < 570) {
+                LastPosition = Position + RealVector2D(data * 600, 0) * 0.4;
+            }
+            else {
+                LastPosition = Position + RealVector2D(data * 600, Velocity.get_y() - 480) * 0.4;
+            }
+            CurrentSheet = &DashSheet;
+            JumpToDash(data);
             break;
         default:
             break;
         }
+        TimeSinceLastState = 0;
     }
 
     //Determines which functions will be called acc. to the current state
@@ -182,8 +203,14 @@ public:
             Velocity = Velocity + Gravity*dt;
             Translate(dt);
             if (TimeSinceLastState >= 1) {
-                Position.Set(LastPosition);
-                ///State_Manager.ForceStateChange(IDLE);
+                Position = LastPosition;
+                if (Input_Manager.GetLastPressed(sf::Keyboard::Space) < 0.2 && Input_Manager.IsKeyPressed(sf::Keyboard::D)) {
+                    State_Manager.ForceStateChange(DASH,1);
+                }
+                else if (Input_Manager.GetLastPressed(sf::Keyboard::Space) < 0.2 && Input_Manager.IsKeyPressed(sf::Keyboard::A)) {
+                    State_Manager.ForceStateChange(DASH, -1);
+                }
+                //State_Manager.ForceStateChange(IDLE);
             }
             break;
         case HITTING:
@@ -195,8 +222,28 @@ public:
             
             break;
         case JUMPINGATTACK:
-            Velocity = Velocity + Gravity * dt * (1/0.55);
+            Velocity = Velocity + Gravity * dt;
             Translate(dt);
+            if (TimeSinceLastState >= 1) {
+                Position = LastPosition;
+                if (Input_Manager.GetLastPressed(sf::Keyboard::Space) < 0.2 && Input_Manager.IsKeyPressed(sf::Keyboard::D)) {
+                    State_Manager.ForceStateChange(DASH, 1);
+                    break;
+                }
+                else if (Input_Manager.GetLastPressed(sf::Keyboard::Space) < 0.2 && Input_Manager.IsKeyPressed(sf::Keyboard::A)) {
+                    State_Manager.ForceStateChange(DASH, -1);
+                    break;
+                }
+                Stop();
+                State_Manager.ForceStateChange(IDLE);
+            }
+            break;
+        case DASH:
+            Velocity = Velocity + Gravity * dt;
+            Translate(dt);
+            if (TimeSinceLastState >= 0.38) {
+                Position = LastPosition;
+            }
             break;
         default:
             break;
@@ -225,8 +272,16 @@ public:
         
     }
 
+    void JumpToDash(int dir) {
+        Velocity = RealVector2D(600*dir , -696 + Velocity.get_y());
+    }
+
     void Run(const double lastPressed, int dir) { //temporary (isko better banana hai)
         Velocity = RealVector2D(300*dir, 0);
+    }
+
+    void Stop() {
+        Velocity.SetMagnitude(0);
     }
 
     void AddForce(const double dt) { //for movement based upon inputs

@@ -4,7 +4,7 @@
 
 enum State {
 	IDLE = 0, WALKING = 1, RUNNING = 2, JUMPING = 3,
-	HITTING = 4, GETTING_HIT = 5, FALLING = 6, JUMPINGATTACK = 7, RUNATTACK = 8, CROUCH = 9
+	HITTING = 4, GETTING_HIT = 5, FALLING = 6, JUMPINGATTACK = 7, RUNATTACK = 8, DASH = 9 
 }; //Handle with care dont change order (Can add on top of it)
 
 class Bandit;
@@ -36,7 +36,7 @@ private:
 	Bandit* Player = nullptr;//a pointer to player to which StateManager is assigned
 
 	//IsChangePossible[i][j] tells us if state change is possible from 'i' state to 'j' state
-									        //idle  walking  running  jumping  hitting  getting_hit  falling   //jumpattack  //runattack    //coruch
+									        //idle  walking  running  jumping  hitting  getting_hit  falling   //jumpattack  //runattack    //dash
 	const bool IsChangePossible[10][10] = { {  0,       1,      1,       1,       1,        1,          1,          1,            1,         1        },   //idle
 										    {  0,       0,      1,       1,       1,        1,          1,          1,            1,         1        },   //walking
 										    {  0,       1,      0,       1,       1,        1,          1,          1,            1,         1        },   //running
@@ -46,7 +46,7 @@ private:
 										    {  0,       1,      1,       1,       1,        1,          0,          1,            1,         1        },   //falling
 										    {  0,       0,      0,       0,       0,        1,          1,          0,            1,         1        },   //jumpattack
 											{  0,       1,      1,       1,       1,        1,          1,          1,            0,         1        },   //runattack
-											{  0,       1,      1,       1,       1,        1,          1,          1,            1,         0        }, };//crouch
+											{  0,       0,      0,       0,       0,        1,          1,          0,            0,         0        }, };//dash
 
 public:
 
@@ -64,7 +64,7 @@ private:
 	double LastPressed[102]; //stores time since key was pressed last time
 	double LastReleased[102]; //stores time since key was released last time
 	double DoubleKeyTimes[102]; //max time delay to register a double press
-	int KeyData[102]; //data related to key (Might be useful in future)
+	double KeyData[102]; //data related to key (Might be useful in future)
 	bool IsPressed[102]; //tells if key is currently being pressed
 	State KeyToState[102]; //store state related to each key 
 	State DoubleKeyToState[102]; //stores state related to double press of key
@@ -97,6 +97,7 @@ public:
 		DoubleKeyTimes[sf::Keyboard::A] = 0.3;
 		KeyData[sf::Keyboard::D] = 1;
 		KeyData[sf::Keyboard::A] = -1;
+		KeyData[sf::Keyboard::Space] = 1;
 	}
 
 	void AssignPlayer(Bandit* player) {
@@ -119,5 +120,8 @@ public:
 	void GetInputUp(sf::Keyboard::Key key);
 	bool IsKeyPressed(sf::Keyboard::Key key) {
 		return IsPressed[key];
+	}
+	double GetLastPressed(sf::Keyboard::Key key) {
+		return LastPressed[key];
 	}
 };
