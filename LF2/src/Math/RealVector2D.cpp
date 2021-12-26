@@ -88,7 +88,7 @@ float RealVector2D::GetAngleFrom(const RealVector2D& vec)const {
 float RealVector2D::Angle()const {
 	float angle = atan2(-y, x);
 	if (angle < 0) {
-		angle = 6.28 + angle;
+		angle = 6.28f + angle;
 	}
 	return angle;
 }

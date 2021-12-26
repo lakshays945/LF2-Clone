@@ -19,7 +19,7 @@ public:
 	bool operator== (const RealVector2D& other)const;
 	bool operator!= (const RealVector2D& other)const;
 
-	//methods
+	//-----------------------------------------METHODS----------------------------------------
 	float get_x() const;
 	float get_y() const;
 	RealVector2D GetUnit()const;
