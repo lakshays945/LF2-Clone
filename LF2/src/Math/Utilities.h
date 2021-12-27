@@ -3,8 +3,9 @@
 #include "RealVector2D.h"
 #include <corecrt.h>
 
+#define DEFAULT_GRAVITY_CONSTANT 980
 #define Infinity RealVector2D(_CRT_INT_MAX, _CRT_INT_MAX);
-#define Gravity RealVector2D(0,980)
+#define GravityVector RealVector2D(0,DEFAULT_GRAVITY_CONSTANT)
 
 RealVector2D IntersectTwoLines(Line& l1, Line& l2);
 float LineDistanceFromPoint2d(const Line l, const RealVector2D& p);
