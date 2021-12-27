@@ -12,11 +12,12 @@
 #define JUMP_DURATION (JumpingTimes[1]-INITIAL_JUMP_PAUSE) //can modify in bandit.h
 #define JUMP_LANDING_TIME (JumpingTimes[2]-JUMP_DURATION) //can modify in bandit.h
 #define JUMP_GRAVITY_FACTOR -(DEFAULT_JUMP_VELOCITY*2)/(DEFAULT_GRAVITY_CONSTANT*JUMP_DURATION)
-#define DASH_DURATION DashTimes[0]
+#define DASH_DURATION DashTimes[0] //can modify in bandit.h
 #define DASH_GRAVITY_SCALE -(DEFAULT_DASH_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*DASH_DURATION)
 
 Bandit::Bandit() //Constructor (Mainly assigning images to animationSheet is done)
 	:Position(RealVector2D(100, 100)), Velocity(RealVector2D(10, 10)) {
+	DamageHitBox = HitBox(RealVector2D(100, 100), 42, 74);
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);
 	IdleSheet.AssignPlayer(this);
@@ -91,7 +92,6 @@ Bandit::Bandit() //Constructor (Mainly assigning images to animationSheet is don
 	RunningSheet.AssignTextures();
 	JumpingAttackSheet.AssignTextures();
 	JumpingSheet.OneTime = true;
-	//JumpingAttackSheet.OneTime = true;
 	HittingSheet[0].OneTime = true;
 	HittingSheet[1].AssignTextures();
 	HittingSheet[1].OneTime = true;
@@ -101,9 +101,6 @@ Bandit::Bandit() //Constructor (Mainly assigning images to animationSheet is don
 	DashSheet.OneTime = true;
 	CurrentSheet = &IdleSheet;
 }
-
-
-
 
 void Bandit::ChangeState(PlayerStates state, const double lastPressed, const double data, const double startTime) {
 	CurrentSheet->Time = 0; //resetting the sheet currently being used (as it will be changed soon)
@@ -233,10 +230,6 @@ void Bandit::Dash() {
 	int D = Input_Manager.IsKeyPressed(sf::Keyboard::S);
 	int R = Input_Manager.IsKeyPressed(sf::Keyboard::D);
 	int L = Input_Manager.IsKeyPressed(sf::Keyboard::A);
-	// if A and D are both pressed we consider D only (Player dashes right side)
-	if (R == L) {
-		L = 0;
-	}
 	RealVector2D DashVelocity((R - L) * DEFAULT_DASH_VELOCITY_X, DEFAULT_DASH_VELOCITY_Y*(1+U-D));
 	LastPosition = Position + (DashVelocity-RealVector2D(0,DEFAULT_DASH_VELOCITY_Y)) * DASH_DURATION;
 	Velocity = DashVelocity;
@@ -251,7 +244,7 @@ void Bandit::DashCalculations(const double dt, const double t) {
 	//landed phase
 	else if(t >= DASH_DURATION + 0.1) {
 		Position = LastPosition;
-		if (Input_Manager.GetLastPressed(sf::Keyboard::Space) < 0.1 && (Input_Manager.IsKeyPressed(sf::Keyboard::D)^Input_Manager.IsKeyPressed(sf::Keyboard::A))) {
+		if (Input_Manager.GetLastPressed(sf::Keyboard::Space) < 0.05 && (Input_Manager.IsKeyPressed(sf::Keyboard::D)^Input_Manager.IsKeyPressed(sf::Keyboard::A))) {
 			ChangeState(DASH, 0);
 		}
 	}
@@ -285,10 +278,15 @@ void Bandit::AddForce(const double dt) { //for movement based upon inputs
 
 void Bandit::Translate(const double dt) {
 	Position = Position + Velocity * dt;
+	DamageHitBox.Center = Position;
 }
 void Bandit::Animate(sf::RenderWindow& window, const double dt) { //give it an animation sheet (not as a parameter) and window and it will animate
 	CurrentSheet->Time += dt;
 	sf::Sprite* current = &CurrentSheet->Sprites[CurrentSheet->GetCorrectIndex()];
+	/*sf::CircleShape circle;
+	circle.setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
+	circle.setRadius(2);
+	circle.setFillColor(sf::Color(0, 0, 0, 255));*/
 	if (Velocity.get_x() < 0) {
 		Direction = -1;
 	}
@@ -298,6 +296,8 @@ void Bandit::Animate(sf::RenderWindow& window, const double dt) { //give it an a
 	current->setScale(sf::Vector2f((float)Direction, 1.0f));
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
+	DamageHitBox.DrawBox(window);
+	//window.draw(circle);
 }
 
 #undef DEFAULT_RUN_VELOCITY 
@@ -311,3 +311,5 @@ void Bandit::Animate(sf::RenderWindow& window, const double dt) { //give it an a
 #undef INITIAL_JUMP_PAUSE
 #undef JUMP_LANDING_TIME
 #undef GRAVITY_FACTOR
+#undef DASH_DURATION 
+#undef DASH_GRAVITY_SCALE 

@@ -40,6 +40,7 @@
     <ClInclude Include="src\Math\RealVector2D.h" />
     <ClInclude Include="src\Math\Utilities.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="src\Players\HitBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LF2.rc" />

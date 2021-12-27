@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Input/InputManager.h"
 #include "Input/StateManager.h"
-
+#include "HitBox.h"
 #define JUMP_DURATION 0.8
 #define INITIAL_JUMP_PAUSE 0.2
 #define JUMP_LANDING_TIME 0.2
@@ -55,6 +55,12 @@ public:
 	PlayerStates CurrentState = IDLE;
 	StateManager State_Manager;
 	InputManager Input_Manager;
+	HitBox DamageHitBox;
+	HitBox Attack1HitBox;
+	HitBox Attack2HitBox;
+	HitBox Attack3HitBox;
+	HitBox JumpingAttackHitBox;
+	HitBox* CurrentAttackHitBox;
 
 	//CONSTRUCTOR
 	Bandit();
@@ -88,3 +94,5 @@ public:
 #undef JUMP_DURATION
 #undef INITIAL_JUMP_PAUSE
 #undef JUMP_LANDING_TIME
+#undef DASH_DURATION
+#undef DASH_LANDING_TIME
