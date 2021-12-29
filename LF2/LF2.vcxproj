@@ -29,6 +29,7 @@
     <ClCompile Include="src\Math\Utilities.cpp" />
     <ClCompile Include="src\Players\bandit.cpp" />
     <ClCompile Include="src\Players\common.cpp" />
+    <ClCompile Include="src\Players\HitBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FileBus\FileBus.h" />

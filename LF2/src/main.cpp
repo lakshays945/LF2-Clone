@@ -8,6 +8,8 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(resX, resY), "Little Fighter 2");
 	HitBox temp(RealVector2D(600, 400), 20, 40);
 	Bandit Player;
+	Bandit Player2;
+	Player2.Position = { 400,400 };
 	sf::Clock Clock;
 	while (window.isOpen()) {
 		DeltaTime = (Clock.getElapsedTime()).asSeconds();
@@ -24,16 +26,13 @@ int main() {
 				Player.Input_Manager.GetInputUp(event.key.code);
 			}
 		}
-		if (Player.DamageHitBox.IsColliding(temp)) {
-			std::cout << "Player->temp\n";
-		}
-		if (temp.IsColliding(Player.DamageHitBox)) {
-			std::cout << "temp->Player\n";
+		if (Player.AttackHitBox.IsColliding(&(Player2.DamageHitBox))) {
+			std::cout << "COLLISION\n1234\n";
 		}
 		window.clear(sf::Color(50, 60, 30));
 		Player.Input_Manager.Update(DeltaTime);
-		temp.DrawBox(window);
 		Player.Update(DeltaTime, window);
+		Player2.Update(DeltaTime, window);
 		window.display();
 	}
 	return 0;

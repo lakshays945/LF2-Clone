@@ -2,7 +2,7 @@
 
 
 #define DEFAULT_RUN_VELOCITY 300
-#define DEFAULT_JUMP_VELOCITY -800
+#define DEFAULT_JUMP_VELOCITY -600
 #define DEFAULT_DASH_VELOCITY_X 600
 #define DEFAULT_DASH_VELOCITY_Y -400
 #define DEFAULT_FORCE_SCALE 500*100
@@ -16,8 +16,11 @@
 #define DASH_GRAVITY_SCALE -(DEFAULT_DASH_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*DASH_DURATION)
 
 Bandit::Bandit() //Constructor (Mainly assigning images to animationSheet is done)
-	:Position(RealVector2D(100, 100)), Velocity(RealVector2D(10, 10)) {
-	DamageHitBox = HitBox(RealVector2D(100, 100), 42, 74);
+	:Position(100,100), Velocity(10,10) {
+	DamageHitBox = HitBox(Position, 42, 74);
+	DamageHitBox.AssignPlayer(this);
+	AttackHitBox = HitBox(Position, 15, 15);
+	AttackHitBox.AssignPlayer(this);
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);
 	IdleSheet.AssignPlayer(this);
@@ -87,16 +90,20 @@ Bandit::Bandit() //Constructor (Mainly assigning images to animationSheet is don
 	}
 	IdleSheet.AssignTextures();
 	WalkingSheet.AssignTextures();
-	HittingSheet[0].AssignTextures();
 	JumpingSheet.AssignTextures();
 	RunningSheet.AssignTextures();
 	JumpingAttackSheet.AssignTextures();
+	JumpingAttackSheet.AssignHitbox(1, {32,2}, 15,15);
 	JumpingSheet.OneTime = true;
 	HittingSheet[0].OneTime = true;
+	HittingSheet[0].AssignTextures();
+	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
 	HittingSheet[1].AssignTextures();
 	HittingSheet[1].OneTime = true;
+	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
 	HittingSheet[2].AssignTextures();
 	HittingSheet[2].OneTime = true;
+	HittingSheet[2].AssignHitbox(2, {14,14}, 50,50);
 	DashSheet.AssignTextures();
 	DashSheet.OneTime = true;
 	CurrentSheet = &IdleSheet;
@@ -216,6 +223,7 @@ void Bandit::JumpCalculation(const double dt, const double t) {
 			State_Manager.ForceStateChange(JUMPING, 0, t);
 		}
 		Position = LastPosition;
+		DamageHitBox.Center = LastPosition;
 	}
 	//checking if we should go to dash
 	if(t > INITIAL_JUMP_PAUSE + JUMP_DURATION + 0.1){
@@ -282,7 +290,8 @@ void Bandit::Translate(const double dt) {
 }
 void Bandit::Animate(sf::RenderWindow& window, const double dt) { //give it an animation sheet (not as a parameter) and window and it will animate
 	CurrentSheet->Time += dt;
-	sf::Sprite* current = &CurrentSheet->Sprites[CurrentSheet->GetCorrectIndex()];
+	int CorrectIndex = CurrentSheet->GetCorrectIndex();
+	sf::Sprite* current = &CurrentSheet->Sprites[CorrectIndex];
 	/*sf::CircleShape circle;
 	circle.setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	circle.setRadius(2);
@@ -296,6 +305,17 @@ void Bandit::Animate(sf::RenderWindow& window, const double dt) { //give it an a
 	current->setScale(sf::Vector2f((float)Direction, 1.0f));
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
+	if (CorrectIndex == CurrentSheet->HitBoxIndex) {
+		AttackHitBox.IsActive = true;
+		int dx = CurrentSheet->HitboxOffset.get_x() * Direction;
+		int dy = CurrentSheet->HitboxOffset.get_y();
+		AttackHitBox.SetSize(CurrentSheet->HitboxWidth, CurrentSheet->HitboxHeight);
+		AttackHitBox.Center = Position + RealVector2D(dx, dy);
+		AttackHitBox.DrawBox(window);
+	}
+	else {
+		AttackHitBox.IsActive = false;
+	}
 	DamageHitBox.DrawBox(window);
 	//window.draw(circle);
 }

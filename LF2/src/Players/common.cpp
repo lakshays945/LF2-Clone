@@ -27,3 +27,9 @@ void AnimationSheet::AssignTextures() {
 void AnimationSheet::AssignPlayer(Bandit* player) {
 	Player = player;
 }
+void AnimationSheet::AssignHitbox(const int index,RealVector2D offset, const int width, const int height){
+	HitBoxIndex = index;
+	HitboxOffset = offset;
+	HitboxWidth = width;
+	HitboxHeight = height;
+}

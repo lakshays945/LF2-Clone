@@ -5,6 +5,8 @@
 #include "Input/InputManager.h"
 #include "Input/StateManager.h"
 #include "HitBox.h"
+#include <vector>
+
 #define JUMP_DURATION 0.8
 #define INITIAL_JUMP_PAUSE 0.2
 #define JUMP_LANDING_TIME 0.2
@@ -13,20 +15,33 @@
 
 const double IdleTimes[4] = { 0.3,0.6,0.9,1.2 };
 const int IdleLocations[4][2] = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
+
 const double WalkingTimes[6] = { 0.15,0.3,0.45,0.6,0.75,0.9 };
 const int WalkingLocations[6][2] = { {320,0}, {400,0}, {480,0}, {560,0}, {480,0}, {400,0} };//x,y
+
 const int Attack1Locations[5][2] = { {560,80}, {480,80}, {400,80}, {480,80}, {560,80} };
 const double Attack1Times[5] = { 0.08,0.16,0.24,0.32,0.4 };
+const std::vector <RealVector2D> Attack1Offsets = { {2,28}, {12,18}, {33,3}, {12,18}, {2,28} };
+
 const int Attack2Locations[3][2] = { {0,80},{80,80},{160,80} };
 const double Attack2Times[3] = { 0.1,0.2,0.3 };
+const std::vector <RealVector2D> Attack2Offsets = { {5,15}, {29,-6}, {3,19} };
+
 const int Attack3Locations[3][2] = { {640,0}, {720,0}, {720,160} };
 const double Attack3Times[3] = { 0.1,0.2,0.4 };
+const std::vector <RealVector2D> Attack3Offsets = { {-18,27}, {-29,8}, {25,0} };
+
 const int JumpingLocations[3][2] = { {80,480}, {160,480}, {80,480} };
 const double JumpingTimes[3] = { INITIAL_JUMP_PAUSE,INITIAL_JUMP_PAUSE+JUMP_DURATION,INITIAL_JUMP_PAUSE + JUMP_DURATION + JUMP_LANDING_TIME};
+
+
 const int RunningLocations[4][2] = { {80,160}, {0,160}, {80,160}, {160,160} };
 const double RunningTimes[4] = { 0.15,0.3,0.45,0.6 };
+
 const int JumpingAttackLocations[4][2] = { {560,240},{640,240}, { 560,240}, {160,480} };
 const double JumpingAttackTimes[4] = { 0.15,0.4,0.55,2 };
+const std::vector <RealVector2D> JumpingAttackOffsets = { Infinity, {32,2}, Infinity, Infinity };
+
 const int DashLocations[2][2] = { {240,480},{80,480} };
 const double DashTimes[2] = { DASH_DURATION, DASH_DURATION+DASH_LANDING_TIME };
 
@@ -56,10 +71,7 @@ public:
 	StateManager State_Manager;
 	InputManager Input_Manager;
 	HitBox DamageHitBox;
-	HitBox Attack1HitBox;
-	HitBox Attack2HitBox;
-	HitBox Attack3HitBox;
-	HitBox JumpingAttackHitBox;
+	HitBox AttackHitBox;
 	HitBox* CurrentAttackHitBox;
 
 	//CONSTRUCTOR

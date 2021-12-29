@@ -4,7 +4,7 @@
 #include <corecrt.h>
 
 #define DEFAULT_GRAVITY_CONSTANT 980
-#define Infinity RealVector2D(_CRT_INT_MAX, _CRT_INT_MAX);
+#define Infinity RealVector2D(_CRT_INT_MAX, _CRT_INT_MAX)
 #define GravityVector RealVector2D(0,DEFAULT_GRAVITY_CONSTANT)
 
 RealVector2D IntersectTwoLines(Line& l1, Line& l2);
