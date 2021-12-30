@@ -6,6 +6,7 @@
 #include "Input/StateManager.h"
 #include "HitBox.h"
 #include <vector>
+#include "GameObject/GameObject.h"
 
 #define JUMP_DURATION 0.8
 #define INITIAL_JUMP_PAUSE 0.2
@@ -46,11 +47,11 @@ const int DashLocations[2][2] = { {240,480},{80,480} };
 const double DashTimes[2] = { DASH_DURATION, DASH_DURATION+DASH_LANDING_TIME };
 
 
-class Bandit {
+class Bandit: public GameObject  {
 public:
-	RealVector2D Position;
+	//RealVector2D Position;
 	RealVector2D LastPosition;
-	RealVector2D Velocity;
+	//RealVector2D Velocity;
 	float MaxSpeed = 200;
 	double TimeSinceLastState = 0;
 	bool JustStateChanged = false;

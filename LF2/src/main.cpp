@@ -9,6 +9,7 @@ int main() {
 	HitBox temp(RealVector2D(600, 400), 20, 40);
 	Bandit Player;
 	Bandit Player2;
+	int times = 0;
 	Player2.Position = { 400,400 };
 	sf::Clock Clock;
 	while (window.isOpen()) {
@@ -27,7 +28,8 @@ int main() {
 			}
 		}
 		if (Player.AttackHitBox.IsColliding(&(Player2.DamageHitBox))) {
-			std::cout << "COLLISION\n1234\n";
+			times++;
+			std::cout << times << "\n";
 		}
 		window.clear(sf::Color(50, 60, 30));
 		Player.Input_Manager.Update(DeltaTime);

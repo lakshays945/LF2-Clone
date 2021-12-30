@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\FileBus\FileBus.h" />
+    <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\Input\InputManager.h" />
     <ClInclude Include="src\Input\StateManager.h" />
     <ClInclude Include="src\Players\bandit.h" />

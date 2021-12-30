@@ -15,8 +15,9 @@
 #define DASH_DURATION DashTimes[0] //can modify in bandit.h
 #define DASH_GRAVITY_SCALE -(DEFAULT_DASH_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*DASH_DURATION)
 
-Bandit::Bandit() //Constructor (Mainly assigning images to animationSheet is done)
-	:Position(100,100), Velocity(10,10) {
+
+//Constructor (Mainly assigning images to animationSheet is done)
+Bandit::Bandit() {
 	DamageHitBox = HitBox(Position, 42, 74);
 	DamageHitBox.AssignPlayer(this);
 	AttackHitBox = HitBox(Position, 15, 15);
