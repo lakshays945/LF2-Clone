@@ -46,6 +46,9 @@ const std::vector <RealVector2D> JumpingAttackOffsets = { Infinity, {32,2}, Infi
 const int DashLocations[2][2] = { {240,480},{80,480} };
 const double DashTimes[2] = { DASH_DURATION, DASH_DURATION+DASH_LANDING_TIME };
 
+const int Getting_HitLocations[1][2] = { {480,320} };
+const double Getting_HitTimes[1] = { 0.3 };
+
 
 class Bandit: public GameObject  {
 public:
@@ -73,7 +76,6 @@ public:
 	InputManager Input_Manager;
 	HitBox DamageHitBox;
 	HitBox AttackHitBox;
-	HitBox* CurrentAttackHitBox;
 
 	//CONSTRUCTOR
 	Bandit();
@@ -100,7 +102,7 @@ public:
 	// changes position based on velocity  nothing else
 	void Translate(const double dt);
 	void Animate(sf::RenderWindow& window, const double dt);
-
+	void OnCollision(int otherID, int selfID);
 
 };
 

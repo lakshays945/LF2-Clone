@@ -6,7 +6,6 @@ const int resX = 1200;
 const int resY = 800;
 int main() {
 	sf::RenderWindow window(sf::VideoMode(resX, resY), "Little Fighter 2");
-	HitBox temp(RealVector2D(600, 400), 20, 40);
 	Bandit Player;
 	Bandit Player2;
 	int times = 0;
@@ -27,12 +26,9 @@ int main() {
 				Player.Input_Manager.GetInputUp(event.key.code);
 			}
 		}
-		if (Player.AttackHitBox.IsColliding(&(Player2.DamageHitBox))) {
-			times++;
-			std::cout << times << "\n";
-		}
 		window.clear(sf::Color(50, 60, 30));
 		Player.Input_Manager.Update(DeltaTime);
+		HandleCollisions();
 		Player.Update(DeltaTime, window);
 		Player2.Update(DeltaTime, window);
 		window.display();

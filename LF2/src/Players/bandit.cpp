@@ -18,10 +18,12 @@
 
 //Constructor (Mainly assigning images to animationSheet is done)
 Bandit::Bandit() {
-	DamageHitBox = HitBox(Position, 42, 74);
+	DamageHitBox = HitBox(Position, 42, 74,TYPE_DAMAGE);
 	DamageHitBox.AssignPlayer(this);
-	AttackHitBox = HitBox(Position, 15, 15);
+	DamageHitBox.RegisterID();
+	AttackHitBox = HitBox(Position, 15, 15, TYPE_ATTACK);
 	AttackHitBox.AssignPlayer(this);
+	AttackHitBox.RegisterID();
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);
 	IdleSheet.AssignPlayer(this);
@@ -89,11 +91,18 @@ Bandit::Bandit() {
 		DashSheet.DrawTimes.push_back(DashTimes[i]);
 		DashSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(DashLocations[i][0], DashLocations[i][1], 80, 80));
 	}
+	for (int i = 0; i < 1; i++) {
+		Getting_HitSheet.Textures.push_back(sf::Texture());
+		Getting_HitSheet.Sprites.push_back(sf::Sprite());
+		Getting_HitSheet.DrawTimes.push_back(Getting_HitTimes[i]);
+		Getting_HitSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(Getting_HitLocations[i][0], Getting_HitLocations[i][1], 80, 80));
+	}
 	IdleSheet.AssignTextures();
 	WalkingSheet.AssignTextures();
 	JumpingSheet.AssignTextures();
 	RunningSheet.AssignTextures();
 	JumpingAttackSheet.AssignTextures();
+	Getting_HitSheet.AssignTextures();
 	JumpingAttackSheet.AssignHitbox(1, {32,2}, 15,15);
 	JumpingSheet.OneTime = true;
 	HittingSheet[0].OneTime = true;
@@ -107,6 +116,7 @@ Bandit::Bandit() {
 	HittingSheet[2].AssignHitbox(2, {14,14}, 50,50);
 	DashSheet.AssignTextures();
 	DashSheet.OneTime = true;
+	Getting_HitSheet.OneTime = true;
 	CurrentSheet = &IdleSheet;
 }
 
@@ -159,13 +169,16 @@ void Bandit::Update(const double dt, sf::RenderWindow& window) {
 	case IDLE:
 		AddForce(dt);
 		Translate(dt);
+		Z_Position = Position.get_y();
 		break;
 	case WALKING:
 		AddForce(dt);
 		Translate(dt);
+		Z_Position = Position.get_y();
 		break;
 	case RUNNING:
 		Translate(dt);
+		Z_Position = Position.get_y();
 		break;
 	case JUMPING:
 		JumpCalculation(dt, TimeSinceLastState);
@@ -319,6 +332,16 @@ void Bandit::Animate(sf::RenderWindow& window, const double dt) { //give it an a
 	}
 	DamageHitBox.DrawBox(window);
 	//window.draw(circle);
+}
+
+void Bandit::OnCollision(int otherID, int selfID) {
+	if (IDArray[otherID]->Game_Object == IDArray[selfID]->Game_Object) {
+		return;
+	}
+	if (IDArray[otherID]->Type == TYPE_ATTACK && IDArray[selfID]->Type == TYPE_DAMAGE) {
+		State_Manager.ForceStateChange(GETTING_HIT);
+
+	}
 }
 
 #undef DEFAULT_RUN_VELOCITY 
