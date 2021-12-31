@@ -3,37 +3,34 @@
 #include <math.h>
 #include "SFML/Graphics.hpp"
 #include <vector>
+#include "GameObject/GameObject.h"
 
-class Bandit;
+enum HitBoxType {
+	TYPE_DAMAGE = 0, TYPE_ATTACK = 1,
+};
+
 class HitBox {
 	sf::RectangleShape Box;
 	sf::CircleShape circle;
 	double TimeSinceActive = 0;
-	Bandit* Player;
+protected:
+	static int nextID;
 public:
+	int ID;
+	HitBoxType Type = TYPE_DAMAGE;
 	RealVector2D Center;
+	GameObject* Game_Object = nullptr;
 	double Width;
 	double Height;
 	bool IsActive = true;
 	std::vector <HitBox *> ImmuneList;
-	HitBox(RealVector2D center, double width, double height)
-	:Center(center), Width(width), Height(height) {
-		Box.setSize(sf::Vector2f(width, height));
-		Box.setFillColor(sf::Color::Transparent);
-		Box.setOutlineThickness(-2);
-		Box.setOutlineColor(sf::Color(255, 0, 0));
-		Box.setOrigin(sf::Vector2f(width/2, height/2));
-		circle.setPosition(sf::Vector2f(center.get_x(), center.get_y()));
-		circle.setFillColor(sf::Color(0, 0, 0, 255));
-		circle.setRadius(1);
-		//circle.setOrigin(sf::Vector2f(3.0 / 2, 3.0 / 2));
-	}
+	HitBox(RealVector2D center, double width, double height, HitBoxType type);
 
-	HitBox(){}
+	HitBox();
 
-	bool IsColliding(HitBox* other);
+	bool JustCollided(HitBox* other);
 	
-	void AssignPlayer(Bandit* player);
+	void AssignPlayer(GameObject* player);
 
 	void SetSize(const double width, const double height) {
 		Box.setOrigin(sf::Vector2f(-Width / 2, -Height / 2));
@@ -49,4 +46,11 @@ public:
 		window.draw(Box);
 		window.draw(circle);
 	}
+	void OnCollision(int a);
+	void RegisterID();
 };
+
+void HandleCollisions();
+
+extern std::vector <HitBox*> IDArray;
+extern std::vector <std::vector< bool>> CanCollide;

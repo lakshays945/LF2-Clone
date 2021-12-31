@@ -18,9 +18,12 @@ int AnimationSheet::GetCorrectIndex() { //returns index of correct sprite
 	return 0; //No sprite found (Maybe Bug)
 }
 
-void AnimationSheet::AssignTextures() {
-	for (int i = 0; i < Textures.size(); i++) {
-		Sprites[i].setTexture(Textures[i]);
+void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vector <RealVector2D> &locations, const  std::vector<double> &times) {
+	DrawTimes = times;
+	for (int i = 0; i < times.size(); i++) {
+		Sprites.push_back(sf::Sprite());
+		Sprites[i].setTexture(textureSheet);
+		Sprites[i].setTextureRect(sf::IntRect(locations[i].get_x(), locations[i].get_y(), 80, 80));
 		Sprites[i].setOrigin(sf::Vector2f(40, 40));
 	}
 }

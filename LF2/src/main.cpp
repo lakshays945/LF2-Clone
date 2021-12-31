@@ -1,14 +1,24 @@
 #include <SFML/Graphics.hpp>
 #include "Players/bandit.h"
+#include "Effects/EffectManager.h"
 #include <iostream>
 static double DeltaTime = 0.016666667;
 const int resX = 1200;
 const int resY = 800;
 int main() {
 	sf::RenderWindow window(sf::VideoMode(resX, resY), "Little Fighter 2");
-	HitBox temp(RealVector2D(600, 400), 20, 40);
+	//initialzing debug console window
+	main_log = new DbgWindow("DebugWindow");
+	DEBUG_SUCCESS("Launching game......");
+
 	Bandit Player;
 	Bandit Player2;
+	EffectManager Eff_Manager(&window);
+	Player.AssignEffectManager(&Eff_Manager);
+	DEBUG_TRACE("spawning player 1");
+	Player2.AssignEffectManager(&Eff_Manager);
+	DEBUG_TRACE("spawning player 2");
+	int times = 0;
 	Player2.Position = { 400,400 };
 	sf::Clock Clock;
 	while (window.isOpen()) {
@@ -26,13 +36,12 @@ int main() {
 				Player.Input_Manager.GetInputUp(event.key.code);
 			}
 		}
-		if (Player.AttackHitBox.IsColliding(&(Player2.DamageHitBox))) {
-			std::cout << "COLLISION\n1234\n";
-		}
 		window.clear(sf::Color(50, 60, 30));
 		Player.Input_Manager.Update(DeltaTime);
+		HandleCollisions();
 		Player.Update(DeltaTime, window);
 		Player2.Update(DeltaTime, window);
+		Eff_Manager.Update(DeltaTime);
 		window.display();
 	}
 	return 0;
