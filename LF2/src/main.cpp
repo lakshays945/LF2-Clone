@@ -7,11 +7,17 @@ const int resX = 1200;
 const int resY = 800;
 int main() {
 	sf::RenderWindow window(sf::VideoMode(resX, resY), "Little Fighter 2");
+	//initialzing debug console window
+	main_log = new DbgWindow("DebugWindow");
+	DEBUG_SUCCESS("Launching game......");
+
 	Bandit Player;
 	Bandit Player2;
 	EffectManager Eff_Manager(&window);
 	Player.AssignEffectManager(&Eff_Manager);
+	DEBUG_TRACE("spawning player 1");
 	Player2.AssignEffectManager(&Eff_Manager);
+	DEBUG_TRACE("spawning player 2");
 	int times = 0;
 	Player2.Position = { 400,400 };
 	sf::Clock Clock;

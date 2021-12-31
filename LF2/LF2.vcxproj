@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ThirdParty\fmt-8.0.1\src\format.cc" />
+    <ClCompile Include="src\Dbg\Logging.cpp" />
     <ClCompile Include="src\Effects\EffectManager.cpp" />
     <ClCompile Include="src\FileBus\FileBusCommon.cpp" />
     <ClCompile Include="src\FileBus\FileBusWindows.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="src\Players\HitBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Dbg\Logging.h" />
     <ClInclude Include="src\Effects\EffectManager.h" />
     <ClInclude Include="src\FileBus\FileBus.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
@@ -163,6 +165,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\SFML-2.5.1\include;$(SolutionDir)\LF2\src;$(SolutionDir)\ThirdParty\fmt-8.0.1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ForcedIncludeFiles>Dbg\Logging.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -184,6 +187,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\SFML-2.5.1\include;$(SolutionDir)\LF2\src;$(SolutionDir)\ThirdParty\fmt-8.0.1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ForcedIncludeFiles>Dbg\Logging.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
