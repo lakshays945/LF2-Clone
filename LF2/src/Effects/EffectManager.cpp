@@ -23,7 +23,7 @@ int EffectAnimation::GetCorrectIndex() { //returns index of correct sprite
 
 EffectManager::EffectManager(sf::RenderWindow* window) {
 	Window = window;
-	BloodSheet.loadFromFile("src/Resource/bloodEffect.png");
+	BloodSheet.loadFromFile("Resource/bloodEffect.png");
 	Blood_1.setTexture(BloodSheet);
 	Blood_2.setTexture(BloodSheet);
 	Blood_3.setTexture(BloodSheet);
@@ -33,7 +33,7 @@ EffectManager::EffectManager(sf::RenderWindow* window) {
 	Blood_1.setOrigin(sf::Vector2f(35 / 2, 35 / 2));
 	Blood_2.setOrigin(sf::Vector2f(35 / 2, 35 / 2));
 	Blood_3.setOrigin(sf::Vector2f(35 / 2, 35 / 2));
-	BloodAnimation.TextureSheet.loadFromFile("src/Resource/bloodanimation.png");
+	BloodAnimation.TextureSheet.loadFromFile("Resource/bloodanimation.png");
 	for (int i = 0; i < 3; i++) {
 		BloodAnimation.AnimationSprites.push_back(sf::Sprite());
 		BloodAnimation.AnimationSprites[i].setTexture(BloodAnimation.TextureSheet);
@@ -42,7 +42,7 @@ EffectManager::EffectManager(sf::RenderWindow* window) {
 		BloodAnimation.AnimationSprites[i].setScale(sf::Vector2f(0.125, 0.125));
 		BloodAnimation.DrawTimes.push_back(BloodAnimationTimes[i]);
 	}
-	ImpactAnimation.TextureSheet.loadFromFile("src/Resource/explosion.png");
+	ImpactAnimation.TextureSheet.loadFromFile("Resource/explosion.png");
 	for (int i = 0; i < 3; i++) {
 		ImpactAnimation.AnimationSprites.push_back(sf::Sprite());
 		ImpactAnimation.AnimationSprites[i].setTexture(ImpactAnimation.TextureSheet);

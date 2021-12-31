@@ -174,7 +174,8 @@
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-system-d.lib;sfml-window-d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>call $(SolutionDir)Scripts\PostBuild.bat "$(ProjectDir)dist\" "$(SolutionDir)bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>call $(SolutionDir)Scripts\PostBuild.bat "$(ProjectDir)dist\" "$(OutDir)"
+call $(SolutionDir)Scripts\PostBuild.bat "$(ProjectDir)src\Resource\" "$(OutDir)Resource\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -198,7 +199,8 @@
       <AdditionalDependencies>sfml-graphics.lib;sfml-system.lib;sfml-window.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies); </AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>call $(SolutionDir)Scripts\PostBuild.bat "$(ProjectDir)dist\" "$(SolutionDir)bin\$(Platform)\$(Configuration)\"</Command>
+      <Command>call $(SolutionDir)Scripts\PostBuild.bat "$(ProjectDir)dist\" "$(OutDir)"
+call $(SolutionDir)Scripts\PostBuild.bat "$(ProjectDir)src\Resource\" "$(OutDir)Resource\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

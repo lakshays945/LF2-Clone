@@ -40,61 +40,61 @@ Bandit::Bandit() {
 		IdleSheet.Textures.push_back(sf::Texture());
 		IdleSheet.Sprites.push_back(sf::Sprite());
 		IdleSheet.DrawTimes.push_back(IdleTimes[i]);
-		IdleSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(IdleLocations[i][0], IdleLocations[i][1], 80, 80));
+		IdleSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(IdleLocations[i][0], IdleLocations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 6; i++) { //Setting textures for walking sheet
 		WalkingSheet.Textures.push_back(sf::Texture());
 		WalkingSheet.Sprites.push_back(sf::Sprite());
 		WalkingSheet.DrawTimes.push_back(WalkingTimes[i]);
-		WalkingSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(WalkingLocations[i][0], WalkingLocations[i][1], 80, 80));
+		WalkingSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(WalkingLocations[i][0], WalkingLocations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 5; i++) {
 		HittingSheet[0].Textures.push_back(sf::Texture());
 		HittingSheet[0].Sprites.push_back(sf::Sprite());
 		HittingSheet[0].DrawTimes.push_back(Attack1Times[i]);
-		HittingSheet[0].Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(Attack1Locations[i][0], Attack1Locations[i][1], 80, 80));
+		HittingSheet[0].Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(Attack1Locations[i][0], Attack1Locations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 3; i++) {
 		HittingSheet[1].Textures.push_back(sf::Texture());
 		HittingSheet[1].Sprites.push_back(sf::Sprite());
 		HittingSheet[1].DrawTimes.push_back(Attack2Times[i]);
-		HittingSheet[1].Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(Attack2Locations[i][0], Attack2Locations[i][1], 80, 80));
+		HittingSheet[1].Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(Attack2Locations[i][0], Attack2Locations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 3; i++) {
 		HittingSheet[2].Textures.push_back(sf::Texture());
 		HittingSheet[2].Sprites.push_back(sf::Sprite());
 		HittingSheet[2].DrawTimes.push_back(Attack3Times[i]);
-		HittingSheet[2].Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(Attack3Locations[i][0], Attack3Locations[i][1], 80, 80));
+		HittingSheet[2].Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(Attack3Locations[i][0], Attack3Locations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 3; i++) {
 		JumpingSheet.Textures.push_back(sf::Texture());
 		JumpingSheet.Sprites.push_back(sf::Sprite());
 		JumpingSheet.DrawTimes.push_back(JumpingTimes[i]);
-		JumpingSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(JumpingLocations[i][0], JumpingLocations[i][1], 80, 80));
+		JumpingSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(JumpingLocations[i][0], JumpingLocations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 4; i++) {
 		RunningSheet.Textures.push_back(sf::Texture());
 		RunningSheet.Sprites.push_back(sf::Sprite());
 		RunningSheet.DrawTimes.push_back(RunningTimes[i]);
-		RunningSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(RunningLocations[i][0], RunningLocations[i][1], 80, 80));
+		RunningSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(RunningLocations[i][0], RunningLocations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 4; i++) {
 		JumpingAttackSheet.Textures.push_back(sf::Texture());
 		JumpingAttackSheet.Sprites.push_back(sf::Sprite());
 		JumpingAttackSheet.DrawTimes.push_back(JumpingAttackTimes[i]);
-		JumpingAttackSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(JumpingAttackLocations[i][0], JumpingAttackLocations[i][1], 80, 80));
+		JumpingAttackSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(JumpingAttackLocations[i][0], JumpingAttackLocations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 2; i++) {
 		DashSheet.Textures.push_back(sf::Texture());
 		DashSheet.Sprites.push_back(sf::Sprite());
 		DashSheet.DrawTimes.push_back(DashTimes[i]);
-		DashSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(DashLocations[i][0], DashLocations[i][1], 80, 80));
+		DashSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(DashLocations[i][0], DashLocations[i][1], 80, 80));
 	}
 	for (int i = 0; i < 1; i++) {
 		Getting_HitSheet.Textures.push_back(sf::Texture());
 		Getting_HitSheet.Sprites.push_back(sf::Sprite());
 		Getting_HitSheet.DrawTimes.push_back(Getting_HitTimes[i]);
-		Getting_HitSheet.Textures[i].loadFromFile("src/Resource/Dennis.png", sf::IntRect(Getting_HitLocations[i][0], Getting_HitLocations[i][1], 80, 80));
+		Getting_HitSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(Getting_HitLocations[i][0], Getting_HitLocations[i][1], 80, 80));
 	}
 	IdleSheet.AssignTextures();
 	WalkingSheet.AssignTextures();
