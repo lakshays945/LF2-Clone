@@ -57,6 +57,9 @@
     <ClCompile Include="src\Effects\EffectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\ThirdParty\fmt-8.0.1\src\format.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Players\bandit.h">
