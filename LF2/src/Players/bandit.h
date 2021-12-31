@@ -14,40 +14,40 @@
 #define DASH_DURATION 0.4
 #define DASH_LANDING_TIME 0.2
 
-const double IdleTimes[4] = { 0.3,0.6,0.9,1.2 };
-const int IdleLocations[4][2] = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
+const std::vector <double> IdleTimes = { 0.3,0.6,0.9,1.2 };
+const std::vector<RealVector2D> IdleLocations = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
 
-const double WalkingTimes[6] = { 0.15,0.3,0.45,0.6,0.75,0.9 };
-const int WalkingLocations[6][2] = { {320,0}, {400,0}, {480,0}, {560,0}, {480,0}, {400,0} };//x,y
+const std::vector <double> WalkingTimes = { 0.15,0.3,0.45,0.6,0.75,0.9 };
+const std::vector<RealVector2D> WalkingLocations = { {320,0}, {400,0}, {480,0}, {560,0}, {480,0}, {400,0} };//x,y
 
-const int Attack1Locations[5][2] = { {560,80}, {480,80}, {400,80}, {480,80}, {560,80} };
-const double Attack1Times[5] = { 0.08,0.16,0.24,0.32,0.4 };
+const std::vector<RealVector2D> Attack1Locations = { {560,80}, {480,80}, {400,80}, {480,80}, {560,80} };
+const std::vector <double> Attack1Times = { 0.08,0.16,0.24,0.32,0.4 };
 const std::vector <RealVector2D> Attack1Offsets = { {2,28}, {12,18}, {33,3}, {12,18}, {2,28} };
 
-const int Attack2Locations[3][2] = { {0,80},{80,80},{160,80} };
-const double Attack2Times[3] = { 0.1,0.2,0.3 };
+const std::vector<RealVector2D> Attack2Locations = { {0,80},{80,80},{160,80} };
+const std::vector <double> Attack2Times = { 0.1,0.2,0.3 };
 const std::vector <RealVector2D> Attack2Offsets = { {5,15}, {29,-6}, {3,19} };
 
-const int Attack3Locations[3][2] = { {640,0}, {720,0}, {720,160} };
-const double Attack3Times[3] = { 0.1,0.2,0.4 };
+const std::vector<RealVector2D> Attack3Locations = { {640,0}, {720,0}, {720,160} };
+const std::vector <double> Attack3Times = { 0.1,0.2,0.4 };
 const std::vector <RealVector2D> Attack3Offsets = { {-18,27}, {-29,8}, {25,0} };
 
-const int JumpingLocations[3][2] = { {80,480}, {160,480}, {80,480} };
-const double JumpingTimes[3] = { INITIAL_JUMP_PAUSE,INITIAL_JUMP_PAUSE+JUMP_DURATION,INITIAL_JUMP_PAUSE + JUMP_DURATION + JUMP_LANDING_TIME};
+const std::vector<RealVector2D> JumpingLocations = { {80,480}, {160,480}, {80,480} };
+const std::vector <double> JumpingTimes = { INITIAL_JUMP_PAUSE,INITIAL_JUMP_PAUSE+JUMP_DURATION,INITIAL_JUMP_PAUSE + JUMP_DURATION + JUMP_LANDING_TIME};
 
 
-const int RunningLocations[4][2] = { {80,160}, {0,160}, {80,160}, {160,160} };
-const double RunningTimes[4] = { 0.15,0.3,0.45,0.6 };
+const std::vector<RealVector2D> RunningLocations = { {80,160}, {0,160}, {80,160}, {160,160} };
+const std::vector <double> RunningTimes = { 0.15,0.3,0.45,0.6 };
 
-const int JumpingAttackLocations[4][2] = { {560,240},{640,240}, { 560,240}, {160,480} };
-const double JumpingAttackTimes[4] = { 0.15,0.4,0.55,2 };
+const std::vector<RealVector2D> JumpingAttackLocations = { {560,240},{640,240}, { 560,240}, {160,480} };
+const std::vector <double> JumpingAttackTimes = { 0.15,0.4,0.55,2 };
 const std::vector <RealVector2D> JumpingAttackOffsets = { Infinity, {32,2}, Infinity, Infinity };
 
-const int DashLocations[2][2] = { {240,480},{80,480} };
-const double DashTimes[2] = { DASH_DURATION, DASH_DURATION+DASH_LANDING_TIME };
+const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
+const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION+DASH_LANDING_TIME };
 
-const int Getting_HitLocations[1][2] = { {480,320} };
-const double Getting_HitTimes[1] = { 0.3 };
+const std::vector<RealVector2D> Getting_HitLocations = { {480,320} };
+const std::vector <double> Getting_HitTimes = { 0.3 };
 
 
 class Bandit: public GameObject  {
@@ -58,6 +58,7 @@ public:
 	float MaxSpeed = 200;
 	double TimeSinceLastState = 0;
 	bool JustStateChanged = false;
+	sf::Texture TexFile0;
 	AnimationSheet IdleSheet;
 	AnimationSheet WalkingSheet;
 	AnimationSheet RunningSheet;

@@ -48,7 +48,7 @@ EffectManager::EffectManager(sf::RenderWindow* window) {
 		ImpactAnimation.AnimationSprites[i].setTexture(ImpactAnimation.TextureSheet);
 		ImpactAnimation.AnimationSprites[i].setTextureRect(sf::IntRect(ImpactAnimationLocations[i][0], ImpactAnimationLocations[i][1], ImpactAnimationSizes[i][0], ImpactAnimationSizes[i][1]));
 		ImpactAnimation.AnimationSprites[i].setOrigin(sf::Vector2f(ImpactAnimationSizes[i][0] / 2.0, ImpactAnimationSizes[i][1] / 2.0));
-		ImpactAnimation.AnimationSprites[i].setScale(sf::Vector2f(0.5, 0.5));
+		ImpactAnimation.AnimationSprites[i].setScale(sf::Vector2f(0.3, 0.3));
 		ImpactAnimation.DrawTimes.push_back(ImpactAnimationTimes[i]);
 	}
 }

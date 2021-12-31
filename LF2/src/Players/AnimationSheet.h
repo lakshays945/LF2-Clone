@@ -17,14 +17,13 @@ public:
 	//One time means complete animation has to be played exaclty one time before we can do anything with our inputs
 	bool OneTime = false;
 	int HitBoxIndex = INT16_MAX;
-	std::vector <sf::Texture> Textures;
 	std::vector <sf::Sprite> Sprites;
 	std::vector <double> DrawTimes; // the Nth element of this vector will give time at which Nth sprite is now done being drawn
 	RealVector2D HitboxOffset;
 	int HitboxWidth, HitboxHeight;
 	double MaxTime = 0; //Time taken to draw all sprites (Summation ot DrawTimes(i))
 	double Time = 0; //Time passed since 1st sprite is drawn (resets to 0 if >= MaxTime)
-	void AssignTextures();
+	void AssignTextures(sf::Texture& textureSheet, const std::vector <RealVector2D>& locations, const std::vector<double>& times);
 	void AssignHitbox(const int index, RealVector2D offset, const int width, const int height);
 	void AssignPlayer(Bandit* player);
 	int GetCorrectIndex();

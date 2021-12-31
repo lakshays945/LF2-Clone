@@ -17,6 +17,7 @@
 
 //Constructor (Mainly assigning images to animationSheet is done)
 Bandit::Bandit() {
+	TexFile0.loadFromFile("Resource/Dennis.png");
 	DamageHitBox = HitBox(Position, 42, 74,TYPE_DAMAGE);
 	DamageHitBox.AssignPlayer(this);
 	DamageHitBox.RegisterID();
@@ -36,87 +37,37 @@ Bandit::Bandit() {
 	FallingSheet.AssignPlayer(this);
 	JumpingAttackSheet.AssignPlayer(this);
 	DashSheet.AssignPlayer(this);
-	for (int i = 0; i < 4; i++) { //Setting textures for idle sheet
-		IdleSheet.Textures.push_back(sf::Texture());
-		IdleSheet.Sprites.push_back(sf::Sprite());
-		IdleSheet.DrawTimes.push_back(IdleTimes[i]);
-		IdleSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(IdleLocations[i][0], IdleLocations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 6; i++) { //Setting textures for walking sheet
-		WalkingSheet.Textures.push_back(sf::Texture());
-		WalkingSheet.Sprites.push_back(sf::Sprite());
-		WalkingSheet.DrawTimes.push_back(WalkingTimes[i]);
-		WalkingSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(WalkingLocations[i][0], WalkingLocations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 5; i++) {
-		HittingSheet[0].Textures.push_back(sf::Texture());
-		HittingSheet[0].Sprites.push_back(sf::Sprite());
-		HittingSheet[0].DrawTimes.push_back(Attack1Times[i]);
-		HittingSheet[0].Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(Attack1Locations[i][0], Attack1Locations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 3; i++) {
-		HittingSheet[1].Textures.push_back(sf::Texture());
-		HittingSheet[1].Sprites.push_back(sf::Sprite());
-		HittingSheet[1].DrawTimes.push_back(Attack2Times[i]);
-		HittingSheet[1].Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(Attack2Locations[i][0], Attack2Locations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 3; i++) {
-		HittingSheet[2].Textures.push_back(sf::Texture());
-		HittingSheet[2].Sprites.push_back(sf::Sprite());
-		HittingSheet[2].DrawTimes.push_back(Attack3Times[i]);
-		HittingSheet[2].Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(Attack3Locations[i][0], Attack3Locations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 3; i++) {
-		JumpingSheet.Textures.push_back(sf::Texture());
-		JumpingSheet.Sprites.push_back(sf::Sprite());
-		JumpingSheet.DrawTimes.push_back(JumpingTimes[i]);
-		JumpingSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(JumpingLocations[i][0], JumpingLocations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 4; i++) {
-		RunningSheet.Textures.push_back(sf::Texture());
-		RunningSheet.Sprites.push_back(sf::Sprite());
-		RunningSheet.DrawTimes.push_back(RunningTimes[i]);
-		RunningSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(RunningLocations[i][0], RunningLocations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 4; i++) {
-		JumpingAttackSheet.Textures.push_back(sf::Texture());
-		JumpingAttackSheet.Sprites.push_back(sf::Sprite());
-		JumpingAttackSheet.DrawTimes.push_back(JumpingAttackTimes[i]);
-		JumpingAttackSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(JumpingAttackLocations[i][0], JumpingAttackLocations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 2; i++) {
-		DashSheet.Textures.push_back(sf::Texture());
-		DashSheet.Sprites.push_back(sf::Sprite());
-		DashSheet.DrawTimes.push_back(DashTimes[i]);
-		DashSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(DashLocations[i][0], DashLocations[i][1], 80, 80));
-	}
-	for (int i = 0; i < 1; i++) {
-		Getting_HitSheet.Textures.push_back(sf::Texture());
-		Getting_HitSheet.Sprites.push_back(sf::Sprite());
-		Getting_HitSheet.DrawTimes.push_back(Getting_HitTimes[i]);
-		Getting_HitSheet.Textures[i].loadFromFile("Resource/Dennis.png", sf::IntRect(Getting_HitLocations[i][0], Getting_HitLocations[i][1], 80, 80));
-	}
-	IdleSheet.AssignTextures();
-	WalkingSheet.AssignTextures();
-	JumpingSheet.AssignTextures();
-	RunningSheet.AssignTextures();
-	JumpingAttackSheet.AssignTextures();
-	Getting_HitSheet.AssignTextures();
-	JumpingAttackSheet.AssignHitbox(1, {32,2}, 15,15);
+
+
+	IdleSheet.AssignTextures(TexFile0, IdleLocations, IdleTimes);
+	WalkingSheet.AssignTextures(TexFile0, WalkingLocations, WalkingTimes);
+	HittingSheet[0].AssignTextures(TexFile0, Attack1Locations, Attack1Times);
+	HittingSheet[1].AssignTextures(TexFile0, Attack2Locations, Attack2Times);
+	HittingSheet[2].AssignTextures(TexFile0, Attack3Locations, Attack3Times);
+	JumpingSheet.AssignTextures(TexFile0, JumpingLocations, JumpingTimes);
+	RunningSheet.AssignTextures(TexFile0, RunningLocations, RunningTimes);
+	JumpingAttackSheet.AssignTextures(TexFile0,JumpingAttackLocations, JumpingAttackTimes);
+	DashSheet.AssignTextures(TexFile0, DashLocations, DashTimes);
+	Getting_HitSheet.AssignTextures(TexFile0, Getting_HitLocations, Getting_HitTimes);
+
+
 	JumpingSheet.OneTime = true;
 	HittingSheet[0].OneTime = true;
-	HittingSheet[0].AssignTextures();
-	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
-	HittingSheet[1].AssignTextures();
 	HittingSheet[1].OneTime = true;
-	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
-	HittingSheet[2].AssignTextures();
 	HittingSheet[2].OneTime = true;
-	HittingSheet[2].AssignHitbox(2, {14,14}, 50,50);
-	DashSheet.AssignTextures();
 	DashSheet.OneTime = true;
 	Getting_HitSheet.OneTime = true;
+
+
+	JumpingAttackSheet.AssignHitbox(1, { 32,2 }, 15, 15);
+	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
+	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
+	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50);
+
+
 	CurrentSheet = &IdleSheet;
+
+	DEBUG_SUCCESS("Bandit Successfully Initialised");
 }
 
 void Bandit::ChangeState(PlayerStates state, const double lastPressed, const double data, const double startTime) {
@@ -141,7 +92,9 @@ void Bandit::ChangeState(PlayerStates state, const double lastPressed, const dou
 		CurrentSheet = &HittingSheet[ComboStreak];
 		break;
 	case GETTING_HIT:
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position,3);
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 4);
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_BLOOD, Position,3);
+		Effect_Manager->DrawEffect(EFFECT_IMAGE_BLOOD, Position, 0.3,2);
 		CurrentSheet = &Getting_HitSheet;
 		break;
 	case FALLING:
