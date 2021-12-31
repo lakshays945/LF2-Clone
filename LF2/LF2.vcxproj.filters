@@ -39,7 +39,7 @@
     <ClCompile Include="src\Players\bandit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Players\common.cpp">
+    <ClCompile Include="src\Players\AnimationSheet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Input\StateManager.cpp">
@@ -49,6 +49,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Players\HitBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject\GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Effects\EffectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,7 +74,7 @@
     <ClInclude Include="src\Math\Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Players\commom.h">
+    <ClInclude Include="src\Players\AnimationSheet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\FileBus\FileBus.h">
@@ -84,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Effects\EffectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

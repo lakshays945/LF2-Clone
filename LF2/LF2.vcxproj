@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Effects\EffectManager.cpp" />
     <ClCompile Include="src\FileBus\FileBusCommon.cpp" />
     <ClCompile Include="src\FileBus\FileBusWindows.cpp" />
+    <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\Input\InputManager.cpp" />
     <ClCompile Include="src\Input\StateManager.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -28,16 +30,17 @@
     <ClCompile Include="src\Math\RealVector2D.cpp" />
     <ClCompile Include="src\Math\Utilities.cpp" />
     <ClCompile Include="src\Players\bandit.cpp" />
-    <ClCompile Include="src\Players\common.cpp" />
+    <ClCompile Include="src\Players\AnimationSheet.cpp" />
     <ClCompile Include="src\Players\HitBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Effects\EffectManager.h" />
     <ClInclude Include="src\FileBus\FileBus.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\Input\InputManager.h" />
     <ClInclude Include="src\Input\StateManager.h" />
     <ClInclude Include="src\Players\bandit.h" />
-    <ClInclude Include="src\Players\commom.h" />
+    <ClInclude Include="src\Players\AnimationSheet.h" />
     <ClInclude Include="src\Math\Line.h" />
     <ClInclude Include="src\Math\RealVector2D.h" />
     <ClInclude Include="src\Math\Utilities.h" />

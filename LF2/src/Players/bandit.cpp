@@ -1,6 +1,5 @@
 #include "bandit.h"
 
-
 #define DEFAULT_RUN_VELOCITY 300
 #define DEFAULT_JUMP_VELOCITY -600
 #define DEFAULT_DASH_VELOCITY_X 600
@@ -142,6 +141,7 @@ void Bandit::ChangeState(PlayerStates state, const double lastPressed, const dou
 		CurrentSheet = &HittingSheet[ComboStreak];
 		break;
 	case GETTING_HIT:
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position,3);
 		CurrentSheet = &Getting_HitSheet;
 		break;
 	case FALLING:

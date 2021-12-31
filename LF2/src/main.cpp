@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Players/bandit.h"
+#include "Effects/EffectManager.h"
 #include <iostream>
 static double DeltaTime = 0.016666667;
 const int resX = 1200;
@@ -8,6 +9,9 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(resX, resY), "Little Fighter 2");
 	Bandit Player;
 	Bandit Player2;
+	EffectManager Eff_Manager(&window);
+	Player.AssignEffectManager(&Eff_Manager);
+	Player2.AssignEffectManager(&Eff_Manager);
 	int times = 0;
 	Player2.Position = { 400,400 };
 	sf::Clock Clock;
@@ -31,6 +35,7 @@ int main() {
 		HandleCollisions();
 		Player.Update(DeltaTime, window);
 		Player2.Update(DeltaTime, window);
+		Eff_Manager.Update(DeltaTime);
 		window.display();
 	}
 	return 0;
