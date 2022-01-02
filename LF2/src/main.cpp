@@ -1,23 +1,27 @@
 #include <SFML/Graphics.hpp>
-#include "Players/bandit.h"
 #include "Effects/EffectManager.h"
+//#include "GameObject/GameObject.h"
+#include "Players/Dennis/Dennis.h"
+#include "Players/Davis/Davis.h"
 #include <iostream>
 static double DeltaTime = 0.016666667;
 const int resX = 1200;
 const int resY = 800;
+
+bool SortObjects(GameObject* g1, GameObject* g2) {
+	return (g1->Z_Position < g2->Z_Position);
+}
+
 int main() {
 	sf::RenderWindow window(sf::VideoMode(resX, resY), "Little Fighter 2");
 	//initialzing debug console window
 	main_log = new DbgWindow("DebugWindow");
 	DEBUG_SUCCESS("Launching game......");
-
-	Bandit Player;
-	Bandit Player2;
+	Dennis Player;
+	Dennis Player2;
 	EffectManager Eff_Manager(&window);
 	Player.AssignEffectManager(&Eff_Manager);
-	DEBUG_TRACE("spawning player 1");
 	Player2.AssignEffectManager(&Eff_Manager);
-	DEBUG_TRACE("spawning player 2");
 	int times = 0;
 	Player2.Position = { 400,400 };
 	sf::Clock Clock;
@@ -31,16 +35,24 @@ int main() {
 
 			if (event.type == sf::Event::KeyPressed) {
 				Player.Input_Manager.GetInputDown(event.key.code);
+				//Player2.Input_Manager.GetInputDown(event.key.code);
 			}
 			if (event.type == sf::Event::KeyReleased) {
 				Player.Input_Manager.GetInputUp(event.key.code);
+				//Player2.Input_Manager.GetInputUp(event.key.code);
 			}
 		}
 		window.clear(sf::Color(50, 60, 30));
 		Player.Input_Manager.Update(DeltaTime);
+		Player2.Input_Manager.Update(DeltaTime);
 		HandleCollisions();
 		Player.Update(DeltaTime, window);
 		Player2.Update(DeltaTime, window);
+		std::vector <GameObject*> Temp = GameObjectIDArray;
+		std::sort(Temp.begin(), Temp.end(), SortObjects);
+		for (int i = 0; i < GameObjectIDArray.size(); i++) {
+			Temp[i]->Animate(window, DeltaTime);
+		}
 		Eff_Manager.Update(DeltaTime);
 		window.display();
 	}

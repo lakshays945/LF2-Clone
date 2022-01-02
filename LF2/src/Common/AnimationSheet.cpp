@@ -1,12 +1,11 @@
-#include "bandit.h"
+#include "Character.h"
 
 int AnimationSheet::GetCorrectIndex() { //returns index of correct sprite
 	if (Time >= DrawTimes[DrawTimes.size() - 1]) {
 		Time = 0;
 		if (OneTime) {
-			//On completion of an OneTime animation state of Player is changed to IDLE
-			Player->Stop();
-			Player->State_Manager.ForceStateChange(IDLE);
+			//On completion of an OneTime animation -1 index is returned
+			return -1;
 		}
 		return 0;
 	}
@@ -15,19 +14,20 @@ int AnimationSheet::GetCorrectIndex() { //returns index of correct sprite
 			return i;
 		}
 	}
+	DEBUG_ERROR("ANIMATION_SHEET.cpp -> NO INDEX WAS CORRECT");
 	return 0; //No sprite found (Maybe Bug)
 }
 
-void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vector <RealVector2D> &locations, const  std::vector<double> &times) {
+void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vector <RealVector2D> &locations, const  std::vector<double> &times, int sizeX, int sizeY) {
 	DrawTimes = times;
 	for (int i = 0; i < times.size(); i++) {
 		Sprites.push_back(sf::Sprite());
 		Sprites[i].setTexture(textureSheet);
-		Sprites[i].setTextureRect(sf::IntRect(locations[i].get_x(), locations[i].get_y(), 80, 80));
-		Sprites[i].setOrigin(sf::Vector2f(40, 40));
+		Sprites[i].setTextureRect(sf::IntRect(locations[i].get_x(), locations[i].get_y(), sizeX, sizeY));
+		Sprites[i].setOrigin(sf::Vector2f(sizeX/2, sizeY/2));
 	}
 }
-void AnimationSheet::AssignPlayer(Bandit* player) {
+void AnimationSheet::AssignPlayer(GameObject* player) {
 	Player = player;
 }
 void AnimationSheet::AssignHitbox(const int index,RealVector2D offset, const int width, const int height){

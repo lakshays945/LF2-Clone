@@ -20,10 +20,10 @@ public:
 	HitBoxType Type = TYPE_DAMAGE;
 	RealVector2D Center;
 	GameObject* Game_Object = nullptr;
+	int IgnoreObjectID = -1;
 	double Width;
 	double Height;
 	bool IsActive = true;
-	std::vector <HitBox *> ImmuneList;
 	HitBox(RealVector2D center, double width, double height, HitBoxType type);
 
 	HitBox();
@@ -41,16 +41,18 @@ public:
 	}
 
 	void DrawBox(sf::RenderWindow &window){
+		if (!IsActive) {
+			return;
+		}
 		circle.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
 		Box.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
-		window.draw(Box);
-		window.draw(circle);
+		//window.draw(Box);
+		//window.draw(circle);
 	}
-	void OnCollision(int a);
 	void RegisterID();
 };
 
 void HandleCollisions();
 
-extern std::vector <HitBox*> IDArray;
+extern std::vector <HitBox*> HitBoxIDArray;
 extern std::vector <std::vector< bool>> CanCollide;

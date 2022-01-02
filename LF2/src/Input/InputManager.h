@@ -1,11 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Players/AnimationSheet.h"
+#include "Common/AnimationSheet.h"
 
-class Bandit;
+class Character;
 class InputManager {
 private:
-	Bandit* Player = nullptr; //a pointer to player to which InputManager is assigned
+	Character* Player = nullptr; //a pointer to player to which InputManager is assigned
 	double LastPressed[sf::Keyboard::KeyCount]; //stores time since key was pressed last time
 	double LastReleased[sf::Keyboard::KeyCount]; //stores time since key was released last time
 	double DoubleKeyTimes[sf::Keyboard::KeyCount]; //max time delay to register a double press
@@ -19,7 +19,7 @@ private:
 public:
 	//constructor
 	InputManager();
-	void AssignPlayer(Bandit* player);
+	void AssignPlayer(Character* player);
 	//fxn to increase lastpressed and lastreleased of each key by dt
 	void Update(const double dt);
 	void GetInputDown(sf::Keyboard::Key key);

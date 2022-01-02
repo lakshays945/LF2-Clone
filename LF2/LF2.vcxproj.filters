@@ -36,10 +36,10 @@
     <ClCompile Include="src\FileBus\FileBusWindows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Players\bandit.cpp">
+    <ClCompile Include="src\Common\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Players\AnimationSheet.cpp">
+    <ClCompile Include="src\Common\AnimationSheet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Input\StateManager.cpp">
@@ -48,7 +48,7 @@
     <ClCompile Include="src\Input\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Players\HitBox.cpp">
+    <ClCompile Include="src\Common\HitBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\GameObject.cpp">
@@ -63,9 +63,21 @@
     <ClCompile Include="src\Dbg\Logging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Players\Dennis\Dennis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Players\Davis\Davis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Players\Dennis\BlueBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Players\Dennis\ChaseBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Players\bandit.h">
+    <ClInclude Include="src\Common\Character.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -80,7 +92,7 @@
     <ClInclude Include="src\Math\Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Players\AnimationSheet.h">
+    <ClInclude Include="src\Common\AnimationSheet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\FileBus\FileBus.h">
@@ -92,7 +104,7 @@
     <ClInclude Include="src\Input\StateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Players\HitBox.h">
+    <ClInclude Include="src\Common\HitBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\GameObject.h">
@@ -102,6 +114,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Dbg\Logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Players\Dennis\Dennis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Players\Davis\Davis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Players\Dennis\BlueBall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Players\Dennis\ChaseBall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

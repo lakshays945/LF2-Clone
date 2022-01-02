@@ -4,7 +4,7 @@
 
 int HitBox::nextID = 0;
 
-std::vector <HitBox*> IDArray;
+std::vector <HitBox*> HitBoxIDArray;
 std::vector <std::vector< bool>> CanCollide;
 
 HitBox::HitBox(RealVector2D center, double width, double height, HitBoxType type)
@@ -55,8 +55,9 @@ void HitBox::AssignPlayer(GameObject* gameObject) {
 
 void HitBox::RegisterID() {
 	ID = nextID;
+	DEBUG_TRACE("HitBox with ID = {0} Registered", ID);
 	nextID++;
-	IDArray.push_back(this);
+	HitBoxIDArray.push_back(this);
 	std::vector <bool> newRow;
 	for (int i = 0; i < CanCollide.size(); i++) {
 		CanCollide[i].push_back(true);
@@ -67,15 +68,16 @@ void HitBox::RegisterID() {
 }
 
 void HandleCollisions() {
-	for (int i = 0; i < IDArray.size(); i++) {
-		for (int j = 0; j < IDArray.size(); j++) {
-			if (i == j) {
-				continue;
-			}
-			if (IDArray[i]->JustCollided(IDArray[j])) {
+	for (int i = 0; i < HitBoxIDArray.size(); i++) {
+		for (int j = i+1; j < HitBoxIDArray.size(); j++) {
+			if (HitBoxIDArray[i]->JustCollided(HitBoxIDArray[j])) {
 				// j is ID and i is also ID
-				IDArray[i]->Game_Object->OnCollision(j,i);
-				IDArray[j]->Game_Object->OnCollision(i,j);
+				if (HitBoxIDArray[i]->IgnoreObjectID != HitBoxIDArray[j]->Game_Object->ID) {
+					HitBoxIDArray[j]->Game_Object->OnCollision(i, j);
+				}
+				if (HitBoxIDArray[j]->IgnoreObjectID != HitBoxIDArray[i]->Game_Object->ID) {
+					HitBoxIDArray[i]->Game_Object->OnCollision(j, i);
+				}
 			}
 		}
 	}

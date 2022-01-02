@@ -1,76 +1,24 @@
-#include "bandit.h"
+#include "Character.h"
 
-#define DEFAULT_RUN_VELOCITY 300
-#define DEFAULT_JUMP_VELOCITY -600
-#define DEFAULT_DASH_VELOCITY_X 600
-#define DEFAULT_DASH_VELOCITY_Y -400
-#define DEFAULT_FORCE_SCALE 500*100
-#define COMBO_THRESHOLD 0.4
-#define MAX_LAST_TIME 20
-#define INITIAL_JUMP_PAUSE JumpingTimes[0] //can modify in bandit.h
-#define JUMP_DURATION (JumpingTimes[1]-INITIAL_JUMP_PAUSE) //can modify in bandit.h
-#define JUMP_LANDING_TIME (JumpingTimes[2]-JUMP_DURATION) //can modify in bandit.h
-#define JUMP_GRAVITY_FACTOR -(DEFAULT_JUMP_VELOCITY*2)/(DEFAULT_GRAVITY_CONSTANT*JUMP_DURATION)
-#define DASH_DURATION DashTimes[0] //can modify in bandit.h
-#define DASH_GRAVITY_SCALE -(DEFAULT_DASH_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*DASH_DURATION)
+std::vector <Character*> CharacterIDArray;
 
-
-//Constructor (Mainly assigning images to animationSheet is done)
-Bandit::Bandit() {
-	TexFile0.loadFromFile("Resource/Dennis.png");
-	DamageHitBox = HitBox(Position, 42, 74,TYPE_DAMAGE);
-	DamageHitBox.AssignPlayer(this);
-	DamageHitBox.RegisterID();
-	AttackHitBox = HitBox(Position, 15, 15, TYPE_ATTACK);
-	AttackHitBox.AssignPlayer(this);
-	AttackHitBox.RegisterID();
-	State_Manager.AssignPlayer(this);
-	Input_Manager.AssignPlayer(this);
-	IdleSheet.AssignPlayer(this);
-	WalkingSheet.AssignPlayer(this);
-	RunningSheet.AssignPlayer(this);
-	JumpingSheet.AssignPlayer(this);
-	HittingSheet[0].AssignPlayer(this);
-	HittingSheet[1].AssignPlayer(this);
-	HittingSheet[2].AssignPlayer(this);
-	Getting_HitSheet.AssignPlayer(this);
-	FallingSheet.AssignPlayer(this);
-	JumpingAttackSheet.AssignPlayer(this);
-	DashSheet.AssignPlayer(this);
-
-
-	IdleSheet.AssignTextures(TexFile0, IdleLocations, IdleTimes);
-	WalkingSheet.AssignTextures(TexFile0, WalkingLocations, WalkingTimes);
-	HittingSheet[0].AssignTextures(TexFile0, Attack1Locations, Attack1Times);
-	HittingSheet[1].AssignTextures(TexFile0, Attack2Locations, Attack2Times);
-	HittingSheet[2].AssignTextures(TexFile0, Attack3Locations, Attack3Times);
-	JumpingSheet.AssignTextures(TexFile0, JumpingLocations, JumpingTimes);
-	RunningSheet.AssignTextures(TexFile0, RunningLocations, RunningTimes);
-	JumpingAttackSheet.AssignTextures(TexFile0,JumpingAttackLocations, JumpingAttackTimes);
-	DashSheet.AssignTextures(TexFile0, DashLocations, DashTimes);
-	Getting_HitSheet.AssignTextures(TexFile0, Getting_HitLocations, Getting_HitTimes);
-
-
-	JumpingSheet.OneTime = true;
-	HittingSheet[0].OneTime = true;
-	HittingSheet[1].OneTime = true;
-	HittingSheet[2].OneTime = true;
-	DashSheet.OneTime = true;
-	Getting_HitSheet.OneTime = true;
-
-
-	JumpingAttackSheet.AssignHitbox(1, { 32,2 }, 15, 15);
-	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
-	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
-	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50);
-
-
-	CurrentSheet = &IdleSheet;
-
-	DEBUG_SUCCESS("Bandit Successfully Initialised");
+//Constructor 
+Character::Character() {
+	JumpGravityFactor = JUMP_GRAVITY_FACTOR;
+	JumpSpeedY = DEFAULT_JUMP_VELOCITY;
+	DashSpeedX = DEFAULT_DASH_VELOCITY_X;
+	RunSpeed = DEFAULT_RUN_VELOCITY;
 }
 
-void Bandit::ChangeState(PlayerStates state, const double lastPressed, const double data, const double startTime) {
+int Character::nextCharacterID = 0;
+
+void Character::RegisterCharacter() {
+	CharacterID = nextCharacterID;
+	CharacterIDArray.push_back(this);
+	nextCharacterID++;
+}
+
+void Character::ChangeState(PlayerStates state, const double lastPressed, const double data, const double startTime) {
 	CurrentSheet->Time = 0; //resetting the sheet currently being used (as it will be changed soon)
 	CurrentState = state;
 	switch (state) {
@@ -92,9 +40,9 @@ void Bandit::ChangeState(PlayerStates state, const double lastPressed, const dou
 		CurrentSheet = &HittingSheet[ComboStreak];
 		break;
 	case GETTING_HIT:
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 4);
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_BLOOD, Position,3);
-		Effect_Manager->DrawEffect(EFFECT_IMAGE_BLOOD, Position, 0.3,2);
+		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 4);
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_BLOOD, Position,0);
+		//Effect_Manager->DrawEffect(EFFECT_IMAGE_BLOOD, Position, 0.3,2);
 		CurrentSheet = &Getting_HitSheet;
 		break;
 	case FALLING:
@@ -107,6 +55,12 @@ void Bandit::ChangeState(PlayerStates state, const double lastPressed, const dou
 		CurrentSheet = &DashSheet;
 		Dash();
 		break;
+	case SPECIALATTACK1:
+		CurrentSheet = &SpecialAttack1Sheet;
+		break;
+	case SPECIALATTACK2:
+		CurrentSheet = &SpecialAttack2Sheet;
+		break;
 	default:
 		break;
 	}
@@ -114,7 +68,7 @@ void Bandit::ChangeState(PlayerStates state, const double lastPressed, const dou
 	TimeSinceLastState = startTime;
 }
 
-void Bandit::Update(const double dt, sf::RenderWindow& window) {
+void Character::Update(const double dt, sf::RenderWindow& window) {
 	if (TimeSinceLastState < MAX_LAST_TIME) {
 		TimeSinceLastState += dt;
 	}
@@ -150,13 +104,19 @@ void Bandit::Update(const double dt, sf::RenderWindow& window) {
 	case DASH:
 		DashCalculations(dt, TimeSinceLastState);
 		break;
+	case SPECIALATTACK1:
+		SpecialAttack1Calculations(dt, TimeSinceLastState);
+		break;
+	case SPECIALATTACK2:
+		SpecialAttack2Calculations(dt, TimeSinceLastState);
+		break;
 	default:
 		break;
 	}
-	Animate(window, dt); //after determining position and other stuff then animate() will be called
+	//Animate(window, dt); //after determining position and other stuff then animate() will be called
 }
 
-void Bandit::Attack(const double lastPressed) {
+void Character::Attack(const double lastPressed) {
 	Velocity.SetMagnitude(0);
 	Up = 0; Down = 0; Left = 0; Down = 0;
 	if (lastPressed < COMBO_THRESHOLD) {
@@ -169,19 +129,19 @@ void Bandit::Attack(const double lastPressed) {
 		ComboStreak = 0;
 }
 
-void Bandit::Jump(const double lastPressed) {
+void Character::Jump(const double lastPressed) {
 	LastPosition = Position + Velocity * JUMP_DURATION;
-	Velocity = Velocity + RealVector2D(0, DEFAULT_JUMP_VELOCITY);
+	Velocity = Velocity + RealVector2D(0, JumpSpeedY);
 }
 
-void Bandit::JumpCalculation(const double dt, const double t) {
+void Character::JumpCalculation(const double dt, const double t) {
 	//take off phase
 	if (((t-INITIAL_JUMP_PAUSE)*(t-dt-INITIAL_JUMP_PAUSE)) <= 0) {
 		Jump(0);
 	}
 	//in air phase
 	if (t > INITIAL_JUMP_PAUSE && t < INITIAL_JUMP_PAUSE + JUMP_DURATION) {
-		Velocity = Velocity + GravityVector * (dt * JUMP_GRAVITY_FACTOR);
+		Velocity = Velocity + GravityVector * (dt * JumpGravityFactor);
 		Translate(dt);
 	}
 	//landing phase
@@ -200,17 +160,17 @@ void Bandit::JumpCalculation(const double dt, const double t) {
 	}
 }
 
-void Bandit::Dash() {
+void Character::Dash() {
 	int U = Input_Manager.IsKeyPressed(sf::Keyboard::W);
 	int D = Input_Manager.IsKeyPressed(sf::Keyboard::S);
 	int R = Input_Manager.IsKeyPressed(sf::Keyboard::D);
 	int L = Input_Manager.IsKeyPressed(sf::Keyboard::A);
-	RealVector2D DashVelocity((R - L) * DEFAULT_DASH_VELOCITY_X, DEFAULT_DASH_VELOCITY_Y*(1+U-D));
+	RealVector2D DashVelocity((R - L) * DashSpeedX, DEFAULT_DASH_VELOCITY_Y*(1+U-D));
 	LastPosition = Position + (DashVelocity-RealVector2D(0,DEFAULT_DASH_VELOCITY_Y)) * DASH_DURATION;
 	Velocity = DashVelocity;
 }
 
-void Bandit::DashCalculations(const double dt, const double t) {
+void Character::DashCalculations(const double dt, const double t) {
 	//in air phase
 	if (t < DASH_DURATION) {
 		Velocity = Velocity + GravityVector * (dt * DASH_GRAVITY_SCALE);
@@ -225,15 +185,15 @@ void Bandit::DashCalculations(const double dt, const double t) {
 	}
 }
 
-void Bandit::Run(const double lastPressed, int dir) {
+void Character::Run(const double lastPressed, int dir) {
 	Velocity = RealVector2D(DEFAULT_RUN_VELOCITY * dir, 0);
 }
 
-void Bandit::Stop() {
+void Character::Stop() {
 	Velocity.SetMagnitude(0);
 }
 
-void Bandit::AddForce(const double dt) { //for movement based upon inputs
+void Character::AddForce(const double dt) { //for movement based upon inputs
 	Up = Input_Manager.IsKeyPressed(sf::Keyboard::W);
 	Down = Input_Manager.IsKeyPressed(sf::Keyboard::S);
 	Right = Input_Manager.IsKeyPressed(sf::Keyboard::D);
@@ -251,13 +211,18 @@ void Bandit::AddForce(const double dt) { //for movement based upon inputs
 	}
 }
 
-void Bandit::Translate(const double dt) {
+void Character::Translate(const double dt) {
 	Position = Position + Velocity * dt;
 	DamageHitBox.Center = Position;
 }
-void Bandit::Animate(sf::RenderWindow& window, const double dt) { //give it an animation sheet (not as a parameter) and window and it will animate
+void Character::Animate(sf::RenderWindow& window, const double dt) { //give it an animation sheet (not as a parameter) and window and it will animate
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
+	if (CorrectIndex == -1) {
+		Stop();
+		State_Manager.ForceStateChange(IDLE);
+		CorrectIndex = 0;
+	}
 	sf::Sprite* current = &CurrentSheet->Sprites[CorrectIndex];
 	/*sf::CircleShape circle;
 	circle.setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
@@ -287,15 +252,18 @@ void Bandit::Animate(sf::RenderWindow& window, const double dt) { //give it an a
 	//window.draw(circle);
 }
 
-void Bandit::OnCollision(int otherID, int selfID) {
-	if (IDArray[otherID]->Game_Object == IDArray[selfID]->Game_Object) {
+void Character::OnCollision(int otherID, int selfID) {
+	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object) {
 		return;
 	}
-	if (IDArray[otherID]->Type == TYPE_ATTACK && IDArray[selfID]->Type == TYPE_DAMAGE) {
+	if (HitBoxIDArray[otherID]->Type == TYPE_ATTACK && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE) {
 		State_Manager.ForceStateChange(GETTING_HIT);
-
 	}
 }
+ //Player Specific
+
+
+
 
 #undef DEFAULT_RUN_VELOCITY 
 #undef DEFAULT_JUMP_VELOCITY
@@ -304,9 +272,5 @@ void Bandit::OnCollision(int otherID, int selfID) {
 #undef DEFAULT_FORCE_SCALE
 #undef COMBO_THRESHOLD
 #undef MAX_LAST_TIME
-#undef JUMP_DURATION
-#undef INITIAL_JUMP_PAUSE
-#undef JUMP_LANDING_TIME
 #undef GRAVITY_FACTOR
-#undef DASH_DURATION 
 #undef DASH_GRAVITY_SCALE 

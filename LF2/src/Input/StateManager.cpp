@@ -1,8 +1,8 @@
 #include "StateManager.h"
-#include "Players/bandit.h"
+#include "Common/Character.h"
 
 
-void StateManager::AssignPlayer(Bandit* player) {
+void StateManager::AssignPlayer(Character* player) {
 	Player = player;
 }
 void StateManager::TryStateChange(PlayerStates state, const double lastPressed, const int data, const double startTime) { //called when we try to change state by our input

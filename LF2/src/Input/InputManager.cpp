@@ -1,6 +1,5 @@
 #include "InputManager.h"
-#include "Players/bandit.h"
-
+#include "Common/Character.h"
 
 
 InputManager::InputManager() {
@@ -21,6 +20,8 @@ InputManager::InputManager() {
 	KeyToState[sf::Keyboard::D] = WALKING;
 	KeyToState[sf::Keyboard::Q] = HITTING;
 	KeyToState[sf::Keyboard::Space] = JUMPING;
+	KeyToState[sf::Keyboard::T] = SPECIALATTACK1;
+	KeyToState[sf::Keyboard::Y] = SPECIALATTACK2;
 	DoubleKeyToState[sf::Keyboard::D] = RUNNING;
 	DoubleKeyToState[sf::Keyboard::A] = RUNNING;
 	DoubleKeyTimes[sf::Keyboard::D] = 0.3;
@@ -28,9 +29,10 @@ InputManager::InputManager() {
 	KeyData[sf::Keyboard::D] = 1;
 	KeyData[sf::Keyboard::A] = -1;
 	KeyData[sf::Keyboard::Space] = 1;
+
 }
 
-void InputManager::AssignPlayer(Bandit* player) {
+void InputManager::AssignPlayer(Character* player) {
 	Player = player;
 }
 

@@ -31,9 +31,13 @@
     <ClCompile Include="src\Math\Line.cpp" />
     <ClCompile Include="src\Math\RealVector2D.cpp" />
     <ClCompile Include="src\Math\Utilities.cpp" />
-    <ClCompile Include="src\Players\bandit.cpp" />
-    <ClCompile Include="src\Players\AnimationSheet.cpp" />
-    <ClCompile Include="src\Players\HitBox.cpp" />
+    <ClCompile Include="src\Common\Character.cpp" />
+    <ClCompile Include="src\Common\AnimationSheet.cpp" />
+    <ClCompile Include="src\Players\Davis\Davis.cpp" />
+    <ClCompile Include="src\Players\Dennis\BlueBall.cpp" />
+    <ClCompile Include="src\Players\Dennis\ChaseBall.cpp" />
+    <ClCompile Include="src\Players\Dennis\Dennis.cpp" />
+    <ClCompile Include="src\Common\HitBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Dbg\Logging.h" />
@@ -42,13 +46,17 @@
     <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\Input\InputManager.h" />
     <ClInclude Include="src\Input\StateManager.h" />
-    <ClInclude Include="src\Players\bandit.h" />
-    <ClInclude Include="src\Players\AnimationSheet.h" />
+    <ClInclude Include="src\Common\Character.h" />
+    <ClInclude Include="src\Common\AnimationSheet.h" />
     <ClInclude Include="src\Math\Line.h" />
     <ClInclude Include="src\Math\RealVector2D.h" />
     <ClInclude Include="src\Math\Utilities.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\Players\HitBox.h" />
+    <ClInclude Include="src\Players\Davis\Davis.h" />
+    <ClInclude Include="src\Players\Dennis\BlueBall.h" />
+    <ClInclude Include="src\Players\Dennis\ChaseBall.h" />
+    <ClInclude Include="src\Players\Dennis\Dennis.h" />
+    <ClInclude Include="src\Common\HitBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LF2.rc" />
