@@ -80,8 +80,8 @@ public:
 	void Translate(const double dt);
 	void Animate(sf::RenderWindow& window, const double dt);
 	void OnCollision(int otherID, int selfID);
-	void FallBack();
-	void FallFront();
+	void FallBack(int SpeedX);
+	void FallFront(int SpeedX);
 	void FallBackCalculations(const double dt, const double t);
 	void FallFrontCalculations(const double dt, const double t);
 

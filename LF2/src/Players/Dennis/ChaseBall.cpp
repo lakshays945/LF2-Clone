@@ -27,7 +27,7 @@ ChaseBall::ChaseBall() {
 	InitialSheet.OneTime = true;
 	CurrentSheet = &InitialSheet;
 	AttackHitBox = HitBox(Position, 40, 40, TYPE_ATTACK);
-	AttackHitBox.CanKnockOut = true;
+	AttackHitBox.KnockOutPower = 300;
 }
 
 void ChaseBall::AssignParent(GameObject* parent) {
@@ -90,7 +90,7 @@ void ChaseBall::CalculateVelocity(const double dt) {
 		}
 	}
 	if (BeforeMean) {
-		RealVector2D Acc = { mul*400/(float)-log(MeanY), (float)MeanY - Position.get_y() };
+		RealVector2D Acc =  RealVector2D(mul*400/(-log(abs(MeanY)+1)), MeanY - Position.get_y());
 		Velocity = Velocity + Acc * 5 * dt;
 		if (abs(Position.get_y()-InitialY) <= 10 && TotalTime > 0.7) {
 			Velocity.Set({ Velocity.get_x(),0 });

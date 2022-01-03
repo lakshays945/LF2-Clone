@@ -17,10 +17,10 @@ int main() {
 	//initialzing debug console window
 	main_log = new DbgWindow("DebugWindow");
 	DEBUG_SUCCESS("Launching game......");
-	Dennis Player;
-	Dennis Player2;
-	Dennis Player3;
-	Dennis Player4;
+	Davis Player;
+	Davis Player2;
+	Davis Player3;
+	Davis Player4;
 	EffectManager Eff_Manager(&window);
 	Player.AssignEffectManager(&Eff_Manager);
 	Player2.AssignEffectManager(&Eff_Manager);

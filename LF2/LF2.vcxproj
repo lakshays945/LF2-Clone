@@ -34,7 +34,8 @@
     <ClCompile Include="src\Common\Character.cpp" />
     <ClCompile Include="src\Common\AnimationSheet.cpp" />
     <ClCompile Include="src\Players\Davis\Davis.cpp" />
-    <ClCompile Include="src\Players\Dennis\BlueBall.cpp" />
+    <ClCompile Include="src\Players\Davis\DavisBlueBall.cpp" />
+    <ClCompile Include="src\Players\Dennis\DennisBlueBall.cpp" />
     <ClCompile Include="src\Players\Dennis\ChaseBall.cpp" />
     <ClCompile Include="src\Players\Dennis\Dennis.cpp" />
     <ClCompile Include="src\Common\HitBox.cpp" />
@@ -53,7 +54,8 @@
     <ClInclude Include="src\Math\Utilities.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\Players\Davis\Davis.h" />
-    <ClInclude Include="src\Players\Dennis\BlueBall.h" />
+    <ClInclude Include="src\Players\Davis\DavisBlueBall.h" />
+    <ClInclude Include="src\Players\Dennis\DennisBlueBall.h" />
     <ClInclude Include="src\Players\Dennis\ChaseBall.h" />
     <ClInclude Include="src\Players\Dennis\Dennis.h" />
     <ClInclude Include="src\Common\HitBox.h" />

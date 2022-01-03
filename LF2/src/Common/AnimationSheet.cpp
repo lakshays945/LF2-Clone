@@ -32,10 +32,10 @@ void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vecto
 void AnimationSheet::AssignPlayer(GameObject* player) {
 	Player = player;
 }
-void AnimationSheet::AssignHitbox(const int index, RealVector2D offset, const int width, const int height, bool canKnock) {
+void AnimationSheet::AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower) {
 	HasHitBox[index] = true;
 	HBData[index].width = width;
 	HBData[index].height = height;
 	HBData[index].offset = offset;
-	HBData[index].CanKnock = canKnock;
+	HBData[index].KnockPower = knockPower;
 }

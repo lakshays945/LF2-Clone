@@ -3,11 +3,11 @@
 #include"Common/AnimationSheet.h"
 #include "Common/HitBox.h"
 
-class BlueBall : public GameObject {
+class DennisBlueBall : public GameObject {
 private:
 	GameObject* Parent = nullptr;
 public:
-	BlueBall();
+	DennisBlueBall();
 	AnimationSheet InAirSheet;
 	AnimationSheet EndSheet;
 	AnimationSheet* CurrentSheet;

@@ -114,10 +114,10 @@ Dennis::Dennis() {
 	FallingFrontSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
-	JumpingAttackSheet.AssignHitbox(1, { 32,2 }, 15, 15);
+	JumpingAttackSheet.AssignHitbox(1, { 20,12 }, 40, 26,200);
 	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
 	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
-	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50,true);
+	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50,200);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
@@ -135,7 +135,7 @@ Dennis::Dennis() {
 	DEBUG_SUCCESS("Character Dennis Registered with ID = {0}", CharacterID);
 	//Gviving Dennis his 10 Blue Balls :)
 	for (int i = 0; i < 10; i++) {
-		BallArray.push_back(BlueBall());
+		BallArray.push_back(DennisBlueBall());
 		BallArray[i].AssignParent(this);
 	}
 	for (int i = 0; i < 10; i++) {

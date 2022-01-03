@@ -46,14 +46,14 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		CurrentSheet = &Getting_HitSheet;
 		break;
 	case FALLINGBACK:
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 2);
 		CurrentSheet = &FallingBackSheet;
-		FallBack();
+		FallBack(data);
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position - Velocity*(0.15), 2);
 		break;
 	case FALLINGFRONT:
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 2);
 		CurrentSheet = &FallingFrontSheet;
-		FallFront();
+		FallFront(data);
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position + Velocity*(0.15), 2);
 		break;
 	case JUMPINGATTACK:
 		CurrentSheet = &JumpingAttackSheet;
@@ -253,7 +253,7 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 		int dy = CurrentSheet->HBData[CorrectIndex].offset.get_y();
 		AttackHitBox.SetSize(CurrentSheet->HBData[CorrectIndex].width, CurrentSheet->HBData[CorrectIndex].height);
 		AttackHitBox.Center = Position + RealVector2D(dx, dy);
-		AttackHitBox.CanKnockOut = CurrentSheet->HBData[CorrectIndex].CanKnock;
+		AttackHitBox.KnockOutPower = CurrentSheet->HBData[CorrectIndex].KnockPower;
 		AttackHitBox.DrawBox(window);
 	}
 	else {
@@ -267,12 +267,12 @@ void Character::OnCollision(int otherID, int selfID) {
 	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object) {
 		return;
 	}
-	if (HitBoxIDArray[otherID]->CanKnockOut && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE) {
+	if ((HitBoxIDArray[otherID]->KnockOutPower || CurrentState == FALLINGBACK || CurrentState == FALLINGFRONT) && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE && HitBoxIDArray[otherID]->Type == TYPE_ATTACK) {
 		if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
-			State_Manager.TryStateChange(FALLINGBACK, 0);
+			State_Manager.TryStateChange(FALLINGBACK, 0, HitBoxIDArray[otherID]->KnockOutPower);
 		}
 		else {
-			State_Manager.TryStateChange(FALLINGFRONT, 0);
+			State_Manager.TryStateChange(FALLINGFRONT, 0, HitBoxIDArray[otherID]->KnockOutPower);
 		}
 	}
 	else if (HitBoxIDArray[otherID]->Type == TYPE_ATTACK && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE) {
@@ -280,27 +280,32 @@ void Character::OnCollision(int otherID, int selfID) {
 	}
 }
 
-void Character::FallBack() {
+void Character::FallBack(int SpeedX) {
 	double x = Position.get_y() - Z_Position;
 	double g = FALL_GRAVITY_SCALE * GravityVector.get_y();
 	double Vy = -(0.5 * g * FALL_DURATION * FALL_DURATION - x) / FALL_DURATION;
-	Velocity = RealVector2D(FALL_VELOCITY_X*Direction,Vy);
-	LastPosition = RealVector2D(Position.get_x() - FALL_VELOCITY_X * FALL_DURATION * Direction, Z_Position);
+	Velocity = RealVector2D(SpeedX *Direction,Vy);
+	LastPosition = RealVector2D(Position.get_x() - SpeedX * FALL_DURATION * Direction, Z_Position);
 }
 
-void Character::FallFront() {
+void Character::FallFront(int SpeedX) {
 	double x = Position.get_y() - Z_Position;
 	double g = FALL_GRAVITY_SCALE * GravityVector.get_y();
 	double Vy = (0.5 * g * FALL_DURATION * FALL_DURATION - x) / FALL_DURATION;
-	Velocity = RealVector2D(FALL_VELOCITY_X * Direction, Vy);
+	Velocity = RealVector2D(SpeedX * Direction, Vy);
 	DEBUG_INFO("Vx = {0} ", Velocity.get_x());
-	LastPosition = RealVector2D(Position.get_x() + FALL_VELOCITY_X * FALL_DURATION * Direction, Z_Position);
+	LastPosition = RealVector2D(Position.get_x() + SpeedX * FALL_DURATION * Direction, Z_Position);
 }
 
 void Character::FallBackCalculations(const double dt, const double t) {
+	if (t > 1.9) {
+		DamageHitBox.IsActive = true;
+		return;
+	}
 	if (t > FALL_DURATION) {
 		Stop();
 		Position = LastPosition;
+		DamageHitBox.IsActive = false;
 		return;
 	}
 	Velocity = Velocity + GravityVector * (dt*FALL_GRAVITY_SCALE);
@@ -308,9 +313,14 @@ void Character::FallBackCalculations(const double dt, const double t) {
 }
 
 void Character::FallFrontCalculations(const double dt, const double t) {
+	if (t > 1.9) {
+		DamageHitBox.IsActive = true;
+		return;
+	}
 	if (t > FALL_DURATION) {
 		Stop();
 		Position = LastPosition;
+		DamageHitBox.IsActive = false;
 		return;
 	}
 	Velocity = Velocity - GravityVector * (dt * FALL_GRAVITY_SCALE);

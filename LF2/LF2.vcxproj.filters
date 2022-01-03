@@ -69,10 +69,13 @@
     <ClCompile Include="src\Players\Davis\Davis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Players\Dennis\BlueBall.cpp">
+    <ClCompile Include="src\Players\Dennis\DennisBlueBall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Players\Dennis\ChaseBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Players\Davis\DavisBlueBall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,10 +125,13 @@
     <ClInclude Include="src\Players\Davis\Davis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Players\Dennis\BlueBall.h">
+    <ClInclude Include="src\Players\Dennis\DennisBlueBall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Players\Dennis\ChaseBall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Players\Davis\DavisBlueBall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
