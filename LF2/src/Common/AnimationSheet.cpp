@@ -21,6 +21,8 @@ int AnimationSheet::GetCorrectIndex() { //returns index of correct sprite
 void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vector <RealVector2D> &locations, const  std::vector<double> &times, int sizeX, int sizeY) {
 	DrawTimes = times;
 	for (int i = 0; i < times.size(); i++) {
+		HasHitBox.push_back(false);
+		HBData.push_back({ 0,0,RealVector2D(0,0),0});
 		Sprites.push_back(sf::Sprite());
 		Sprites[i].setTexture(textureSheet);
 		Sprites[i].setTextureRect(sf::IntRect(locations[i].get_x(), locations[i].get_y(), sizeX, sizeY));
@@ -30,9 +32,10 @@ void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vecto
 void AnimationSheet::AssignPlayer(GameObject* player) {
 	Player = player;
 }
-void AnimationSheet::AssignHitbox(const int index,RealVector2D offset, const int width, const int height){
-	HitBoxIndex = index;
-	HitboxOffset = offset;
-	HitboxWidth = width;
-	HitboxHeight = height;
+void AnimationSheet::AssignHitbox(const int index, RealVector2D offset, const int width, const int height, bool canKnock) {
+	HasHitBox[index] = true;
+	HBData[index].width = width;
+	HBData[index].height = height;
+	HBData[index].offset = offset;
+	HBData[index].CanKnock = canKnock;
 }

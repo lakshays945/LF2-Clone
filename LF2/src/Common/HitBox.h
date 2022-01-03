@@ -17,13 +17,14 @@ protected:
 	static int nextID;
 public:
 	int ID;
+	bool CanKnockOut = false;
 	HitBoxType Type = TYPE_DAMAGE;
 	RealVector2D Center;
 	GameObject* Game_Object = nullptr;
 	int IgnoreObjectID = -1;
 	double Width;
 	double Height;
-	bool IsActive = true;
+	bool IsActive = false;
 	HitBox(RealVector2D center, double width, double height, HitBoxType type);
 
 	HitBox();
@@ -46,7 +47,7 @@ public:
 		}
 		circle.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
 		Box.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
-		//window.draw(Box);
+		window.draw(Box);
 		//window.draw(circle);
 	}
 	void RegisterID();

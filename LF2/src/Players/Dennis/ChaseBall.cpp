@@ -27,6 +27,7 @@ ChaseBall::ChaseBall() {
 	InitialSheet.OneTime = true;
 	CurrentSheet = &InitialSheet;
 	AttackHitBox = HitBox(Position, 40, 40, TYPE_ATTACK);
+	AttackHitBox.CanKnockOut = true;
 }
 
 void ChaseBall::AssignParent(GameObject* parent) {
@@ -118,6 +119,7 @@ void ChaseBall::Animate(sf::RenderWindow& window, const double dt) {
 	Position = Position + Velocity * dt;
 	if (Position.get_x() < -150 || Position.get_x() > 1350 || Position.get_y() < -150 || Position.get_y() > 950) {
 		GoBack();
+		return;
 	}
 	AttackHitBox.Center = Position;
 	Z_Position = Position.get_y();

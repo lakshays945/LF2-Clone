@@ -43,6 +43,7 @@ Davis::Davis() {
 	DamageHitBox = HitBox(Position, 42, 74, TYPE_DAMAGE);
 	DamageHitBox.AssignPlayer(this);
 	DamageHitBox.RegisterID();
+	DamageHitBox.IsActive = true;
 	AttackHitBox = HitBox(Position, 15, 15, TYPE_ATTACK);
 	AttackHitBox.AssignPlayer(this);
 	AttackHitBox.RegisterID();
@@ -60,7 +61,7 @@ Davis::Davis() {
 	HittingSheet[1].AssignPlayer(this);
 	HittingSheet[2].AssignPlayer(this);
 	Getting_HitSheet.AssignPlayer(this);
-	FallingSheet.AssignPlayer(this);
+	FallingBackSheet.AssignPlayer(this);
 	JumpingAttackSheet.AssignPlayer(this);
 	DashSheet.AssignPlayer(this);
 
@@ -91,7 +92,8 @@ Davis::Davis() {
 	JumpingAttackSheet.AssignHitbox(1, { 32,2 }, 15, 15);
 	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
 	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
-	HittingSheet[2].AssignHitbox(6, { 14,14 }, 50, 50);
+	HittingSheet[2].AssignHitbox(2,{ 15,0 }, 30, 30);
+	HittingSheet[2].AssignHitbox(6, { 14,14 }, 50, 50,1);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;

@@ -33,6 +33,12 @@ const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LAN
 const std::vector<RealVector2D> Getting_HitLocations = { {480,320} };
 const std::vector <double> Getting_HitTimes = { 0.3 };
 
+const std::vector<RealVector2D> FallingBackLocations = { {0,240},{80,240},{160,240},{240,240},{320,240} };
+const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
+
+const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
+const std::vector<double> FallingFrontTimes = { 0.1,0.5,0.7,2};
+
 const std::vector<RealVector2D> SpecialAttack1Locations = { {0,15}, {80,15}, {160,15}, {240,15}, {320,15} };
 const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 
@@ -46,6 +52,7 @@ Dennis::Dennis() {
 	DamageHitBox = HitBox(Position, 42, 74,TYPE_DAMAGE);
 	DamageHitBox.AssignPlayer(this);
 	DamageHitBox.RegisterID();
+	DamageHitBox.IsActive = true;
 	AttackHitBox = HitBox(Position, 15, 15, TYPE_ATTACK);
 	AttackHitBox.AssignPlayer(this);
 	AttackHitBox.RegisterID();
@@ -63,11 +70,13 @@ Dennis::Dennis() {
 	HittingSheet[1].AssignPlayer(this);
 	HittingSheet[2].AssignPlayer(this);
 	Getting_HitSheet.AssignPlayer(this);
-	FallingSheet.AssignPlayer(this);
+	FallingBackSheet.AssignPlayer(this);
 	JumpingAttackSheet.AssignPlayer(this);
 	DashSheet.AssignPlayer(this);
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
+	FallingBackSheet.AssignPlayer(this);
+	FallingFrontSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (DennisTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -83,6 +92,8 @@ Dennis::Dennis() {
 	JumpingAttackSheet.AssignTextures(DennisTexFile0,JumpingAttackLocations, JumpingAttackTimes, 80, 80);
 	DashSheet.AssignTextures(DennisTexFile0, DashLocations, DashTimes, 80, 80);
 	Getting_HitSheet.AssignTextures(DennisTexFile0, Getting_HitLocations, Getting_HitTimes, 80, 80);
+	FallingBackSheet.AssignTextures(DennisTexFile0, FallingBackLocations, FallingBackTimes, 80, 80);
+	FallingFrontSheet.AssignTextures(DennisTexFile0, FallingFrontLocations, FallingFrontTimes, 80, 80);
 
 	if (DennisTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		DennisTexFile1.loadFromFile("Resource/Dennis1.png");
@@ -99,12 +110,14 @@ Dennis::Dennis() {
 	Getting_HitSheet.OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
 	SpecialAttack2Sheet.OneTime = true;
+	FallingBackSheet.OneTime = true;
+	FallingFrontSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(1, { 32,2 }, 15, 15);
 	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
 	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
-	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50);
+	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50,true);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;

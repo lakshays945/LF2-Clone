@@ -22,6 +22,7 @@ InputManager::InputManager() {
 	KeyToState[sf::Keyboard::Space] = JUMPING;
 	KeyToState[sf::Keyboard::T] = SPECIALATTACK1;
 	KeyToState[sf::Keyboard::Y] = SPECIALATTACK2;
+	KeyToState[sf::Keyboard::F] = FALLINGFRONT;
 	DoubleKeyToState[sf::Keyboard::D] = RUNNING;
 	DoubleKeyToState[sf::Keyboard::A] = RUNNING;
 	DoubleKeyTimes[sf::Keyboard::D] = 0.3;

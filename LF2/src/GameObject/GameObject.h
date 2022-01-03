@@ -6,6 +6,7 @@ class GameObject {
 protected:
 	static int nextID;
 public:
+	int HealthPoints = 0;
 	GameObject();
 	void RegisterGameObject();
 	int ID;

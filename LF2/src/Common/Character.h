@@ -21,6 +21,10 @@
 #define MAX_LAST_TIME 20
 #define JUMP_GRAVITY_FACTOR -(DEFAULT_JUMP_VELOCITY*2)/(DEFAULT_GRAVITY_CONSTANT*JUMP_DURATION)
 #define DASH_GRAVITY_SCALE -(DEFAULT_DASH_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*DASH_DURATION)
+#define FALL_DURATION 0.7
+#define FALL_VELOCITY_Y 300
+#define FALL_VELOCITY_X 200
+#define FALL_GRAVITY_SCALE -(FALL_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*FALL_DURATION)
 
 
 class Character: public GameObject  {
@@ -42,7 +46,8 @@ public:
 	AnimationSheet JumpingSheet;
 	AnimationSheet HittingSheet[3];
 	AnimationSheet Getting_HitSheet;
-	AnimationSheet FallingSheet;
+	AnimationSheet FallingBackSheet;
+	AnimationSheet FallingFrontSheet;
 	AnimationSheet JumpingAttackSheet;
 	AnimationSheet DashSheet;
 	AnimationSheet SpecialAttack1Sheet;
@@ -75,6 +80,10 @@ public:
 	void Translate(const double dt);
 	void Animate(sf::RenderWindow& window, const double dt);
 	void OnCollision(int otherID, int selfID);
+	void FallBack();
+	void FallFront();
+	void FallBackCalculations(const double dt, const double t);
+	void FallFrontCalculations(const double dt, const double t);
 
 	//-----------------------------------PLAYER-SPECIFIC-METHODS----------------------------------------
 

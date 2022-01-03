@@ -45,8 +45,15 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		//Effect_Manager->DrawEffect(EFFECT_IMAGE_BLOOD, Position, 0.3,2);
 		CurrentSheet = &Getting_HitSheet;
 		break;
-	case FALLING:
-		CurrentSheet = &FallingSheet;
+	case FALLINGBACK:
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 2);
+		CurrentSheet = &FallingBackSheet;
+		FallBack();
+		break;
+	case FALLINGFRONT:
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 2);
+		CurrentSheet = &FallingFrontSheet;
+		FallFront();
 		break;
 	case JUMPINGATTACK:
 		CurrentSheet = &JumpingAttackSheet;
@@ -95,8 +102,11 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 	case GETTING_HIT:
 
 		break;
-	case FALLING:
-
+	case FALLINGBACK:
+		FallBackCalculations(dt, TimeSinceLastState);
+		break;
+	case FALLINGFRONT:
+		FallFrontCalculations(dt, TimeSinceLastState);
 		break;
 	case JUMPINGATTACK:
 		JumpCalculation(dt, TimeSinceLastState);
@@ -237,12 +247,13 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	current->setScale(sf::Vector2f((float)Direction, 1.0f));
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
-	if (CorrectIndex == CurrentSheet->HitBoxIndex) {
+	if (CurrentSheet->HasHitBox[CorrectIndex]) {
 		AttackHitBox.IsActive = true;
-		int dx = CurrentSheet->HitboxOffset.get_x() * Direction;
-		int dy = CurrentSheet->HitboxOffset.get_y();
-		AttackHitBox.SetSize(CurrentSheet->HitboxWidth, CurrentSheet->HitboxHeight);
+		int dx = CurrentSheet->HBData[CorrectIndex].offset.get_x() * Direction;
+		int dy = CurrentSheet->HBData[CorrectIndex].offset.get_y();
+		AttackHitBox.SetSize(CurrentSheet->HBData[CorrectIndex].width, CurrentSheet->HBData[CorrectIndex].height);
 		AttackHitBox.Center = Position + RealVector2D(dx, dy);
+		AttackHitBox.CanKnockOut = CurrentSheet->HBData[CorrectIndex].CanKnock;
 		AttackHitBox.DrawBox(window);
 	}
 	else {
@@ -256,10 +267,56 @@ void Character::OnCollision(int otherID, int selfID) {
 	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object) {
 		return;
 	}
-	if (HitBoxIDArray[otherID]->Type == TYPE_ATTACK && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE) {
-		State_Manager.ForceStateChange(GETTING_HIT);
+	if (HitBoxIDArray[otherID]->CanKnockOut && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE) {
+		if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
+			State_Manager.TryStateChange(FALLINGBACK, 0);
+		}
+		else {
+			State_Manager.TryStateChange(FALLINGFRONT, 0);
+		}
+	}
+	else if (HitBoxIDArray[otherID]->Type == TYPE_ATTACK && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE) {
+		State_Manager.TryStateChange(GETTING_HIT,0);
 	}
 }
+
+void Character::FallBack() {
+	double x = Position.get_y() - Z_Position;
+	double g = FALL_GRAVITY_SCALE * GravityVector.get_y();
+	double Vy = -(0.5 * g * FALL_DURATION * FALL_DURATION - x) / FALL_DURATION;
+	Velocity = RealVector2D(FALL_VELOCITY_X*Direction,Vy);
+	LastPosition = RealVector2D(Position.get_x() - FALL_VELOCITY_X * FALL_DURATION * Direction, Z_Position);
+}
+
+void Character::FallFront() {
+	double x = Position.get_y() - Z_Position;
+	double g = FALL_GRAVITY_SCALE * GravityVector.get_y();
+	double Vy = (0.5 * g * FALL_DURATION * FALL_DURATION - x) / FALL_DURATION;
+	Velocity = RealVector2D(FALL_VELOCITY_X * Direction, Vy);
+	DEBUG_INFO("Vx = {0} ", Velocity.get_x());
+	LastPosition = RealVector2D(Position.get_x() + FALL_VELOCITY_X * FALL_DURATION * Direction, Z_Position);
+}
+
+void Character::FallBackCalculations(const double dt, const double t) {
+	if (t > FALL_DURATION) {
+		Stop();
+		Position = LastPosition;
+		return;
+	}
+	Velocity = Velocity + GravityVector * (dt*FALL_GRAVITY_SCALE);
+	Translate(-dt);
+}
+
+void Character::FallFrontCalculations(const double dt, const double t) {
+	if (t > FALL_DURATION) {
+		Stop();
+		Position = LastPosition;
+		return;
+	}
+	Velocity = Velocity - GravityVector * (dt * FALL_GRAVITY_SCALE);
+	Translate(dt);
+}
+
  //Player Specific
 
 
