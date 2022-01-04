@@ -18,6 +18,8 @@ void Character::RegisterCharacter() {
 	nextCharacterID++;
 }
 
+
+
 void Character::ChangeState(PlayerStates state, const double lastPressed, const double data, const double startTime) {
 	CurrentSheet->Time = 0; //resetting the sheet currently being used (as it will be changed soon)
 	CurrentState = state;
@@ -76,6 +78,9 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 }
 
 void Character::Update(const double dt, sf::RenderWindow& window) {
+
+
+//CurrentStateUpdate();
 	if (TimeSinceLastState < MAX_LAST_TIME) {
 		TimeSinceLastState += dt;
 	}
@@ -164,17 +169,19 @@ void Character::JumpCalculation(const double dt, const double t) {
 	}
 	//checking if we should go to dash
 	if(t > INITIAL_JUMP_PAUSE + JUMP_DURATION + 0.1){
-		if (Input_Manager.GetLastPressed(sf::Keyboard::Space) < 0.2 && (Input_Manager.IsKeyPressed(sf::Keyboard::D) ^ Input_Manager.IsKeyPressed(sf::Keyboard::A))) {
+		if (Input_Manager.GetLastPressed(PlayerControl.JumpKey) < 0.2 && (Input_Manager.IsKeyPressed(PlayerControl.RightKey) ^ Input_Manager.IsKeyPressed(PlayerControl.LeftKey))) {
 			State_Manager.ForceStateChange(DASH, 0);
 		}
 	}
 }
 
 void Character::Dash() {
-	int U = Input_Manager.IsKeyPressed(sf::Keyboard::W);
-	int D = Input_Manager.IsKeyPressed(sf::Keyboard::S);
-	int R = Input_Manager.IsKeyPressed(sf::Keyboard::D);
-	int L = Input_Manager.IsKeyPressed(sf::Keyboard::A);
+	int U = Input_Manager.IsKeyPressed(PlayerControl.UpKey);
+	int D = Input_Manager.IsKeyPressed(PlayerControl.DownKey);
+	int R = Input_Manager.IsKeyPressed(PlayerControl.RightKey);
+	int L = Input_Manager.IsKeyPressed(PlayerControl.LeftKey);
+
+	//InputManager::GetDeviceState(this->deviceID);
 	RealVector2D DashVelocity((R - L) * DashSpeedX, DEFAULT_DASH_VELOCITY_Y*(1+U-D));
 	LastPosition = Position + (DashVelocity-RealVector2D(0,DEFAULT_DASH_VELOCITY_Y)) * DASH_DURATION;
 	Velocity = DashVelocity;
@@ -204,10 +211,10 @@ void Character::Stop() {
 }
 
 void Character::AddForce(const double dt) { //for movement based upon inputs
-	Up = Input_Manager.IsKeyPressed(sf::Keyboard::W);
-	Down = Input_Manager.IsKeyPressed(sf::Keyboard::S);
-	Right = Input_Manager.IsKeyPressed(sf::Keyboard::D);
-	Left = Input_Manager.IsKeyPressed(sf::Keyboard::A);
+	Up = Input_Manager.IsKeyPressed(PlayerControl.UpKey);
+	Down = Input_Manager.IsKeyPressed(PlayerControl.DownKey);
+	Right = Input_Manager.IsKeyPressed(PlayerControl.RightKey);
+	Left = Input_Manager.IsKeyPressed(PlayerControl.LeftKey);
 	if ((Up + Down + Right + Left == 0) || (Up - Down == 0 && Right - Left == 0)) {
 		Velocity.SetMagnitude(0);
 		State_Manager.ForceStateChange(IDLE);
@@ -325,6 +332,11 @@ void Character::FallFrontCalculations(const double dt, const double t) {
 	}
 	Velocity = Velocity - GravityVector * (dt * FALL_GRAVITY_SCALE);
 	Translate(dt);
+}
+
+void Character::SetControls(Controls control) {
+	PlayerControl = control;
+	Input_Manager.SetControls(PlayerControl);
 }
 
  //Player Specific

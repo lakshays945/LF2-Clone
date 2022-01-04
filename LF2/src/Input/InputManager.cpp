@@ -14,7 +14,7 @@ InputManager::InputManager() {
 		KeyData[i] = 0;
 	}
 	//Set Controls and key related stuff
-	KeyToState[sf::Keyboard::W] = WALKING;
+	/*KeyToState[sf::Keyboard::W] = WALKING;
 	KeyToState[sf::Keyboard::A] = WALKING;
 	KeyToState[sf::Keyboard::S] = WALKING;
 	KeyToState[sf::Keyboard::D] = WALKING;
@@ -30,7 +30,7 @@ InputManager::InputManager() {
 	DoubleKeyTimes[sf::Keyboard::A] = 0.3;
 	KeyData[sf::Keyboard::D] = 1;
 	KeyData[sf::Keyboard::A] = -1;
-	KeyData[sf::Keyboard::Space] = 1;
+	KeyData[sf::Keyboard::Space] = 1;*/
 
 }
 
@@ -81,4 +81,24 @@ void InputManager::GetInputDown(sf::Keyboard::Key key) { //called when a key is 
 void InputManager::GetInputUp(sf::Keyboard::Key key) {
 	IsPressed[key] = false;
 	LastReleased[key] = 0; //reset to 0 at end of fxn
+}
+
+void InputManager::SetControls(Controls control) {
+	KeyToState[control.UpKey] = WALKING;
+	KeyToState[control.DownKey] = WALKING;
+	KeyToState[control.RightKey] = WALKING;
+	KeyToState[control.LeftKey] = WALKING;
+	KeyToState[control.AttackKey] = HITTING;
+	KeyToState[control.JumpKey] = JUMPING;
+	KeyToState[control.SpecialAttack1Key] = SPECIALATTACK1;
+	KeyToState[control.SpecialAttack2Key] = SPECIALATTACK2;
+	KeyToState[sf::Keyboard::F] = FALLINGFRONT;
+	KeyToState[sf::Keyboard::G] = FALLINGBACK;
+	DoubleKeyToState[control.RightKey] = RUNNING;
+	DoubleKeyToState[control.LeftKey] = RUNNING;
+	DoubleKeyTimes[control.RightKey] = 0.3;
+	DoubleKeyTimes[control.LeftKey] = 0.3;
+	KeyData[control.RightKey] = 1;
+	KeyData[control.LeftKey] = -1;
+	KeyData[control.JumpKey] = 1;
 }

@@ -58,9 +58,10 @@ public:
 	PlayerStates CurrentState = IDLE;
 	StateManager State_Manager;
 	InputManager Input_Manager;
+	InputManager* InputManagerPtr;
 	HitBox DamageHitBox;
 	HitBox AttackHitBox;
-
+	Controls PlayerControl;
 	//CONSTRUCTOR
 	Character();
 
@@ -84,7 +85,7 @@ public:
 	void FallFront(int SpeedX);
 	void FallBackCalculations(const double dt, const double t);
 	void FallFrontCalculations(const double dt, const double t);
-
+	void SetControls(Controls control);
 	//-----------------------------------PLAYER-SPECIFIC-METHODS----------------------------------------
 
 	virtual void SpecialAttack1Calculations(const double dt, const double t) = 0;
