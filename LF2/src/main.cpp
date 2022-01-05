@@ -49,7 +49,6 @@ int main() {
 	Player2.AssignEffectManager(&Eff_Manager);
 	//Player3.AssignEffectManager(&Eff_Manager);
 	//Player4.AssignEffectManager(&Eff_Manager);
-	int times = 0;
 	Player2.Position = { 400,400 };
 	//Player3.Position = { 500,400 };
 	//Player4.Position = { 400,600 };

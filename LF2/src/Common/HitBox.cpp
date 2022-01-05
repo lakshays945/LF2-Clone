@@ -65,11 +65,14 @@ void HitBox::RegisterID() {
 	}
 	newRow.push_back(false);
 	CanCollide.push_back(newRow);
-	if (Type == TYPE_ATTACK) {
+	if (Type == HB_TYPE_ATTACK) {
 		Box.setOutlineColor(sf::Color(255, 0, 0));
 	}
-	else if (Type == TYPE_DAMAGE) {
+	else if (Type == HB_TYPE_DAMAGE) {
 		Box.setOutlineColor(sf::Color(0, 0, 255));
+	}
+	else if (Type == HB_TYPE_REBOUND) {
+		Box.setOutlineColor(sf::Color(0, 255, 0));
 	}
 }
 

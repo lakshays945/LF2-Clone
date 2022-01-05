@@ -274,7 +274,7 @@ void Character::OnCollision(int otherID, int selfID) {
 	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object) {
 		return;
 	}
-	if ((HitBoxIDArray[otherID]->KnockOutPower || CurrentState == FALLINGBACK || CurrentState == FALLINGFRONT) && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE && HitBoxIDArray[otherID]->Type == TYPE_ATTACK) {
+	if ((HitBoxIDArray[otherID]->KnockOutPower) && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK) {
 		if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
 			State_Manager.TryStateChange(FALLINGBACK, 0, HitBoxIDArray[otherID]->KnockOutPower);
 		}
@@ -282,7 +282,16 @@ void Character::OnCollision(int otherID, int selfID) {
 			State_Manager.TryStateChange(FALLINGFRONT, 0, HitBoxIDArray[otherID]->KnockOutPower);
 		}
 	}
-	else if (HitBoxIDArray[otherID]->Type == TYPE_ATTACK && HitBoxIDArray[selfID]->Type == TYPE_DAMAGE) {
+	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
+		if (CurrentState == FALLINGBACK || CurrentState == FALLINGFRONT || CurrentState == JUMPING || CurrentState == JUMPINGATTACK) {
+			if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
+				State_Manager.TryStateChange(FALLINGBACK, 0, 50);
+			}
+			else {
+				State_Manager.TryStateChange(FALLINGFRONT, 0, 50);
+			}
+			return;
+		}
 		State_Manager.TryStateChange(GETTING_HIT,0);
 	}
 }

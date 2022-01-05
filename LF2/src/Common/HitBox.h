@@ -6,7 +6,7 @@
 #include "GameObject/GameObject.h"
 
 enum HitBoxType {
-	TYPE_DAMAGE = 0, TYPE_ATTACK = 1,
+	HB_TYPE_DAMAGE = 0, HB_TYPE_ATTACK = 1, HB_TYPE_REBOUND = 2,
 };
 
 class HitBox {
@@ -18,7 +18,7 @@ protected:
 public:
 	int ID;
 	int KnockOutPower = false;
-	HitBoxType Type = TYPE_DAMAGE;
+	HitBoxType Type = HB_TYPE_DAMAGE;
 	RealVector2D Center;
 	GameObject* Game_Object = nullptr;
 	int IgnoreObjectID = -1;

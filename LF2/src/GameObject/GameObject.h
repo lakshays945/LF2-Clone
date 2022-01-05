@@ -2,13 +2,18 @@
 #include "Math/Utilities.h"
 #include "Effects/EffectManager.h"
 
+enum GameObjectType {
+	GO_Null = 0, GO_Character = 1, GO_Projectile = 2, GO_Weapon = 3,
+};
+
 class GameObject {
 protected:
 	static int nextID;
 public:
+	GameObjectType GO_Type = GO_Null;
 	int HealthPoints = 0;
 	GameObject();
-	void RegisterGameObject();
+	void RegisterGameObject(GameObjectType goType);
 	int ID;
 	int Direction = 1;  //direction of object (1 is right , -1 is left)
 	bool IsActive = true;

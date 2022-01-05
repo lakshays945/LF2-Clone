@@ -49,11 +49,11 @@ const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0
 
 Davis::Davis() {
 	//HitBox Assignments
-	DamageHitBox = HitBox(Position, 42, 74, TYPE_DAMAGE);
+	DamageHitBox = HitBox(Position, 42, 74, HB_TYPE_DAMAGE);
 	DamageHitBox.AssignPlayer(this);
 	DamageHitBox.RegisterID();
 	DamageHitBox.IsActive = true;
-	AttackHitBox = HitBox(Position, 15, 15, TYPE_ATTACK);
+	AttackHitBox = HitBox(Position, 15, 15, HB_TYPE_ATTACK);
 	AttackHitBox.AssignPlayer(this);
 	AttackHitBox.RegisterID();
 
@@ -132,7 +132,7 @@ Davis::Davis() {
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
 
-	RegisterGameObject();
+	RegisterGameObject(GO_Character);
 	RegisterCharacter();
 	DEBUG_SUCCESS("GameObject Davis Registered with ID = {0}", ID);
 	DEBUG_SUCCESS("Character Davis Registered with ID = {0}", CharacterID);
@@ -142,10 +142,13 @@ Davis::Davis() {
 		BallArray[i].AssignParent(this);
 	}
 	for (int i = 0; i < 10; i++) {
-		BallArray[i].RegisterGameObject();
+		BallArray[i].RegisterGameObject(GO_Projectile);
 		BallArray[i].AttackHitBox.AssignPlayer(&BallArray[i]);
 		BallArray[i].AttackHitBox.RegisterID();
 		BallArray[i].AttackHitBox.IgnoreObjectID = ID;
+		BallArray[i].ReboundHitBox.AssignPlayer(&BallArray[i]);
+		BallArray[i].ReboundHitBox.RegisterID();
+		BallArray[i].ReboundHitBox.IgnoreObjectID = ID;
 	}
 
 	//Variable Assignment

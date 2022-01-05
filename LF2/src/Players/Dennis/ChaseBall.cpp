@@ -26,7 +26,7 @@ ChaseBall::ChaseBall() {
 	EndSheet.OneTime = true;
 	InitialSheet.OneTime = true;
 	CurrentSheet = &InitialSheet;
-	AttackHitBox = HitBox(Position, 40, 40, TYPE_ATTACK);
+	AttackHitBox = HitBox(Position, 40, 40, HB_TYPE_ATTACK);
 	AttackHitBox.KnockOutPower = 300;
 }
 
@@ -150,7 +150,7 @@ void ChaseBall::Animate(sf::RenderWindow& window, const double dt) {
 }
 
 void ChaseBall::OnCollision(int otherID, int selfID) {
-	if (HitBoxIDArray[otherID]->Type == TYPE_DAMAGE && HitBoxIDArray[otherID]->Game_Object != Parent) {
+	if (HitBoxIDArray[otherID]->Type == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Game_Object != Parent) {
 		CurrentSheet = &EndSheet;
 		Velocity.SetMagnitude(0);
 	}

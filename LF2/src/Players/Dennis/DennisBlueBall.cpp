@@ -19,7 +19,8 @@ DennisBlueBall::DennisBlueBall() {
 	EndSheet.AssignPlayer(this);
 	EndSheet.OneTime = true;
 	CurrentSheet = &InAirSheet;
-	AttackHitBox = HitBox(Position, 30, 25, TYPE_ATTACK);
+	AttackHitBox = HitBox(Position, 30, 25, HB_TYPE_ATTACK);
+	ReboundHitBox = HitBox(Position, 45, 25, HB_TYPE_REBOUND);
 }
 
 void DennisBlueBall::AssignParent(GameObject* parent) {
@@ -37,6 +38,7 @@ void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 		return;
 	}
 	AttackHitBox.Center = Position;
+	ReboundHitBox.Center = Position + RealVector2D(Direction*10,0);
 	Z_Position = Position.get_y();
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
@@ -55,6 +57,7 @@ void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
 	AttackHitBox.DrawBox(window);
+	ReboundHitBox.DrawBox(window);
 }
 
 void DennisBlueBall::GoBack() {
@@ -62,6 +65,7 @@ void DennisBlueBall::GoBack() {
 	Position = Parent->Position;
 	Velocity = { 0,0 };
 	AttackHitBox.IsActive = false;
+	ReboundHitBox.IsActive = false;
 }
 
 void DennisBlueBall::Instantiate(RealVector2D velocity) {
@@ -71,12 +75,32 @@ void DennisBlueBall::Instantiate(RealVector2D velocity) {
 	IsActive = true;
 	Velocity = velocity;
 	CurrentSheet = &InAirSheet;
+	AttackHitBox.IgnoreObjectID = Parent->ID;
+	ReboundHitBox.IgnoreObjectID = Parent->ID;
 	AttackHitBox.IsActive = true;
+	ReboundHitBox.IsActive = true;
+}
+
+void DennisBlueBall::Rebound() {
+	Velocity = Velocity * (-1);
 }
 
 void DennisBlueBall::OnCollision(int otherID, int selfID) {
-	if (HitBoxIDArray[otherID]->Type == TYPE_DAMAGE && HitBoxIDArray[otherID]->Game_Object != Parent) {
-		CurrentSheet = &EndSheet;
-		Velocity.SetMagnitude(0);
+	HitBox* self = HitBoxIDArray[selfID];
+	HitBox* other = HitBoxIDArray[otherID];
+	if (other->Game_Object->ID != self->IgnoreObjectID && other->Game_Object->ID != self->Game_Object->ID) {
+		if (other->Type == HB_TYPE_DAMAGE && self->Type == HB_TYPE_ATTACK) {
+			CurrentSheet = &EndSheet;
+			Velocity.SetMagnitude(0);
+		}
+		else if (other->Game_Object->GO_Type == GO_Projectile && other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_ATTACK) {
+			CurrentSheet = &EndSheet;
+			Velocity.SetMagnitude(0);
+		}
+		else if (other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_REBOUND && HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character) {
+			ReboundHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;
+			AttackHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;
+			Rebound();
+		}
 	}
 }
