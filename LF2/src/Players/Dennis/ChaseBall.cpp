@@ -20,21 +20,15 @@ ChaseBall::ChaseBall() {
 		ChaseBallTexFile.loadFromFile("Resource/ChaseBall.png");
 	}
 	InitialSheet.AssignTextures(ChaseBallTexFile, InitialLocations, InitialTimes, 75, 75);
-	ChaseModeSheet.AssignTextures(ChaseBallTexFile, ChaseModeLocations, ChaseModeTimes, 65, 75);
-	FastModeSheet.AssignTextures(ChaseBallTexFile, FastModeLocations, FastModeTimes, 66, 80);
+	InAirSheet.AssignTextures(ChaseBallTexFile, ChaseModeLocations, ChaseModeTimes, 65, 75);
+	FastSheet.AssignTextures(ChaseBallTexFile, FastModeLocations, FastModeTimes, 66, 80);
 	EndSheet.AssignTextures(ChaseBallTexFile, EndLocations, EndTimes, 55, 80);
-	EndSheet.OneTime = true;
-	InitialSheet.OneTime = true;
 	CurrentSheet = &InitialSheet;
 	AttackHitBox = HitBox(Position, 40, 40, HB_TYPE_ATTACK);
 	AttackHitBox.KnockOutPower = 300;
 }
 
-void ChaseBall::AssignParent(GameObject* parent) {
-	Parent = parent;
-}
-
-void ChaseBall::Instantiate(RealVector2D velocity) {
+bool ChaseBall::SetTarget() {
 	TotalTime = 0;
 	Target = nullptr;
 	int index = -1;
@@ -46,21 +40,14 @@ void ChaseBall::Instantiate(RealVector2D velocity) {
 		}
 	}
 	if (index == -1) {
-		return;
+		DEBUG_WARNING("No Target");
+		return false;
 	}
-	Position = Parent->Position;
-	AttackHitBox.IsActive = true;
-	InitialSheet.Time = 0;
-	ChaseModeSheet.Time = 0;
-	EndSheet.Time = 0;
-	FastModeSheet.Time = 0;
-	CurrentSheet = &InitialSheet;
-	IsActive = true;
 	Target = CharacterIDArray[index];
-	Velocity = velocity;
-	MeanY= (Target->Position.get_y() + Position.get_y())/2;
+	MeanY = (Target->Position.get_y() + Position.get_y()) / 2;
 	BeforeMean = true;
 	InitialY = Target->Position.get_y();
+	return true;
 }
 
 void ChaseBall::CalculateVelocity(const double dt) {
@@ -104,7 +91,7 @@ void ChaseBall::CalculateVelocity(const double dt) {
 		}
 	}
 	if ((TotalTime - dt - 3) * (TotalTime - 3) < 0) {
-		CurrentSheet = &FastModeSheet;
+		CurrentSheet = &FastSheet;
 	}
 }
 
@@ -127,7 +114,7 @@ void ChaseBall::Animate(sf::RenderWindow& window, const double dt) {
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
 	if (CorrectIndex == -1) {
 		if (CurrentSheet == &InitialSheet) {
-			CurrentSheet = &ChaseModeSheet;
+			CurrentSheet = &InAirSheet;
 			CorrectIndex = 0;
 		}
 		else {
@@ -156,9 +143,3 @@ void ChaseBall::OnCollision(int otherID, int selfID) {
 	}
 }
 
-void ChaseBall::GoBack() {
-	IsActive = false;
-	Position = Parent->Position;
-	Velocity = { 0,0 };
-	AttackHitBox.IsActive = false;
-}

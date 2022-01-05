@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ThirdParty\fmt-8.0.1\src\format.cc" />
+    <ClCompile Include="src\Common\ProjectileBall.cpp" />
     <ClCompile Include="src\Dbg\Logging.cpp" />
     <ClCompile Include="src\Effects\EffectManager.cpp" />
     <ClCompile Include="src\FileBus\FileBusCommon.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="src\Common\HitBox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Common\ProjectileBall.h" />
     <ClInclude Include="src\Dbg\Logging.h" />
     <ClInclude Include="src\Effects\EffectManager.h" />
     <ClInclude Include="src\FileBus\FileBus.h" />

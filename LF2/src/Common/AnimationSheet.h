@@ -17,10 +17,8 @@ struct HitBoxData {
 };
 
 class AnimationSheet {
-
-private:
-	GameObject* Player = nullptr; //a pointer to GameObject to which sheet is assigned
 public:
+	GameObject* Player = nullptr;  //a pointer to GameObject to which sheet is assigned
 	//One time means complete animation has to be played exaclty one time before we can do anything with our inputs
 	bool OneTime = false;
 	std::vector <sf::Sprite> Sprites;

@@ -136,27 +136,26 @@ Dennis::Dennis() {
 	//Gviving Dennis his 10 Blue Balls :)
 	for (int i = 0; i < 10; i++) {
 		BallArray.push_back(DennisBlueBall());
-		BallArray[i].AssignParent(this);
 	}
 	for (int i = 0; i < 10; i++) {
+		BallArray[i].AssignParent(this);
 		BallArray[i].RegisterGameObject(GO_Projectile);
-		BallArray[i].AttackHitBox.AssignPlayer(&BallArray[i]);
 		BallArray[i].AttackHitBox.RegisterID();
 		BallArray[i].AttackHitBox.IgnoreObjectID = ID;
-		BallArray[i].ReboundHitBox.AssignPlayer(&BallArray[i]);
 		BallArray[i].ReboundHitBox.RegisterID();
 		BallArray[i].ReboundHitBox.IgnoreObjectID = ID;
 
 	}
 	for (int i = 0; i < 15; i++) {
 		ChaseBallArray.push_back(ChaseBall());
-		ChaseBallArray[i].AssignParent(this);
 	}
 	for (int i = 0; i < 15; i++) {
+		ChaseBallArray[i].AssignParent(this);
 		ChaseBallArray[i].RegisterGameObject(GO_Projectile);
-		ChaseBallArray[i].AttackHitBox.AssignPlayer(&ChaseBallArray[i]);
 		ChaseBallArray[i].AttackHitBox.RegisterID();
 		ChaseBallArray[i].AttackHitBox.IgnoreObjectID = ID;
+		ChaseBallArray[i].ReboundHitBox.RegisterID();
+		ChaseBallArray[i].ReboundHitBox.IgnoreObjectID = ID;
 	}
 }
 
@@ -175,6 +174,7 @@ void Dennis::SpecialAttack2Calculations(const double dt, const double t) {
 		for (int i = 0; i < ChaseBallArray.size(); i++) {
 			if (!ChaseBallArray[i].IsActive) {
 				ChaseBallArray[i].Instantiate({ (float)400 * Direction,0 });
+				ChaseBallArray[i].SetTarget();
 				return;
 			}
 		}

@@ -78,6 +78,9 @@
     <ClCompile Include="src\Players\Davis\DavisBlueBall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Common\ProjectileBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common\Character.h">
@@ -132,6 +135,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Players\Davis\DavisBlueBall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common\ProjectileBall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

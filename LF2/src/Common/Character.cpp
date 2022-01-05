@@ -283,12 +283,12 @@ void Character::OnCollision(int otherID, int selfID) {
 		}
 	}
 	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
-		if (CurrentState == FALLINGBACK || CurrentState == FALLINGFRONT || CurrentState == JUMPING || CurrentState == JUMPINGATTACK) {
+		if (Z_Position != Position.get_y()) {
 			if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
-				State_Manager.TryStateChange(FALLINGBACK, 0, 50);
+				State_Manager.TryStateChange(FALLINGBACK, 0, 60);
 			}
 			else {
-				State_Manager.TryStateChange(FALLINGFRONT, 0, 50);
+				State_Manager.TryStateChange(FALLINGFRONT, 0, 60);
 			}
 			return;
 		}

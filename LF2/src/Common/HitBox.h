@@ -30,9 +30,7 @@ public:
 	HitBox();
 
 	bool JustCollided(HitBox* other);
-	
 	void AssignPlayer(GameObject* player);
-
 	void SetSize(const double width, const double height) {
 		Box.setOrigin(sf::Vector2f(-Width / 2, -Height / 2));
 		Width = width;
@@ -40,7 +38,6 @@ public:
 		Box.setSize(sf::Vector2f(width, height));
 		Box.setOrigin(sf::Vector2f(width / 2, height / 2));
 	}
-
 	void DrawBox(sf::RenderWindow &window){
 		if (!IsActive) {
 			return;

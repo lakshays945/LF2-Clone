@@ -2,8 +2,8 @@
 
 sf::Texture DavisBlueBallTexFile;
 
-const std::vector<RealVector2D> InAirLocations = { {25,0},{107,0},{189,0}, {271,0} };//52 x 46
-const std::vector <double> InAirTimes = { 0.1,0.2,0.3,0.4 };
+const std::vector<RealVector2D> InitialLocations = { {25,0},{107,0},{189,0}, {271,0} };//52 x 46
+const std::vector <double> InitialTimes = { 0.1,0.2,0.3,0.4 };
 
 const std::vector<RealVector2D> FastModeLocations = { {7,96},{86,96} };//73 x 42
 const std::vector <double> FastModeTimes = { 0.15,0.3 };
@@ -16,22 +16,12 @@ DavisBlueBall::DavisBlueBall() {
 	if (DavisBlueBallTexFile.getSize() == sf::Vector2u(0, 0)) {
 		DavisBlueBallTexFile.loadFromFile("Resource/DavisBlueBall.png");
 	}
-	InAirSheet.AssignTextures(DavisBlueBallTexFile, InAirLocations, InAirTimes, 52, 46);
-	InAirSheet.AssignPlayer(this);
+	InitialSheet.AssignTextures(DavisBlueBallTexFile, InitialLocations, InitialTimes, 52, 46);
+	InAirSheet.AssignTextures(DavisBlueBallTexFile, InitialLocations, InitialTimes, 52, 46);
 	EndSheet.AssignTextures(DavisBlueBallTexFile, EndLocations, EndTimes, 52, 44);
-	EndSheet.AssignPlayer(this);
-	FastModeSheet.AssignTextures(DavisBlueBallTexFile, FastModeLocations, FastModeTimes,73,42);
-	FastModeSheet.AssignPlayer(this);
-	EndSheet.OneTime = true;
-	InAirSheet.OneTime = true;
-	CurrentSheet = &InAirSheet;
+	FastSheet.AssignTextures(DavisBlueBallTexFile, FastModeLocations, FastModeTimes,73,42);
 	AttackHitBox = HitBox(Position, 60, 25, HB_TYPE_ATTACK);
 	ReboundHitBox = HitBox(Position, 70, 25, HB_TYPE_REBOUND);
-}
-
-void DavisBlueBall::AssignParent(GameObject* parent) {
-	Parent = parent;
-	Effect_Manager = parent->Effect_Manager;
 }
 
 void DavisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
@@ -49,8 +39,8 @@ void DavisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
 	if (CorrectIndex == -1) {
-		if (CurrentSheet == &InAirSheet) {
-			CurrentSheet = &FastModeSheet;
+		if (CurrentSheet == &InitialSheet) {
+			CurrentSheet = &FastSheet;
 			Velocity =RealVector2D(Velocity.get_x() * 1.2,Velocity.get_y());
 			CorrectIndex = 0;
 		}
@@ -71,32 +61,6 @@ void DavisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 	window.draw(*current);
 	AttackHitBox.DrawBox(window);
 	ReboundHitBox.DrawBox(window);
-}
-
-void DavisBlueBall::GoBack() {
-	IsActive = false;
-	Position = Parent->Position;
-	Velocity = { 0,0 };
-	AttackHitBox.IsActive = false;
-	ReboundHitBox.IsActive = false;
-}
-
-void DavisBlueBall::Instantiate(RealVector2D velocity) {
-	Position = Parent->Position;
-	InAirSheet.Time = 0;
-	FastModeSheet.Time = 0;
-	EndSheet.Time = 0;
-	IsActive = true;
-	Velocity = velocity;
-	CurrentSheet = &InAirSheet;
-	AttackHitBox.IgnoreObjectID = Parent->ID;
-	ReboundHitBox.IgnoreObjectID = Parent->ID;
-	AttackHitBox.IsActive = true;
-	ReboundHitBox.IsActive = true;
-}
-
-void DavisBlueBall::Rebound() {
-	Velocity = Velocity * (-1);
 }
 
 void DavisBlueBall::OnCollision(int otherID, int selfID) {

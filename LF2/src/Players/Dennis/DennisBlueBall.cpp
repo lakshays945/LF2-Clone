@@ -9,23 +9,15 @@ const std::vector<RealVector2D> EndLocations = { {25,48},{107,48},{189,48},{271,
 const std::vector <double> EndTimes = { 0.05,0.1,0.15,0.2 };
 
 DennisBlueBall::DennisBlueBall() {
-	IsActive = false;
 	if (BlueBallTexFile.getSize() == sf::Vector2u(0, 0)) {
 		BlueBallTexFile.loadFromFile("Resource/DennisBall.png");
 	}
+	InitialSheet.AssignTextures(BlueBallTexFile, InAirLocations, InAirTimes, 52, 46);
 	InAirSheet.AssignTextures(BlueBallTexFile, InAirLocations, InAirTimes, 52, 46);
-	InAirSheet.AssignPlayer(this);
+	FastSheet.AssignTextures(BlueBallTexFile, InAirLocations, InAirTimes, 52, 46);
 	EndSheet.AssignTextures(BlueBallTexFile, EndLocations, EndTimes, 52, 44);
-	EndSheet.AssignPlayer(this);
-	EndSheet.OneTime = true;
-	CurrentSheet = &InAirSheet;
 	AttackHitBox = HitBox(Position, 30, 25, HB_TYPE_ATTACK);
 	ReboundHitBox = HitBox(Position, 45, 25, HB_TYPE_REBOUND);
-}
-
-void DennisBlueBall::AssignParent(GameObject* parent) {
-	Parent = parent;
-	Effect_Manager = parent->Effect_Manager;
 }
 
 void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
@@ -43,8 +35,14 @@ void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
 	if (CorrectIndex == -1) {
-		GoBack();
-		return;
+		if (CurrentSheet == &InitialSheet) {
+			CurrentSheet = &InAirSheet;
+			CorrectIndex = 0;
+		}
+		else {
+			GoBack();
+			return;
+		}
 	}
 	sf::Sprite* current = &CurrentSheet->Sprites[CorrectIndex];
 	if (Velocity.get_x() < 0) {
@@ -58,31 +56,6 @@ void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 	window.draw(*current);
 	AttackHitBox.DrawBox(window);
 	ReboundHitBox.DrawBox(window);
-}
-
-void DennisBlueBall::GoBack() {
-	IsActive = false;
-	Position = Parent->Position;
-	Velocity = { 0,0 };
-	AttackHitBox.IsActive = false;
-	ReboundHitBox.IsActive = false;
-}
-
-void DennisBlueBall::Instantiate(RealVector2D velocity) {
-	Position = Parent->Position;
-	InAirSheet.Time = 0;
-	EndSheet.Time = 0;
-	IsActive = true;
-	Velocity = velocity;
-	CurrentSheet = &InAirSheet;
-	AttackHitBox.IgnoreObjectID = Parent->ID;
-	ReboundHitBox.IgnoreObjectID = Parent->ID;
-	AttackHitBox.IsActive = true;
-	ReboundHitBox.IsActive = true;
-}
-
-void DennisBlueBall::Rebound() {
-	Velocity = Velocity * (-1);
 }
 
 void DennisBlueBall::OnCollision(int otherID, int selfID) {

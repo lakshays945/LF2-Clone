@@ -139,14 +139,12 @@ Davis::Davis() {
 
 	for (int i = 0; i < 10; i++) {
 		BallArray.push_back(DavisBlueBall());
-		BallArray[i].AssignParent(this);
 	}
 	for (int i = 0; i < 10; i++) {
+		BallArray[i].AssignParent(this);
 		BallArray[i].RegisterGameObject(GO_Projectile);
-		BallArray[i].AttackHitBox.AssignPlayer(&BallArray[i]);
 		BallArray[i].AttackHitBox.RegisterID();
 		BallArray[i].AttackHitBox.IgnoreObjectID = ID;
-		BallArray[i].ReboundHitBox.AssignPlayer(&BallArray[i]);
 		BallArray[i].ReboundHitBox.RegisterID();
 		BallArray[i].ReboundHitBox.IgnoreObjectID = ID;
 	}
