@@ -22,6 +22,8 @@ DavisBlueBall::DavisBlueBall() {
 	FastSheet.AssignTextures(DavisBlueBallTexFile, FastModeLocations, FastModeTimes,73,42);
 	AttackHitBox = HitBox(Position, 60, 25, HB_TYPE_ATTACK);
 	ReboundHitBox = HitBox(Position, 70, 25, HB_TYPE_REBOUND);
+	MaxStrength = 150;
+	CurrentStrength = MaxStrength;
 }
 
 void DavisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
@@ -56,7 +58,7 @@ void DavisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 	else if (Velocity.get_x() > 0) {
 		Direction = 1;
 	}
-	current->setScale(sf::Vector2f((float)Direction, 1.0f));
+	current->setScale(Scale.get_x() * Direction, Scale.get_y());
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
 	AttackHitBox.DrawBox(window);
@@ -64,16 +66,20 @@ void DavisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 }
 
 void DavisBlueBall::OnCollision(int otherID, int selfID) {
-	HitBox *self = HitBoxIDArray[selfID];
-	HitBox *other = HitBoxIDArray[otherID];
+	HitBox* self = HitBoxIDArray[selfID];
+	HitBox* other = HitBoxIDArray[otherID];
 	if (other->Game_Object->ID != self->IgnoreObjectID && other->Game_Object->ID != self->Game_Object->ID) {
 		if (other->Type == HB_TYPE_DAMAGE && self->Type == HB_TYPE_ATTACK) {
 			CurrentSheet = &EndSheet;
 			Velocity.SetMagnitude(0);
 		}
 		else if (other->Game_Object->GO_Type == GO_Projectile && other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_ATTACK) {
-			CurrentSheet = &EndSheet;
-			Velocity.SetMagnitude(0);
+			ProjectileBall* ball = (ProjectileBall*)other->Game_Object;
+			CurrentStrength -= ball->MaxStrength;
+			if (CurrentStrength <= 0) {
+				CurrentSheet = &EndSheet;
+				Velocity.SetMagnitude(0);
+			}
 		}
 		else if (other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_REBOUND && HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character) {
 			ReboundHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;

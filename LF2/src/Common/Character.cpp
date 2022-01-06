@@ -18,7 +18,26 @@ void Character::RegisterCharacter() {
 	nextCharacterID++;
 }
 
-
+void Character::SetScale(RealVector2D scale) {
+	Scale = scale;
+	IdleSheet.SetScale(Scale);
+	WalkingSheet.SetScale(Scale);
+	RunningSheet.SetScale(Scale);
+	JumpingSheet.SetScale(Scale);
+	HittingSheet[0].SetScale(Scale);
+	HittingSheet[1].SetScale(Scale);
+	HittingSheet[2].SetScale(Scale);
+	Getting_HitSheet.SetScale(Scale);
+	FallingBackSheet.SetScale(Scale);
+	JumpingAttackSheet.SetScale(Scale);
+	DashSheet.SetScale(Scale);
+	SpecialAttack1Sheet.SetScale(Scale);
+	SpecialAttack2Sheet.SetScale(Scale);
+	FallingBackSheet.SetScale(Scale);
+	FallingFrontSheet.SetScale(Scale);
+	AttackHitBox.SetScale(Scale);
+	DamageHitBox.SetScale(Scale);
+}
 
 void Character::ChangeState(PlayerStates state, const double lastPressed, const double data, const double startTime) {
 	CurrentSheet->Time = 0; //resetting the sheet currently being used (as it will be changed soon)
@@ -251,7 +270,7 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	else if (Velocity.get_x() > 0) {
 		Direction = 1;
 	}
-	current->setScale(sf::Vector2f((float)Direction, 1.0f));
+	current->setScale(Scale.get_x()*Direction, Scale.get_y());
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
 	if (CurrentSheet->HasHitBox[CorrectIndex]) {

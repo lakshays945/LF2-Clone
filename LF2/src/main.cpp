@@ -40,6 +40,8 @@ int main() {
 	}
 	Davis Player2;
 	Dennis Player;
+	Player.SetScale({ 1.2f,1.2f });
+	Player2.SetScale({ 1.2f,1.2f });
 	Player.SetControls(Player1Control);
 	Player2.SetControls(Player2Control);
 	//Davis Player3;

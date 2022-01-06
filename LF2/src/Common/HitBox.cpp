@@ -76,6 +76,14 @@ void HitBox::RegisterID() {
 	}
 }
 
+void HitBox::SetScale(RealVector2D scale) {
+	Box.setOrigin(sf::Vector2f(-Width / 2, -Height / 2));
+	Width *= scale.get_x();
+	Height *= scale.get_y();
+	Box.setSize(sf::Vector2f(Width, Height));
+	Box.setOrigin(sf::Vector2f(Width / 2, Height / 2));
+}
+
 void HandleCollisions() {
 	for (int i = 0; i < HitBoxIDArray.size(); i++) {
 		for (int j = i+1; j < HitBoxIDArray.size(); j++) {

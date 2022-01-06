@@ -30,8 +30,8 @@ const std::vector <double> JumpingAttackTimes = { 0.15,0.4,0.55,2 };
 const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
 const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME };
 
-const std::vector<RealVector2D> Getting_HitLocations = { {480,320} };
-const std::vector <double> Getting_HitTimes = { 0.3 };
+const std::vector<RealVector2D> Getting_HitLocations = { {0,0}, {480,320} };
+const std::vector <double> Getting_HitTimes = { 0.05,0.6 };
 
 const std::vector<RealVector2D> FallingBackLocations = { {0,240},{80,240},{160,240},{240,240},{320,240} };
 const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
@@ -52,10 +52,12 @@ Dennis::Dennis() {
 	DamageHitBox = HitBox(Position, 42, 74,HB_TYPE_DAMAGE);
 	DamageHitBox.AssignPlayer(this);
 	DamageHitBox.RegisterID();
+	DamageHitBox.SetScale(Scale);
 	DamageHitBox.IsActive = true;
 	AttackHitBox = HitBox(Position, 15, 15, HB_TYPE_ATTACK);
 	AttackHitBox.AssignPlayer(this);
 	AttackHitBox.RegisterID();
+	AttackHitBox.SetScale(Scale);
 
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);

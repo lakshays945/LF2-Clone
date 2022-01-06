@@ -68,6 +68,7 @@ public:
 	//-----------------------------------------METHODS----------------------------------------
 
 	void RegisterCharacter();
+	void SetScale(RealVector2D scale);
 	void ChangeState(PlayerStates state, const double lastPressed, const double data = 0, const double startTime = 0);
 	void Update(const double dt, sf::RenderWindow& window);
 	void Attack(const double lastPressed);

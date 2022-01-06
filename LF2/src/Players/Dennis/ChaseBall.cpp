@@ -25,7 +25,10 @@ ChaseBall::ChaseBall() {
 	EndSheet.AssignTextures(ChaseBallTexFile, EndLocations, EndTimes, 55, 80);
 	CurrentSheet = &InitialSheet;
 	AttackHitBox = HitBox(Position, 40, 40, HB_TYPE_ATTACK);
+	ReboundHitBox = HitBox(Position, 40, 40, HB_TYPE_REBOUND);
 	AttackHitBox.KnockOutPower = 300;
+	MaxStrength = 300;
+	CurrentStrength = MaxStrength;
 }
 
 bool ChaseBall::SetTarget() {
@@ -47,6 +50,7 @@ bool ChaseBall::SetTarget() {
 	MeanY = (Target->Position.get_y() + Position.get_y()) / 2;
 	BeforeMean = true;
 	InitialY = Target->Position.get_y();
+	Rebounded = false;
 	return true;
 }
 
@@ -55,7 +59,7 @@ void ChaseBall::CalculateVelocity(const double dt) {
 		DEBUG_WARNING("No Target for Dennis-ChaseBall");
 		return;
 	}
-	if (TotalTime > 3.2) {
+	if (TotalTime > 3.2 || Rebounded) {
 		Velocity.SetMagnitude(600);
 		return;
 	}
@@ -109,6 +113,7 @@ void ChaseBall::Animate(sf::RenderWindow& window, const double dt) {
 		return;
 	}
 	AttackHitBox.Center = Position;
+	ReboundHitBox.Center = Position + RealVector2D(Direction * 15, 0);
 	Z_Position = Position.get_y();
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
@@ -130,16 +135,36 @@ void ChaseBall::Animate(sf::RenderWindow& window, const double dt) {
 	else if (Velocity.get_x() > 0) {
 		Direction = 1;
 	}
-	current->setScale(sf::Vector2f((float)Direction, 1.0f));
+	current->setScale(Scale.get_x() * Direction, Scale.get_y());
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
 	AttackHitBox.DrawBox(window);
+	ReboundHitBox.DrawBox(window);
 }
 
 void ChaseBall::OnCollision(int otherID, int selfID) {
-	if (HitBoxIDArray[otherID]->Type == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Game_Object != Parent) {
-		CurrentSheet = &EndSheet;
-		Velocity.SetMagnitude(0);
+	HitBox* self = HitBoxIDArray[selfID];
+	HitBox* other = HitBoxIDArray[otherID];
+	if (other->Game_Object->ID != self->IgnoreObjectID && other->Game_Object->ID != self->Game_Object->ID) {
+
+		if (other->Type == HB_TYPE_DAMAGE && self->Type == HB_TYPE_ATTACK) {
+			CurrentSheet = &EndSheet;
+			Velocity.SetMagnitude(0);
+		}
+		else if (other->Game_Object->GO_Type == GO_Projectile && other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_ATTACK) {
+			ProjectileBall* ball = (ProjectileBall*)other->Game_Object;
+			CurrentStrength -= ball->MaxStrength;
+			if (CurrentStrength <= 0) {
+				CurrentSheet = &EndSheet;
+				Velocity.SetMagnitude(0);
+			}
+		}
+		else if (other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_REBOUND && HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character) {
+			ReboundHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;
+			AttackHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;
+			Rebounded = true;
+			Rebound();
+		}
 	}
 }
 

@@ -30,5 +30,6 @@ public:
 	void AssignTextures(sf::Texture& textureSheet, const std::vector <RealVector2D>& locations, const std::vector<double>& times, int sizeX, int sizeY);
 	void AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower = 0);
 	void AssignPlayer(GameObject* player);
+	void SetScale(RealVector2D scale);
 	int GetCorrectIndex();
 };

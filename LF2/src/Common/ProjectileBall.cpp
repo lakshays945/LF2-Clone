@@ -29,9 +29,24 @@ ProjectileBall::ProjectileBall(const ProjectileBall& other) {
 	ReboundHitBox = other.ReboundHitBox;
 	AttackHitBox.AssignPlayer(this);
 	ReboundHitBox.AssignPlayer(this);
+	MaxStrength = other.MaxStrength;
+	CurrentStrength = MaxStrength;
+}
+
+void ProjectileBall::SetScale(RealVector2D scale) {
+	Scale = scale;
+	InAirSheet.SetScale(Scale);
+	InitialSheet.SetScale(Scale);
+	FastSheet.SetScale(Scale);
+	EndSheet.SetScale(Scale);
+	AttackHitBox.SetScale(Scale);
+	ReboundHitBox.SetScale(Scale);
 }
 
 void ProjectileBall::Instantiate(RealVector2D velocity) {
+	if (Parent->Scale != Scale) {
+		SetScale(Parent->Scale);
+	}
 	Position = Parent->Position;
 	InAirSheet.Time = 0;
 	EndSheet.Time = 0;
@@ -44,6 +59,7 @@ void ProjectileBall::Instantiate(RealVector2D velocity) {
 	ReboundHitBox.IgnoreObjectID = Parent->ID;
 	AttackHitBox.IsActive = true;
 	ReboundHitBox.IsActive = true;
+	CurrentStrength = MaxStrength;
 }
 
 void ProjectileBall::GoBack() {
@@ -56,6 +72,9 @@ void ProjectileBall::GoBack() {
 
 void ProjectileBall::AssignParent(GameObject* parent) {
 	Parent = parent;
+	Scale = Scale * parent->Scale;
+	AttackHitBox.SetScale(Scale);
+	ReboundHitBox.SetScale(Scale);
 	Effect_Manager = parent->Effect_Manager;
 }
 

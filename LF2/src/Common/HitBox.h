@@ -48,6 +48,7 @@ public:
 		//window.draw(circle);
 	}
 	void RegisterID();
+	void SetScale(RealVector2D scale);
 };
 
 void HandleCollisions();
