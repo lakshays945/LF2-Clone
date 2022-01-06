@@ -3,6 +3,7 @@
 //#include "GameObject/GameObject.h"
 #include "Players/Dennis/Dennis.h"
 #include "Players/Davis/Davis.h"
+#include "Players/Firen/Firen.h"
 #include <iostream>
 static double DeltaTime = 0.016666667;
 const int resX = 1200;
@@ -38,10 +39,10 @@ int main() {
 		Player2Control.SpecialAttack1Key = sf::Keyboard::K;
 		Player2Control.SpecialAttack2Key = sf::Keyboard::L;
 	}
-	Davis Player2;
-	Dennis Player;
-	Player.SetScale({ 1.2f,1.2f });
-	Player2.SetScale({ 1.2f,1.2f });
+	Dennis Player2;
+	Firen Player;
+	//Player.SetScale({ 1.2f,1.2f });
+	//Player2.SetScale({ 1.2f,1.2f });
 	Player.SetControls(Player1Control);
 	Player2.SetControls(Player2Control);
 	//Davis Player3;
@@ -94,6 +95,7 @@ int main() {
 		}
 		Eff_Manager.Update(DeltaTime);
 		window.display();
+		//DEBUG_INFO("Fps = {}", 1 / DeltaTime);
 	}
 	return 0;
 }

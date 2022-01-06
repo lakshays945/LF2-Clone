@@ -6,7 +6,7 @@
 #include "GameObject/GameObject.h"
 
 enum HitBoxType {
-	HB_TYPE_DAMAGE = 0, HB_TYPE_ATTACK = 1, HB_TYPE_REBOUND = 2,
+	HB_TYPE_DAMAGE = 0, HB_TYPE_ATTACK = 1, HB_TYPE_REBOUND = 2, HB_TYPE_FIRE = 3,
 };
 
 class HitBox {

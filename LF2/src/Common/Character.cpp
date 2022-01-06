@@ -59,6 +59,7 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 	case HITTING:
 		Attack(lastPressed);
 		CurrentSheet = &HittingSheet[ComboStreak];
+		//Position = Position + RealVector2D(Direction * 10, 0);
 		break;
 	case GETTING_HIT:
 		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 4);
@@ -215,7 +216,7 @@ void Character::DashCalculations(const double dt, const double t) {
 	//landed phase
 	else if(t >= DASH_DURATION + 0.1) {
 		Position = LastPosition;
-		if (Input_Manager.GetLastPressed(sf::Keyboard::Space) < 0.05 && (Input_Manager.IsKeyPressed(sf::Keyboard::D)^Input_Manager.IsKeyPressed(sf::Keyboard::A))) {
+		if (Input_Manager.GetLastPressed(PlayerControl.JumpKey) < 0.05 && (Input_Manager.IsKeyPressed(PlayerControl.RightKey)^Input_Manager.IsKeyPressed(PlayerControl.LeftKey))) {
 			ChangeState(DASH, 0);
 		}
 	}
@@ -293,12 +294,15 @@ void Character::OnCollision(int otherID, int selfID) {
 	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object) {
 		return;
 	}
-	if ((HitBoxIDArray[otherID]->KnockOutPower) && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK) {
+	if ((HitBoxIDArray[otherID]->KnockOutPower) && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK || HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE)) {
 		if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
 			State_Manager.TryStateChange(FALLINGBACK, 0, HitBoxIDArray[otherID]->KnockOutPower);
 		}
 		else {
 			State_Manager.TryStateChange(FALLINGFRONT, 0, HitBoxIDArray[otherID]->KnockOutPower);
+		}
+		if (HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE) {
+			CurrentSheet = &BurningSheet;
 		}
 	}
 	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {

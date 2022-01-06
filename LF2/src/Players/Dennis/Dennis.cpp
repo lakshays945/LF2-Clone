@@ -2,6 +2,7 @@
 
 sf::Texture DennisTexFile0;
 sf::Texture DennisTexFile1;
+sf::Texture DennisTexFile2;
 
 const std::vector<RealVector2D> IdleLocations = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
 const std::vector <double> IdleTimes = { 0.3,0.6,0.9,1.2 };
@@ -45,6 +46,9 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {80,335}, {160,335}, {240,335}, {320,335}, {400,335}, {480,335}, {560,335} };
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7 };
 
+const std::vector<RealVector2D> BurningLocations = { {640,0}, {640,80}, {400,480}, {400,480} }; //x,y
+const std::vector <double> BurningTimes = { 0.25,0.5,0.8,2 };
+
 
 
 Dennis::Dennis() {
@@ -79,6 +83,7 @@ Dennis::Dennis() {
 	SpecialAttack2Sheet.AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
+	BurningSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (DennisTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -103,6 +108,11 @@ Dennis::Dennis() {
 	SpecialAttack1Sheet.AssignTextures(DennisTexFile1, SpecialAttack1Locations, SpecialAttack1Times, 80, 80);
 	SpecialAttack2Sheet.AssignTextures(DennisTexFile1, SpecialAttack2Locations,SpecialAttack2Times, 80, 80);
 
+	if (DennisTexFile2.getSize() == sf::Vector2u(0, 0)) {
+		DennisTexFile2.loadFromFile("Resource/Dennis2.png");
+	};
+	BurningSheet.AssignTextures(DennisTexFile2, BurningLocations, BurningTimes, 80, 80);
+
 	//Setting One Time Animations
 	JumpingSheet.OneTime = true;
 	HittingSheet[0].OneTime = true;
@@ -114,6 +124,7 @@ Dennis::Dennis() {
 	SpecialAttack2Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
+	BurningSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(1, { 20,12 }, 40, 26,200);
@@ -155,9 +166,7 @@ Dennis::Dennis() {
 		ChaseBallArray[i].AssignParent(this);
 		ChaseBallArray[i].RegisterGameObject(GO_Projectile);
 		ChaseBallArray[i].AttackHitBox.RegisterID();
-		ChaseBallArray[i].AttackHitBox.IgnoreObjectID = ID;
 		ChaseBallArray[i].ReboundHitBox.RegisterID();
-		ChaseBallArray[i].ReboundHitBox.IgnoreObjectID = ID;
 	}
 }
 

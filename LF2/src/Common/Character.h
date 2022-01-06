@@ -52,6 +52,7 @@ public:
 	AnimationSheet DashSheet;
 	AnimationSheet SpecialAttack1Sheet;
 	AnimationSheet SpecialAttack2Sheet;
+	AnimationSheet BurningSheet;
 	AnimationSheet* CurrentSheet;
 	int Up = 0, Down = 0, Right = 0, Left = 0;
 	int ComboStreak = 0; //the index of hitting_animation sheet

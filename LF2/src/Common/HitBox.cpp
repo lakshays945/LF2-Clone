@@ -25,17 +25,17 @@ HitBox::HitBox() {
 }
 
 bool HitBox::JustCollided(HitBox* other) {
+	if (!IsActive || !other->IsActive) {
+		CanCollide[ID][other->ID] = true;
+		CanCollide[other->ID][ID] = true;
+		return false;
+	}
+	if (abs(Game_Object->Z_Position - other->Game_Object->Z_Position) > COLLISION_THRESHOLD) {
+		CanCollide[ID][other->ID] = true;
+		CanCollide[other->ID][ID] = true;
+		return false;
+	}
 	if (abs(Center.get_x() - other->Center.get_x()) <= (Width + other->Width) / 2 && abs(Center.get_y() - other->Center.get_y()) <= (Height + other->Height) / 2) {
-		if (!IsActive || !other->IsActive) {
-			CanCollide[ID][other->ID] = true;
-			CanCollide[other->ID][ID] = true;
-			return false;
-		}
-		if (abs(Game_Object->Z_Position - other->Game_Object->Z_Position) > COLLISION_THRESHOLD) {
-			CanCollide[ID][other->ID] = true;
-			CanCollide[other->ID][ID] = true;
-			return false;
-		}
 		if (!CanCollide[ID][other->ID]) {
 			return false;
 		}

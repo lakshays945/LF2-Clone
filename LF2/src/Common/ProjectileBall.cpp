@@ -76,6 +76,8 @@ void ProjectileBall::AssignParent(GameObject* parent) {
 	AttackHitBox.SetScale(Scale);
 	ReboundHitBox.SetScale(Scale);
 	Effect_Manager = parent->Effect_Manager;
+	AttackHitBox.IgnoreObjectID = Parent->ID;
+	ReboundHitBox.IgnoreObjectID = Parent->ID;
 }
 
 void ProjectileBall::Rebound() {

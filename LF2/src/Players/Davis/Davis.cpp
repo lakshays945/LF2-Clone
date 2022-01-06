@@ -25,7 +25,7 @@ const std::vector <double> JumpingTimes = { INITIAL_JUMP_PAUSE,INITIAL_JUMP_PAUS
 const std::vector<RealVector2D> RunningLocations = { {80,160}, {0,160}, {80,160}, {160,160} };
 const std::vector <double> RunningTimes = { 0.15,0.3,0.45,0.6 };
 
-const std::vector<RealVector2D> JumpingAttackLocations = { {160,480},{240,480}, { 320,480}, {400,480}, {480,480} };
+const std::vector<RealVector2D> JumpingAttackLocations = { {160,480},{240,480}, { 320,480}, {400,480}, {560,480} };
 const std::vector <double> JumpingAttackTimes = { 0.1,0.2,0.3,0.4,2 };
 
 const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
@@ -121,7 +121,6 @@ Davis::Davis() {
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(3, { 5,10 }, 47, 29,200);
-	JumpingAttackSheet.AssignHitbox(4, { 5,10 }, 47, 29,200);
 	HittingSheet[0].AssignHitbox(1, { 9,0 }, 26, 39);
 	HittingSheet[1].AssignHitbox(1, { 10,0 }, 33, 27);
 	HittingSheet[2].AssignHitbox(2,{ 10,2 }, 25, 49,1);
@@ -144,9 +143,7 @@ Davis::Davis() {
 		BallArray[i].AssignParent(this);
 		BallArray[i].RegisterGameObject(GO_Projectile);
 		BallArray[i].AttackHitBox.RegisterID();
-		BallArray[i].AttackHitBox.IgnoreObjectID = ID;
 		BallArray[i].ReboundHitBox.RegisterID();
-		BallArray[i].ReboundHitBox.IgnoreObjectID = ID;
 	}
 
 	//Variable Assignment
