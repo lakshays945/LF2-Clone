@@ -4,7 +4,7 @@ sf::Texture FirenTexFile0;
 sf::Texture FirenTexFile1;
 
 const std::vector<RealVector2D> IdleLocations = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
-const std::vector <double> IdleTimes = { 0.3,0.6,0.9,1.2 };
+const std::vector <double> IdleTimes = { 0.1,0.2,0.3,0.4 };
 
 const std::vector<RealVector2D> WalkingLocations = { {320,0}, {400,0}, {480,0}, {560,0}, {480,0}, {400,0} };//x,y
 const std::vector <double> WalkingTimes = { 0.15,0.3,0.45,0.6,0.75,0.9 };
@@ -45,6 +45,9 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {0,175}, {80,175}, {160,175}, {80,175}};
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4};
 
+const std::vector<RealVector2D> BurningLocations = { {560,240}, {560,480}, {240,240},{315,240} }; //x,y
+const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
+
 Firen::Firen() {
 	DamageHitBox = HitBox(Position, 42, 74, HB_TYPE_DAMAGE);
 	DamageHitBox.AssignPlayer(this);
@@ -75,6 +78,7 @@ Firen::Firen() {
 	SpecialAttack2Sheet.AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
+	BurningSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (FirenTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -92,6 +96,7 @@ Firen::Firen() {
 	Getting_HitSheet.AssignTextures(FirenTexFile0, Getting_HitLocations, Getting_HitTimes, 80, 80);
 	FallingBackSheet.AssignTextures(FirenTexFile0, FallingBackLocations, FallingBackTimes, 75, 80);
 	FallingFrontSheet.AssignTextures(FirenTexFile0, FallingFrontLocations, FallingFrontTimes, 75, 80);
+	BurningSheet.AssignTextures(FirenTexFile0, BurningLocations, BurningTimes, 75, 80);
 
 	if (FirenTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		FirenTexFile1.loadFromFile("Resource/Firen1.png");
@@ -110,6 +115,7 @@ Firen::Firen() {
 	//SpecialAttack2Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
+	BurningSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31,200);

@@ -10,6 +10,7 @@ const int resX = 1200;
 const int resY = 800;
 
 bool SortObjects(GameObject* g1, GameObject* g2) {
+
 	return (g1->Z_Position < g2->Z_Position);
 }
 Controls Player1Control;

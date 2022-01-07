@@ -40,6 +40,8 @@ public:
 	double JumpGravityFactor;
 	double TimeSinceLastState = 0;
 	bool JustStateChanged = false;
+	bool Invincible = false;
+	double InvincibleTime = 10;
 	AnimationSheet IdleSheet;
 	AnimationSheet WalkingSheet;
 	AnimationSheet RunningSheet;
@@ -87,6 +89,7 @@ public:
 	void FallFront(int SpeedX);
 	void FallBackCalculations(const double dt, const double t);
 	void FallFrontCalculations(const double dt, const double t);
+	void SetInvincible();
 	void SetControls(Controls control);
 	//-----------------------------------PLAYER-SPECIFIC-METHODS----------------------------------------
 

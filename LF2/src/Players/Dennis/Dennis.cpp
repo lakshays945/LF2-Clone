@@ -5,7 +5,7 @@ sf::Texture DennisTexFile1;
 sf::Texture DennisTexFile2;
 
 const std::vector<RealVector2D> IdleLocations = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
-const std::vector <double> IdleTimes = { 0.3,0.6,0.9,1.2 };
+const std::vector <double> IdleTimes = { 0.1,0.2,0.3,0.4 };
 
 const std::vector<RealVector2D> WalkingLocations = { {320,0}, {400,0}, {480,0}, {560,0}, {480,0}, {400,0} };//x,y
 const std::vector <double> WalkingTimes = { 0.15,0.3,0.45,0.6,0.75,0.9 };

@@ -104,6 +104,13 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 	if (TimeSinceLastState < MAX_LAST_TIME) {
 		TimeSinceLastState += dt;
 	}
+	if (InvincibleTime < 10) {
+		InvincibleTime += dt;
+		if (InvincibleTime > 0.75) {
+			Invincible = false;
+			DamageHitBox.IsActive = true;
+		}
+	}
 	switch (CurrentState) {
 	case IDLE:
 		AddForce(dt);
@@ -260,7 +267,7 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 		State_Manager.ForceStateChange(IDLE);
 		CorrectIndex = 0;
 	}
-	sf::Sprite* current = &CurrentSheet->Sprites[CorrectIndex];
+	sf::Sprite *current = &CurrentSheet->Sprites[CorrectIndex];
 	/*sf::CircleShape circle;
 	circle.setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	circle.setRadius(2);
@@ -273,7 +280,6 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	}
 	current->setScale(Scale.get_x()*Direction, Scale.get_y());
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
-	window.draw(*current);
 	if (CurrentSheet->HasHitBox[CorrectIndex]) {
 		AttackHitBox.IsActive = true;
 		int dx = CurrentSheet->HBData[CorrectIndex].offset.get_x() * Direction;
@@ -286,6 +292,12 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	else {
 		AttackHitBox.IsActive = false;
 	}
+	if (Invincible) {
+		if (CorrectIndex % 2 == 0 && CurrentState != FALLINGBACK && CurrentState != FALLINGFRONT) {
+			return;
+		}
+	}
+	window.draw(*current);
 	DamageHitBox.DrawBox(window);
 	//window.draw(circle);
 }
@@ -303,6 +315,7 @@ void Character::OnCollision(int otherID, int selfID) {
 		}
 		if (HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE) {
 			CurrentSheet = &BurningSheet;
+			SetInvincible();
 		}
 	}
 	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
@@ -337,14 +350,10 @@ void Character::FallFront(int SpeedX) {
 }
 
 void Character::FallBackCalculations(const double dt, const double t) {
-	if (t > 1.9) {
-		DamageHitBox.IsActive = true;
-		return;
-	}
 	if (t > FALL_DURATION) {
+		SetInvincible();
 		Stop();
 		Position = LastPosition;
-		DamageHitBox.IsActive = false;
 		return;
 	}
 	Velocity = Velocity + GravityVector * (dt*FALL_GRAVITY_SCALE);
@@ -352,18 +361,20 @@ void Character::FallBackCalculations(const double dt, const double t) {
 }
 
 void Character::FallFrontCalculations(const double dt, const double t) {
-	if (t > 1.9) {
-		DamageHitBox.IsActive = true;
-		return;
-	}
 	if (t > FALL_DURATION) {
+		SetInvincible();
 		Stop();
 		Position = LastPosition;
-		DamageHitBox.IsActive = false;
 		return;
 	}
 	Velocity = Velocity - GravityVector * (dt * FALL_GRAVITY_SCALE);
 	Translate(dt);
+}
+
+void Character::SetInvincible() {
+	Invincible = true;
+	DamageHitBox.IsActive = false;
+	InvincibleTime = 0;
 }
 
 void Character::SetControls(Controls control) {

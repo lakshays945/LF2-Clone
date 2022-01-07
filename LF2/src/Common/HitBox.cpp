@@ -86,6 +86,9 @@ void HitBox::SetScale(RealVector2D scale) {
 
 void HandleCollisions() {
 	for (int i = 0; i < HitBoxIDArray.size(); i++) {
+		if (!HitBoxIDArray[i]->IsActive) {
+			continue;
+		}
 		for (int j = i+1; j < HitBoxIDArray.size(); j++) {
 			if (HitBoxIDArray[i]->JustCollided(HitBoxIDArray[j])) {
 				// j is ID and i is also ID

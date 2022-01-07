@@ -149,5 +149,6 @@ void GroundFireHitBox::Animate(sf::RenderWindow& window, const double dt) {
 }
 
 void GroundFireHitBox::OnCollision(int otherID, int selfID) {
-
+	CanCollide[otherID][selfID] = true;
+	CanCollide[selfID][otherID] = true;
 }

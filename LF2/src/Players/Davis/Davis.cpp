@@ -4,7 +4,7 @@ sf::Texture DavisTexFile0;
 sf::Texture DavisTexFile1;
 sf::Texture DavisTexFile2;
 
-const std::vector <double> IdleTimes = { 0.3,0.6,0.9,1.2 };
+const std::vector <double> IdleTimes = { 0.1,0.2,0.3,0.4 };
 const std::vector<RealVector2D> IdleLocations = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
 
 const std::vector <double> WalkingTimes = { 0.15,0.3,0.45,0.6,0.75,0.9 };
@@ -46,6 +46,9 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {0,248}, {80,248}, {160,248}, {240,248}, {320,248}, {400,248}, {480,248}, {560,248} };
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.85 };
 
+const std::vector<RealVector2D> BurningLocations = { {640,0}, {640,80}, {720,480}, {640,480} }; //x,y
+const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
+
 
 Davis::Davis() {
 	//HitBox Assignments
@@ -77,6 +80,7 @@ Davis::Davis() {
 	FallingFrontSheet.AssignPlayer(this);
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
+	BurningSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg
 	if (DavisTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -99,6 +103,7 @@ Davis::Davis() {
 		DavisTexFile1.loadFromFile("Resource/Davis1.png");
 	}
 	JumpingAttackSheet.AssignTextures(DavisTexFile1, JumpingAttackLocations, JumpingAttackTimes, 80, 80);
+	BurningSheet.AssignTextures(DavisTexFile1, BurningLocations, BurningTimes, 80, 80);
 
 	if (DavisTexFile2.getSize() == sf::Vector2u(0, 0)) {
 		DavisTexFile2.loadFromFile("Resource/Davis2.png");
@@ -118,6 +123,7 @@ Davis::Davis() {
 	FallingFrontSheet.OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
 	SpecialAttack2Sheet.OneTime = true;
+	BurningSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(3, { 5,10 }, 47, 29,200);
