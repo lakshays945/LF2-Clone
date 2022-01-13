@@ -25,6 +25,7 @@ public:
 	RealVector2D GetUnit()const;
 	RealVector2D GetUnit(const RealVector2D& vec)const;
 	RealVector2D Add(const RealVector2D& vec)const;
+	RealVector2D Cross(const RealVector2D& vec)const;
 
 	void SetMagnitude(float mag);
 	float DistanceFrom(const RealVector2D& other)const;

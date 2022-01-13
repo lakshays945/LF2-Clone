@@ -53,6 +53,10 @@ RealVector2D RealVector2D::Add(const RealVector2D& vec)const {
 	return RealVector2D(x + vec.x, y + vec.y);
 }
 
+RealVector2D RealVector2D::Cross(const RealVector2D& vec)const {
+	return RealVector2D(x * vec.y, -vec.x * y);
+}
+
 void RealVector2D::SetMagnitude(float mag) {
 	*this = GetUnit() * mag;
 }

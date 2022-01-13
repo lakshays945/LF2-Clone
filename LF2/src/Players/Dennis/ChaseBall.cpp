@@ -94,9 +94,6 @@ void ChaseBall::CalculateVelocity(const double dt) {
 			Velocity.SetMagnitude(600);
 		}
 	}
-	if ((TotalTime - dt - 3) * (TotalTime - 3) < 0) {
-		CurrentSheet = &FastSheet;
-	}
 }
 
 void ChaseBall::Animate(sf::RenderWindow& window, const double dt) {
@@ -147,11 +144,14 @@ void ChaseBall::OnCollision(int otherID, int selfID) {
 	HitBox* other = HitBoxIDArray[otherID];
 	if (other->Game_Object->ID != self->IgnoreObjectID && other->Game_Object->ID != self->Game_Object->ID) {
 
-		if (other->Type == HB_TYPE_DAMAGE && self->Type == HB_TYPE_ATTACK) {
+		if ((other->Type == HB_TYPE_DAMAGE || other->Type == HB_TYPE_WALL) && self->Type == HB_TYPE_ATTACK) {
+			if (other->Type == HB_TYPE_WALL) {
+				AttackHitBox.IsActive = false;
+			}
 			CurrentSheet = &EndSheet;
 			Velocity.SetMagnitude(0);
 		}
-		else if (other->Game_Object->GO_Type == GO_Projectile && (other->Type == HB_TYPE_ATTACK || other->Type == HB_TYPE_FIRE) && self->Type == HB_TYPE_ATTACK) {
+		else if (other->Game_Object->GO_Type == GO_Projectile && (other->Type == HB_TYPE_ATTACK || other->Type == HB_TYPE_FIRE || other->Type == HB_TYPE_ICE) && self->Type == HB_TYPE_ATTACK) {
 			ProjectileBall* ball = (ProjectileBall*)other->Game_Object;
 			CurrentStrength -= ball->MaxStrength;
 			if (CurrentStrength <= 0) {

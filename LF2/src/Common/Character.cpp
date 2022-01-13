@@ -2,6 +2,8 @@
 
 std::vector <Character*> CharacterIDArray;
 
+double deltaTime = 0;
+
 //Constructor 
 Character::Character() {
 	JumpGravityFactor = JUMP_GRAVITY_FACTOR;
@@ -90,6 +92,9 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 	case SPECIALATTACK2:
 		CurrentSheet = &SpecialAttack2Sheet;
 		break;
+	case FREEZED:
+		CurrentSheet = &FreezedSheet;
+		break;
 	default:
 		break;
 	}
@@ -98,7 +103,7 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 }
 
 void Character::Update(const double dt, sf::RenderWindow& window) {
-
+	deltaTime = dt;
 
 //CurrentStateUpdate();
 	if (TimeSinceLastState < MAX_LAST_TIME) {
@@ -152,9 +157,13 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 	case SPECIALATTACK2:
 		SpecialAttack2Calculations(dt, TimeSinceLastState);
 		break;
+	case FREEZED:
+		FreezeCalculations(dt, TimeSinceLastState);
+		break;
 	default:
 		break;
 	}
+	AtWall = false;
 	//Animate(window, dt); //after determining position and other stuff then animate() will be called
 }
 
@@ -184,6 +193,12 @@ void Character::JumpCalculation(const double dt, const double t) {
 	//in air phase
 	if (t > INITIAL_JUMP_PAUSE && t < INITIAL_JUMP_PAUSE + JUMP_DURATION) {
 		Velocity = Velocity + GravityVector * (dt * JumpGravityFactor);
+		if (AtWall) {
+			if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0)) {
+				Velocity = RealVector2D(0, Velocity.get_y());
+				LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
+			}
+		}
 		Translate(dt);
 	}
 	//landing phase
@@ -191,8 +206,13 @@ void Character::JumpCalculation(const double dt, const double t) {
 		if (CurrentState == JUMPINGATTACK) {
 			State_Manager.ForceStateChange(JUMPING, 0, t);
 		}
-		Position = LastPosition;
-		DamageHitBox.Center = LastPosition;
+		if (!AtWall) {
+			Position = LastPosition;
+		}
+		else {
+			Position = RealVector2D(Position.get_x(), LastPosition.get_y());
+		}
+		DamageHitBox.Center = Position;
 	}
 	//checking if we should go to dash
 	if(t > INITIAL_JUMP_PAUSE + JUMP_DURATION + 0.1){
@@ -218,11 +238,22 @@ void Character::DashCalculations(const double dt, const double t) {
 	//in air phase
 	if (t < DASH_DURATION) {
 		Velocity = Velocity + GravityVector * (dt * DASH_GRAVITY_SCALE);
+		if (AtWall) {
+			if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0)) {
+				Velocity = RealVector2D(0, Velocity.get_y());
+				LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
+			}
+		}
 		Translate(dt);
 	}
 	//landed phase
 	else if(t >= DASH_DURATION + 0.1) {
-		Position = LastPosition;
+		if (!AtWall) {
+			Position = LastPosition;
+		}
+		else {
+			Position = RealVector2D(Position.get_x(), LastPosition.get_y());
+		}
 		if (Input_Manager.GetLastPressed(PlayerControl.JumpKey) < 0.05 && (Input_Manager.IsKeyPressed(PlayerControl.RightKey)^Input_Manager.IsKeyPressed(PlayerControl.LeftKey))) {
 			ChangeState(DASH, 0);
 		}
@@ -257,6 +288,18 @@ void Character::AddForce(const double dt) { //for movement based upon inputs
 
 void Character::Translate(const double dt) {
 	Position = Position + Velocity * dt;
+	if (AtWall) {
+		RealVector2D pos = HitBoxIDArray[WallID]->Center;
+		double w1 = HitBoxIDArray[WallID]->Width;
+		double w2 = DamageHitBox.Width;
+		double dx = abs(DamageHitBox.Center.get_x() - pos.get_x());
+		if ((dx < (w1 + w2) / 2 && abs(DamageHitBox.Center.get_x() - Direction*500*dt - pos.get_x()) >= (w1 + w2) / 2) || dx > (w1+w2)/2) {
+			Position = Position - RealVector2D(Velocity.get_x(),0) * dt;
+		}
+		else {
+			Position = Position - RealVector2D(0,Velocity.get_y()) * dt;
+		}
+	}
 	DamageHitBox.Center = Position;
 }
 void Character::Animate(sf::RenderWindow& window, const double dt) { //give it an animation sheet (not as a parameter) and window and it will animate
@@ -306,6 +349,10 @@ void Character::OnCollision(int otherID, int selfID) {
 	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object) {
 		return;
 	}
+	if (HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Type == HB_TYPE_WALL) {
+		AtWall = true;
+		WallID = otherID;
+	}
 	if ((HitBoxIDArray[otherID]->KnockOutPower) && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK || HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE)) {
 		if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
 			State_Manager.TryStateChange(FALLINGBACK, 0, HitBoxIDArray[otherID]->KnockOutPower);
@@ -318,8 +365,22 @@ void Character::OnCollision(int otherID, int selfID) {
 			SetInvincible();
 		}
 	}
+	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ICE && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
+		if (CurrentState == FREEZED || Z_Position != Position.get_y()) {
+			if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
+				State_Manager.TryStateChange(FALLINGBACK, 0, 60);
+			}
+			else {
+				State_Manager.TryStateChange(FALLINGFRONT, 0, 60);
+			}
+			SetInvincible();
+		}
+		else {
+			State_Manager.ForceStateChange(FREEZED);
+		}
+	}
 	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
-		if (Z_Position != Position.get_y()) {
+		if (Z_Position != Position.get_y() || CurrentState == FREEZED) {
 			if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
 				State_Manager.TryStateChange(FALLINGBACK, 0, 60);
 			}
@@ -356,6 +417,12 @@ void Character::FallBackCalculations(const double dt, const double t) {
 		Position = LastPosition;
 		return;
 	}
+	if (AtWall) {
+		if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0)) {
+			Velocity = RealVector2D(0, Velocity.get_y());
+			LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
+		}
+	}
 	Velocity = Velocity + GravityVector * (dt*FALL_GRAVITY_SCALE);
 	Translate(-dt);
 }
@@ -367,8 +434,21 @@ void Character::FallFrontCalculations(const double dt, const double t) {
 		Position = LastPosition;
 		return;
 	}
+	if (AtWall) {
+		if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0)) {
+			Velocity = RealVector2D(0, Velocity.get_y());
+			LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
+		}
+	}
 	Velocity = Velocity - GravityVector * (dt * FALL_GRAVITY_SCALE);
 	Translate(dt);
+}
+
+void Character::FreezeCalculations(const double dt, const double t) {
+	if (t > 3.2) {
+		SetInvincible();
+		State_Manager.ForceStateChange(FALLINGBACK);
+	}
 }
 
 void Character::SetInvincible() {

@@ -49,6 +49,9 @@ const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0
 const std::vector<RealVector2D> BurningLocations = { {640,0}, {640,80}, {720,480}, {640,480} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
 
+const std::vector<RealVector2D> FreezeLocations = { {560,240}, {640,240} };
+const std::vector<double> FreezeTimes = { 0.2,4.5 };
+
 
 Davis::Davis() {
 	//HitBox Assignments
@@ -81,6 +84,7 @@ Davis::Davis() {
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
+	FreezedSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg
 	if (DavisTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -97,6 +101,7 @@ Davis::Davis() {
 	Getting_HitSheet.AssignTextures(DavisTexFile0, Getting_HitLocations, Getting_HitTimes, 80, 80);
 	FallingBackSheet.AssignTextures(DavisTexFile0, FallingBackLocations, FallingBackTimes, 80, 80);
 	FallingFrontSheet.AssignTextures(DavisTexFile0, FallingFrontLocations, FallingFrontTimes, 80, 80);
+	FreezedSheet.AssignTextures(DavisTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 
 
 	if (DavisTexFile1.getSize() == sf::Vector2u(0, 0)) {
@@ -131,8 +136,8 @@ Davis::Davis() {
 	HittingSheet[1].AssignHitbox(1, { 10,0 }, 33, 27);
 	HittingSheet[2].AssignHitbox(2,{ 10,2 }, 25, 49,1);
 	HittingSheet[2].AssignHitbox(6, { 12,0 }, 25, 73,200);
-	SpecialAttack2Sheet.AssignHitbox(1, { 3,3 }, 33, 75,120);
-	SpecialAttack2Sheet.AssignHitbox(3, { 3,0 }, 28, 72, 300);
+	SpecialAttack2Sheet.AssignHitbox(1, { 3,3 }, 38, 75,120);
+	SpecialAttack2Sheet.AssignHitbox(3, { 3,0 }, 33, 72, 300);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
@@ -179,6 +184,13 @@ void Davis::SpecialAttack2Calculations(const double dt, const double t) {
 		Stop();
 		Position = LastPosition;
 		return;
+	}
+	if (AtWall) {
+		DEBUG_INFO("HERE");
+		if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0)) {
+			Velocity = RealVector2D(0, Velocity.get_y());
+			LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
+		}
 	}
 	Velocity = Velocity + GravityVector * dt * 1.27;
 	Translate(dt);

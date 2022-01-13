@@ -74,6 +74,12 @@ void HitBox::RegisterID() {
 	else if (Type == HB_TYPE_REBOUND) {
 		Box.setOutlineColor(sf::Color(0, 255, 0));
 	}
+	else if (Type == HB_TYPE_ICE) {
+		Box.setOutlineColor(sf::Color(0, 255, 255));
+	}
+	else if (Type == HB_TYPE_WALL) {
+		Box.setOutlineColor(sf::Color(0, 0, 0));
+	}
 }
 
 void HitBox::SetScale(RealVector2D scale) {
@@ -86,9 +92,6 @@ void HitBox::SetScale(RealVector2D scale) {
 
 void HandleCollisions() {
 	for (int i = 0; i < HitBoxIDArray.size(); i++) {
-		if (!HitBoxIDArray[i]->IsActive) {
-			continue;
-		}
 		for (int j = i+1; j < HitBoxIDArray.size(); j++) {
 			if (HitBoxIDArray[i]->JustCollided(HitBoxIDArray[j])) {
 				// j is ID and i is also ID

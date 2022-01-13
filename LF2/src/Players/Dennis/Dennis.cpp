@@ -49,6 +49,8 @@ const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7 }
 const std::vector<RealVector2D> BurningLocations = { {640,0}, {640,80}, {400,480}, {400,480} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,0.8,2 };
 
+const std::vector<RealVector2D> FreezeLocations = { {560,480}, {640,480} };
+const std::vector<double> FreezeTimes = { 0.2,4.5 };
 
 
 Dennis::Dennis() {
@@ -84,6 +86,7 @@ Dennis::Dennis() {
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
+	FreezedSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (DennisTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -101,6 +104,7 @@ Dennis::Dennis() {
 	Getting_HitSheet.AssignTextures(DennisTexFile0, Getting_HitLocations, Getting_HitTimes, 80, 80);
 	FallingBackSheet.AssignTextures(DennisTexFile0, FallingBackLocations, FallingBackTimes, 80, 80);
 	FallingFrontSheet.AssignTextures(DennisTexFile0, FallingFrontLocations, FallingFrontTimes, 80, 80);
+	FreezedSheet.AssignTextures(DennisTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 
 	if (DennisTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		DennisTexFile1.loadFromFile("Resource/Dennis1.png");

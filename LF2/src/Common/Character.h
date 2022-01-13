@@ -33,6 +33,7 @@ protected:
 public:
 	int CharacterID;
 	RealVector2D LastPosition;
+	int WallID = 0;
 	float MaxSpeed = 200;
 	int JumpSpeedY = -600;
 	int DashSpeedX = 600;
@@ -42,6 +43,7 @@ public:
 	bool JustStateChanged = false;
 	bool Invincible = false;
 	double InvincibleTime = 10;
+	bool AtWall = false;
 	AnimationSheet IdleSheet;
 	AnimationSheet WalkingSheet;
 	AnimationSheet RunningSheet;
@@ -55,6 +57,7 @@ public:
 	AnimationSheet SpecialAttack1Sheet;
 	AnimationSheet SpecialAttack2Sheet;
 	AnimationSheet BurningSheet;
+	AnimationSheet FreezedSheet;
 	AnimationSheet* CurrentSheet;
 	int Up = 0, Down = 0, Right = 0, Left = 0;
 	int ComboStreak = 0; //the index of hitting_animation sheet
@@ -89,6 +92,7 @@ public:
 	void FallFront(int SpeedX);
 	void FallBackCalculations(const double dt, const double t);
 	void FallFrontCalculations(const double dt, const double t);
+	void FreezeCalculations(const double dt, const double t);
 	void SetInvincible();
 	void SetControls(Controls control);
 	//-----------------------------------PLAYER-SPECIFIC-METHODS----------------------------------------

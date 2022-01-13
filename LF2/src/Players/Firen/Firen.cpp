@@ -48,6 +48,9 @@ const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4};
 const std::vector<RealVector2D> BurningLocations = { {560,240}, {560,480}, {240,240},{315,240} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
 
+const std::vector<RealVector2D> FreezeLocations = { {640,0}, {720,0} };
+const std::vector<double> FreezeTimes = { 0.2,4.5 };
+
 Firen::Firen() {
 	DamageHitBox = HitBox(Position, 42, 74, HB_TYPE_DAMAGE);
 	DamageHitBox.AssignPlayer(this);
@@ -79,6 +82,7 @@ Firen::Firen() {
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
+	FreezedSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (FirenTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -97,6 +101,7 @@ Firen::Firen() {
 	FallingBackSheet.AssignTextures(FirenTexFile0, FallingBackLocations, FallingBackTimes, 75, 80);
 	FallingFrontSheet.AssignTextures(FirenTexFile0, FallingFrontLocations, FallingFrontTimes, 75, 80);
 	BurningSheet.AssignTextures(FirenTexFile0, BurningLocations, BurningTimes, 75, 80);
+	FreezedSheet.AssignTextures(FirenTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 
 	if (FirenTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		FirenTexFile1.loadFromFile("Resource/Firen1.png");

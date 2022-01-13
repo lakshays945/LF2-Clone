@@ -1,28 +1,28 @@
-#include "DennisBlueBall.h"
+#include "FreezeBall.h"
 
-sf::Texture BlueBallTexFile;
+sf::Texture FreezeBallTexFile;
 
-const std::vector<RealVector2D> InAirLocations = { {25,0},{107,0},{189,0}, {271,0} };//52 x 46
+const std::vector<RealVector2D> InAirLocations = { {0,0},{84,0},{166,0}, {248,0} };//80 x 81
 const std::vector <double> InAirTimes = { 0.1,0.2,0.3,0.4 };
 
-const std::vector<RealVector2D> EndLocations = { {25,48},{107,48},{189,48},{271,48} };
+const std::vector<RealVector2D> EndLocations = { {0,83},{82,83},{164,83},{246,83} };
 const std::vector <double> EndTimes = { 0.05,0.1,0.15,0.2 };
 
-DennisBlueBall::DennisBlueBall() {
-	if (BlueBallTexFile.getSize() == sf::Vector2u(0, 0)) {
-		BlueBallTexFile.loadFromFile("Resource/DennisBall.png");
+FreezeBall::FreezeBall() {
+	if (FreezeBallTexFile.getSize() == sf::Vector2u(0, 0)) {
+		FreezeBallTexFile.loadFromFile("Resource/FreezeBall.png");
 	}
-	InitialSheet.AssignTextures(BlueBallTexFile, InAirLocations, InAirTimes, 52, 46);
-	InAirSheet.AssignTextures(BlueBallTexFile, InAirLocations, InAirTimes, 52, 46);
-	FastSheet.AssignTextures(BlueBallTexFile, InAirLocations, InAirTimes, 52, 46);
-	EndSheet.AssignTextures(BlueBallTexFile, EndLocations, EndTimes, 52, 44);
-	AttackHitBox = HitBox(Position, 30, 25, HB_TYPE_ATTACK);
+	InitialSheet.AssignTextures(FreezeBallTexFile, InAirLocations, InAirTimes, 75, 81);
+	InAirSheet.AssignTextures(FreezeBallTexFile, InAirLocations, InAirTimes, 75, 81);
+	FastSheet.AssignTextures(FreezeBallTexFile, InAirLocations, InAirTimes, 75, 81);
+	EndSheet.AssignTextures(FreezeBallTexFile, EndLocations, EndTimes, 75, 81);
+	AttackHitBox = HitBox(Position, 30, 25, HB_TYPE_ICE);
 	ReboundHitBox = HitBox(Position, 45, 25, HB_TYPE_REBOUND);
 	MaxStrength = 150;
 	CurrentStrength = MaxStrength;
 }
 
-void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
+void FreezeBall::Animate(sf::RenderWindow& window, const double dt) {
 	if (!IsActive) {
 		return;
 	}
@@ -32,7 +32,7 @@ void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 		return;
 	}
 	AttackHitBox.Center = Position;
-	ReboundHitBox.Center = Position + RealVector2D(Direction*10,0);
+	ReboundHitBox.Center = Position + RealVector2D(Direction * 10, 0);
 	Z_Position = Position.get_y();
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
@@ -60,18 +60,18 @@ void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 	ReboundHitBox.DrawBox(window);
 }
 
-void DennisBlueBall::OnCollision(int otherID, int selfID) {
+void FreezeBall::OnCollision(int otherID, int selfID) {
 	HitBox* self = HitBoxIDArray[selfID];
 	HitBox* other = HitBoxIDArray[otherID];
 	if (other->Game_Object->ID != self->IgnoreObjectID && other->Game_Object->ID != self->Game_Object->ID) {
-		if ((other->Type == HB_TYPE_DAMAGE || other->Type == HB_TYPE_WALL) && self->Type == HB_TYPE_ATTACK) {
+		if ((other->Type == HB_TYPE_DAMAGE || other->Type == HB_TYPE_WALL) && self->Type == HB_TYPE_ICE) {
 			if (other->Type == HB_TYPE_WALL) {
 				AttackHitBox.IsActive = false;
 			}
 			CurrentSheet = &EndSheet;
 			Velocity.SetMagnitude(0);
 		}
-		else if (other->Game_Object->GO_Type == GO_Projectile && (other->Type == HB_TYPE_ATTACK || other->Type == HB_TYPE_FIRE || other->Type == HB_TYPE_ICE) && self->Type == HB_TYPE_ATTACK) {
+		else if (other->Game_Object->GO_Type == GO_Projectile && (other->Type == HB_TYPE_ATTACK || other->Type == HB_TYPE_FIRE || other->Type == HB_TYPE_ICE) && self->Type == HB_TYPE_ICE) {
 			ProjectileBall* ball = (ProjectileBall*)other->Game_Object;
 			CurrentStrength -= ball->MaxStrength;
 			if (CurrentStrength <= 0) {

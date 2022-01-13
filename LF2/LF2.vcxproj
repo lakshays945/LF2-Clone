@@ -43,6 +43,9 @@
     <ClCompile Include="src\Players\Firen\Firen.cpp" />
     <ClCompile Include="src\Players\Firen\FirenGroundFire.cpp" />
     <ClCompile Include="src\Players\Firen\FirenFireBall.cpp" />
+    <ClCompile Include="src\Players\Freeze\Freeze.cpp" />
+    <ClCompile Include="src\Players\Freeze\FreezeBall.cpp" />
+    <ClCompile Include="src\Players\Freeze\IceBerg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common\ProjectileBall.h" />
@@ -67,6 +70,9 @@
     <ClInclude Include="src\Players\Firen\Firen.h" />
     <ClInclude Include="src\Players\Firen\FirenGroundFire.h" />
     <ClInclude Include="src\Players\Firen\FirenFireBall.h" />
+    <ClInclude Include="src\Players\Freeze\Freeze.h" />
+    <ClInclude Include="src\Players\Freeze\FreezeBall.h" />
+    <ClInclude Include="src\Players\Freeze\IceBerg.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LF2.rc" />

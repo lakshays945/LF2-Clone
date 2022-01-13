@@ -6,7 +6,7 @@
 #include "GameObject/GameObject.h"
 
 enum HitBoxType {
-	HB_TYPE_DAMAGE = 0, HB_TYPE_ATTACK = 1, HB_TYPE_REBOUND = 2, HB_TYPE_FIRE = 3,
+	HB_TYPE_DAMAGE = 0, HB_TYPE_ATTACK = 1, HB_TYPE_REBOUND = 2, HB_TYPE_FIRE = 3, HB_TYPE_ICE = 4, HB_TYPE_WALL = 5,
 };
 
 class HitBox {
@@ -44,7 +44,7 @@ public:
 		}
 		circle.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
 		Box.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
-		//window.draw(Box);
+		window.draw(Box);
 		//window.draw(circle);
 	}
 	void RegisterID();
