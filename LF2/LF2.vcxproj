@@ -40,6 +40,7 @@
     <ClCompile Include="src\Players\Dennis\ChaseBall.cpp" />
     <ClCompile Include="src\Players\Dennis\Dennis.cpp" />
     <ClCompile Include="src\Common\HitBox.cpp" />
+    <ClCompile Include="src\Players\Dennis\HelicopterKick.cpp" />
     <ClCompile Include="src\Players\Firen\Firen.cpp" />
     <ClCompile Include="src\Players\Firen\FirenGroundFire.cpp" />
     <ClCompile Include="src\Players\Firen\FirenFireBall.cpp" />
@@ -67,6 +68,7 @@
     <ClInclude Include="src\Players\Dennis\ChaseBall.h" />
     <ClInclude Include="src\Players\Dennis\Dennis.h" />
     <ClInclude Include="src\Common\HitBox.h" />
+    <ClInclude Include="src\Players\Dennis\HelicopterKick.h" />
     <ClInclude Include="src\Players\Firen\Firen.h" />
     <ClInclude Include="src\Players\Firen\FirenGroundFire.h" />
     <ClInclude Include="src\Players\Firen\FirenFireBall.h" />

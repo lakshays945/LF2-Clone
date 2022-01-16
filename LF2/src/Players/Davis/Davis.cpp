@@ -31,10 +31,13 @@ const std::vector <double> JumpingAttackTimes = { 0.1,0.2,0.3,0.4,2 };
 const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
 const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME };
 
-const std::vector<RealVector2D> Getting_HitLocations = { {0,0}, {480,320} };
-const std::vector <double> Getting_HitTimes = { 0.05,0.6 };
+const std::vector<RealVector2D> Getting_HitLocations1 = { {0,0}, {480,320} };
+const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
 
-const std::vector<RealVector2D> FallingBackLocations = { {0,240},{80,240},{160,240},{240,240},{320,240} };
+const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
+const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
+
+const std::vector<RealVector2D> FallingBackLocations = { {80,240},{160,240},{240,240},{320,240},{400,240} };
 const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
 
 const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
@@ -46,7 +49,7 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {0,248}, {80,248}, {160,248}, {240,248}, {320,248}, {400,248}, {480,248}, {560,248} };
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.85 };
 
-const std::vector<RealVector2D> BurningLocations = { {640,0}, {640,80}, {720,480}, {640,480} }; //x,y
+const std::vector<RealVector2D> BurningLocations = { {720,0}, {720,80}, {800,480}, {720,480} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {560,240}, {640,240} };
@@ -54,15 +57,6 @@ const std::vector<double> FreezeTimes = { 0.2,4.5 };
 
 
 Davis::Davis() {
-	//HitBox Assignments
-	DamageHitBox = HitBox(Position, 42, 74, HB_TYPE_DAMAGE);
-	DamageHitBox.AssignPlayer(this);
-	DamageHitBox.RegisterID();
-	DamageHitBox.IsActive = true;
-	AttackHitBox = HitBox(Position, 15, 15, HB_TYPE_ATTACK);
-	AttackHitBox.AssignPlayer(this);
-	AttackHitBox.RegisterID();
-
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);
@@ -75,7 +69,8 @@ Davis::Davis() {
 	HittingSheet[0].AssignPlayer(this);
 	HittingSheet[1].AssignPlayer(this);
 	HittingSheet[2].AssignPlayer(this);
-	Getting_HitSheet.AssignPlayer(this);
+	Getting_HitSheet[0].AssignPlayer(this);
+	Getting_HitSheet[1].AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	JumpingAttackSheet.AssignPlayer(this);
 	DashSheet.AssignPlayer(this);
@@ -98,8 +93,9 @@ Davis::Davis() {
 	JumpingSheet.AssignTextures(DavisTexFile0, JumpingLocations, JumpingTimes, 80, 80);
 	RunningSheet.AssignTextures(DavisTexFile0, RunningLocations, RunningTimes, 80, 80);
 	DashSheet.AssignTextures(DavisTexFile0, DashLocations, DashTimes, 80, 80);
-	Getting_HitSheet.AssignTextures(DavisTexFile0, Getting_HitLocations, Getting_HitTimes, 80, 80);
-	FallingBackSheet.AssignTextures(DavisTexFile0, FallingBackLocations, FallingBackTimes, 80, 80);
+	Getting_HitSheet[0].AssignTextures(DavisTexFile0, Getting_HitLocations1, Getting_HitTimes1, 80, 80);
+	Getting_HitSheet[1].AssignTextures(DavisTexFile0, Getting_HitLocations2, Getting_HitTimes2, 80, 80);
+	FallingBackSheet.AssignTextures(DavisTexFile0, FallingBackLocations, FallingBackTimes, -80, 80);
 	FallingFrontSheet.AssignTextures(DavisTexFile0, FallingFrontLocations, FallingFrontTimes, 80, 80);
 	FreezedSheet.AssignTextures(DavisTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 
@@ -108,7 +104,7 @@ Davis::Davis() {
 		DavisTexFile1.loadFromFile("Resource/Davis1.png");
 	}
 	JumpingAttackSheet.AssignTextures(DavisTexFile1, JumpingAttackLocations, JumpingAttackTimes, 80, 80);
-	BurningSheet.AssignTextures(DavisTexFile1, BurningLocations, BurningTimes, 80, 80);
+	BurningSheet.AssignTextures(DavisTexFile1, BurningLocations, BurningTimes, -80, 70);
 
 	if (DavisTexFile2.getSize() == sf::Vector2u(0, 0)) {
 		DavisTexFile2.loadFromFile("Resource/Davis2.png");
@@ -123,7 +119,8 @@ Davis::Davis() {
 	HittingSheet[1].OneTime = true;
 	HittingSheet[2].OneTime = true;
 	DashSheet.OneTime = true;
-	Getting_HitSheet.OneTime = true;
+	Getting_HitSheet[0].OneTime = true;
+	Getting_HitSheet[1].OneTime = true;
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
@@ -136,8 +133,8 @@ Davis::Davis() {
 	HittingSheet[1].AssignHitbox(1, { 10,0 }, 33, 27);
 	HittingSheet[2].AssignHitbox(2,{ 10,2 }, 25, 49,1);
 	HittingSheet[2].AssignHitbox(6, { 12,0 }, 25, 73,200);
-	SpecialAttack2Sheet.AssignHitbox(1, { 3,3 }, 38, 75,120);
-	SpecialAttack2Sheet.AssignHitbox(3, { 3,0 }, 33, 72, 300);
+	SpecialAttack2Sheet.AssignHitbox(1, { 3,3 }, 50, 75,120);
+	SpecialAttack2Sheet.AssignHitbox(3, { 3,0 }, 40, 72, 300);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
@@ -194,4 +191,8 @@ void Davis::SpecialAttack2Calculations(const double dt, const double t) {
 	}
 	Velocity = Velocity + GravityVector * dt * 1.27;
 	Translate(dt);
+}
+
+void Davis::SpecialAttack3Calculations(const double dt, const double t) {
+	
 }

@@ -31,10 +31,14 @@ const std::vector <double> JumpingAttackTimes = { 0.1,0.25,0.4,2 };
 const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
 const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME };
 
-const std::vector<RealVector2D> Getting_HitLocations = { {0,0}, {480,320} };
-const std::vector <double> Getting_HitTimes = { 0.05,0.6 };
+const std::vector<RealVector2D> Getting_HitLocations1 = { {0,0}, {480,320} };
+const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
 
-const std::vector<RealVector2D> FallingBackLocations = { {0,240},{80,240},{160,240},{240,240},{315,240} };
+const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
+const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
+
+
+const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{315,240},{390,240} };
 const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
 
 const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
@@ -46,22 +50,13 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.5,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {640,0},{720,0},{560,80},{640,80},{720,80}};
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.7 };
 
-const std::vector<RealVector2D> BurningLocations = { {560,240}, {560,480}, {240,240},{315,240} }; //x,y
+const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480}, {315,240},{390,240} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,0}, {720,0} };
 const std::vector<double> FreezeTimes = { 0.2,4.5 };
 
 Freeze::Freeze() {
-	DamageHitBox = HitBox(Position, 42, 74, HB_TYPE_DAMAGE);
-	DamageHitBox.AssignPlayer(this);
-	DamageHitBox.RegisterID();
-	DamageHitBox.SetScale(Scale);
-	DamageHitBox.IsActive = true;
-	AttackHitBox = HitBox(Position, 15, 15, HB_TYPE_ATTACK);
-	AttackHitBox.AssignPlayer(this);
-	AttackHitBox.RegisterID();
-	AttackHitBox.SetScale(Scale);
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);
@@ -74,7 +69,8 @@ Freeze::Freeze() {
 	HittingSheet[0].AssignPlayer(this);
 	HittingSheet[1].AssignPlayer(this);
 	HittingSheet[2].AssignPlayer(this);
-	Getting_HitSheet.AssignPlayer(this);
+	Getting_HitSheet[0].AssignPlayer(this);
+	Getting_HitSheet[1].AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	JumpingAttackSheet.AssignPlayer(this);
 	DashSheet.AssignPlayer(this);
@@ -98,10 +94,11 @@ Freeze::Freeze() {
 	RunningSheet.AssignTextures(FreezeTexFile0, RunningLocations, RunningTimes, 70, 80);
 	JumpingAttackSheet.AssignTextures(FreezeTexFile0, JumpingAttackLocations, JumpingAttackTimes, 80, 80);
 	DashSheet.AssignTextures(FreezeTexFile0, DashLocations, DashTimes, 80, 80);
-	Getting_HitSheet.AssignTextures(FreezeTexFile0, Getting_HitLocations, Getting_HitTimes, 80, 80);
-	FallingBackSheet.AssignTextures(FreezeTexFile0, FallingBackLocations, FallingBackTimes, 75, 80);
+	Getting_HitSheet[0].AssignTextures(FreezeTexFile0, Getting_HitLocations1, Getting_HitTimes1, 80, 80);
+	Getting_HitSheet[1].AssignTextures(FreezeTexFile0, Getting_HitLocations2, Getting_HitTimes2, 80, 80);
+	FallingBackSheet.AssignTextures(FreezeTexFile0, FallingBackLocations, FallingBackTimes, -75, 80);
 	FallingFrontSheet.AssignTextures(FreezeTexFile0, FallingFrontLocations, FallingFrontTimes, 75, 80);
-	BurningSheet.AssignTextures(FreezeTexFile0, BurningLocations, BurningTimes, 75, 80);
+	BurningSheet.AssignTextures(FreezeTexFile0, BurningLocations, BurningTimes, -75, 80);
 	FreezedSheet.AssignTextures(FreezeTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 
 	if (FreezeTexFile1.getSize() == sf::Vector2u(0, 0)) {
@@ -120,7 +117,8 @@ Freeze::Freeze() {
 	HittingSheet[1].OneTime = true;
 	HittingSheet[2].OneTime = true;
 	DashSheet.OneTime = true;
-	Getting_HitSheet.OneTime = true;
+	Getting_HitSheet[0].OneTime = true;
+	Getting_HitSheet[1].OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
 	SpecialAttack2Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
@@ -131,8 +129,8 @@ Freeze::Freeze() {
 	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31, 200);
 	HittingSheet[0].AssignHitbox(1, { 24,17 }, 22, 45);
 	HittingSheet[1].AssignHitbox(1, { 11,19 }, 32, 42);
-	HittingSheet[2].AssignHitbox(1, { 5,3 }, 32, 46);
-	HittingSheet[2].AssignHitbox(5, { 5,16 }, 42, 49, 200);
+	HittingSheet[2].AssignHitbox(1, { 10,3 }, 36, 46);
+	HittingSheet[2].AssignHitbox(5, { 10,16 }, 42, 54, 200);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
@@ -225,4 +223,8 @@ void Freeze::SpecialAttack2Calculations(const double dt, const double t) {
 	else if ((t - dt - 0.69) * (t - 0.69) <= 0) {
 		BergArray1[IceBergIndex].Instantiate(Position + RealVector2D(Direction * 160, -20));
 	}
+}
+
+void Freeze::SpecialAttack3Calculations(const double dt, const double t)
+{
 }

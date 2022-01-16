@@ -92,7 +92,8 @@ void InputManager::SetControls(Controls control) {
 	KeyToState[control.JumpKey] = JUMPING;
 	KeyToState[control.SpecialAttack1Key] = SPECIALATTACK1;
 	KeyToState[control.SpecialAttack2Key] = SPECIALATTACK2;
-	KeyToState[sf::Keyboard::F] = FALLINGFRONT;
+	KeyToState[control.SpecialAttack3Key] = SPECIALATTACK3;
+	KeyToState[sf::Keyboard::F] = FREEZED;
 	KeyToState[sf::Keyboard::G] = FALLINGBACK;
 	DoubleKeyToState[control.RightKey] = RUNNING;
 	DoubleKeyToState[control.LeftKey] = RUNNING;

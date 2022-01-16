@@ -3,7 +3,7 @@
 #include "Common/AnimationSheet.h"
 
 struct Controls {
-	sf::Keyboard::Key UpKey, DownKey, LeftKey, RightKey, JumpKey, AttackKey, SpecialAttack1Key, SpecialAttack2Key;
+	sf::Keyboard::Key UpKey, DownKey, LeftKey, RightKey, JumpKey, AttackKey, SpecialAttack1Key, SpecialAttack2Key, SpecialAttack3Key;
 };
 
 class Character;

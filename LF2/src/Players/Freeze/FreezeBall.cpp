@@ -32,7 +32,7 @@ void FreezeBall::Animate(sf::RenderWindow& window, const double dt) {
 		return;
 	}
 	AttackHitBox.Center = Position;
-	ReboundHitBox.Center = Position + RealVector2D(Direction * 10, 0);
+	ReboundHitBox.Center = Position + RealVector2D(Direction * 15, 0);
 	Z_Position = Position.get_y();
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
@@ -73,6 +73,9 @@ void FreezeBall::OnCollision(int otherID, int selfID) {
 		}
 		else if (other->Game_Object->GO_Type == GO_Projectile && (other->Type == HB_TYPE_ATTACK || other->Type == HB_TYPE_FIRE || other->Type == HB_TYPE_ICE) && self->Type == HB_TYPE_ICE) {
 			ProjectileBall* ball = (ProjectileBall*)other->Game_Object;
+			if (ball->AttackHitBox.IgnoreObjectID == AttackHitBox.IgnoreObjectID) {
+				return;
+			}
 			CurrentStrength -= ball->MaxStrength;
 			if (CurrentStrength <= 0) {
 				CurrentSheet = &EndSheet;

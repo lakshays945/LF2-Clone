@@ -77,8 +77,14 @@ void HitBox::RegisterID() {
 	else if (Type == HB_TYPE_ICE) {
 		Box.setOutlineColor(sf::Color(0, 255, 255));
 	}
+	else if (Type == HB_TYPE_FIRE) {
+		Box.setOutlineColor(sf::Color(255, 255, 0));
+	}
 	else if (Type == HB_TYPE_WALL) {
 		Box.setOutlineColor(sf::Color(0, 0, 0));
+	}
+	else if (Type == HB_TYPE_TRIGGER) {
+		Box.setOutlineColor(sf::Color(255, 255, 255));
 	}
 }
 

@@ -81,5 +81,6 @@ void ProjectileBall::AssignParent(GameObject* parent) {
 }
 
 void ProjectileBall::Rebound() {
+	AttackHitBox.IgnoreObjectID = -1;
 	Velocity = Velocity * (-1);
 }

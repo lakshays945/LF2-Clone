@@ -30,10 +30,14 @@ const std::vector <double> JumpingAttackTimes = { 0.1,0.25,0.4,2 };
 const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
 const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME };
 
-const std::vector<RealVector2D> Getting_HitLocations = { {0,0}, {480,320} };
-const std::vector <double> Getting_HitTimes = { 0.05,0.6 };
+const std::vector<RealVector2D> Getting_HitLocations1 = { {0,0}, {480,320} };
+const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
 
-const std::vector<RealVector2D> FallingBackLocations = { {0,240},{80,240},{160,240},{240,240},{315,240} };
+const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
+const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
+
+
+const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{315,240},{390,240} };
 const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
 
 const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
@@ -45,22 +49,13 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {0,175}, {80,175}, {160,175}, {80,175}};
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4};
 
-const std::vector<RealVector2D> BurningLocations = { {560,240}, {560,480}, {240,240},{315,240} }; //x,y
+const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480}, {315,240},{390,240} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,0}, {720,0} };
 const std::vector<double> FreezeTimes = { 0.2,4.5 };
 
 Firen::Firen() {
-	DamageHitBox = HitBox(Position, 42, 74, HB_TYPE_DAMAGE);
-	DamageHitBox.AssignPlayer(this);
-	DamageHitBox.RegisterID();
-	DamageHitBox.SetScale(Scale);
-	DamageHitBox.IsActive = true;
-	AttackHitBox = HitBox(Position, 15, 15, HB_TYPE_ATTACK);
-	AttackHitBox.AssignPlayer(this);
-	AttackHitBox.RegisterID();
-	AttackHitBox.SetScale(Scale);
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);
@@ -73,7 +68,8 @@ Firen::Firen() {
 	HittingSheet[0].AssignPlayer(this);
 	HittingSheet[1].AssignPlayer(this);
 	HittingSheet[2].AssignPlayer(this);
-	Getting_HitSheet.AssignPlayer(this);
+	Getting_HitSheet[0].AssignPlayer(this);
+	Getting_HitSheet[1].AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	JumpingAttackSheet.AssignPlayer(this);
 	DashSheet.AssignPlayer(this);
@@ -97,10 +93,11 @@ Firen::Firen() {
 	RunningSheet.AssignTextures(FirenTexFile0, RunningLocations, RunningTimes, 70, 80);
 	JumpingAttackSheet.AssignTextures(FirenTexFile0, JumpingAttackLocations, JumpingAttackTimes, 80, 80);
 	DashSheet.AssignTextures(FirenTexFile0, DashLocations, DashTimes, 80, 80);
-	Getting_HitSheet.AssignTextures(FirenTexFile0, Getting_HitLocations, Getting_HitTimes, 80, 80);
-	FallingBackSheet.AssignTextures(FirenTexFile0, FallingBackLocations, FallingBackTimes, 75, 80);
+	Getting_HitSheet[0].AssignTextures(FirenTexFile0, Getting_HitLocations1, Getting_HitTimes1, 80, 80);
+	Getting_HitSheet[1].AssignTextures(FirenTexFile0, Getting_HitLocations2, Getting_HitTimes2, 80, 80);
+	FallingBackSheet.AssignTextures(FirenTexFile0, FallingBackLocations, FallingBackTimes, -75, 80);
 	FallingFrontSheet.AssignTextures(FirenTexFile0, FallingFrontLocations, FallingFrontTimes, 75, 80);
-	BurningSheet.AssignTextures(FirenTexFile0, BurningLocations, BurningTimes, 75, 80);
+	BurningSheet.AssignTextures(FirenTexFile0, BurningLocations, BurningTimes, -75, 80);
 	FreezedSheet.AssignTextures(FirenTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 
 	if (FirenTexFile1.getSize() == sf::Vector2u(0, 0)) {
@@ -115,7 +112,8 @@ Firen::Firen() {
 	HittingSheet[1].OneTime = true;
 	HittingSheet[2].OneTime = true;
 	DashSheet.OneTime = true;
-	Getting_HitSheet.OneTime = true;
+	Getting_HitSheet[0].OneTime = true;
+	Getting_HitSheet[1].OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
 	//SpecialAttack2Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
@@ -199,7 +197,7 @@ void Firen::SpecialAttack2Calculations(const double dt, const double t) {
 		}
 	}
 	Translate(dt);
-	if ((Input_Manager.IsKeyPressed(PlayerControl.RightKey) || Input_Manager.IsKeyPressed(PlayerControl.LeftKey) || Input_Manager.IsKeyPressed(PlayerControl.JumpKey)) && t > 0.5) {
+	if ((Input_Manager.IsKeyPressed(PlayerControl.RightKey) || Input_Manager.IsKeyPressed(PlayerControl.LeftKey) || Input_Manager.IsKeyPressed(PlayerControl.JumpKey)) && t > 1) {
 		State_Manager.ForceStateChange(IDLE, 0);
 	}
 	if (t > FireSpawned*FireRunSpawnRate) {
@@ -212,4 +210,8 @@ void Firen::SpecialAttack2Calculations(const double dt, const double t) {
 			}
 		}
 	}
+}
+
+void Firen::SpecialAttack3Calculations(const double dt, const double t)
+{
 }

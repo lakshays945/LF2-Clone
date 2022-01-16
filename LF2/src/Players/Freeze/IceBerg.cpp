@@ -62,11 +62,10 @@ void IceBerg::Instantiate(RealVector2D position) {
 		Wall->AttackHitBox.SetSize(80, 135);
 	}
 	else {
-		DEBUG_INFO("SPAWNED");
 		Wall->ActiveBergs[0] = 1;
 		if (Wall->ActiveBergs[2]) {
-			Wall->Instantiate(position - RealVector2D(50 * Direction, 0));
-			Wall->WallHitBox.SetSize(170, 135);
+			Wall->Instantiate(position - RealVector2D(55 * Direction, 0));
+			Wall->WallHitBox.SetSize(175, 135);
 		}
 		else if(!Wall->ActiveBergs[1] && !Wall->ActiveBergs[2]) {
 			Wall->Instantiate(position - RealVector2D(10 * Direction, 0));
@@ -83,9 +82,6 @@ void IceBerg::Instantiate(RealVector2D position) {
 }
 
 void IceBerg::GoBack() {
-	if (Index == 1) {
-		DEBUG_INFO("Destroyed");
-	}
 	IsActive = false;
 	Position = Parent->Position;
 	Wall->ReduceSize(Index);
@@ -158,7 +154,6 @@ void IceBergWall::ReduceSize(int index) {
 	if (index == 2) {
 		if (ActiveBergs[0] && ActiveBergs[1]) {
 			WallHitBox.Center = WallHitBox.Center + RealVector2D(20 * Direction, 0);
-			DEBUG_INFO("HERE");
 			WallHitBox.SetSize(135, 135);
 		}
 		else if (!ActiveBergs[0] && ActiveBergs[1]) {
@@ -228,10 +223,20 @@ void IceBergWall::OnCollision(int otherID, int selfID) {
 		CanCollide[otherID][selfID] = true;
 		CanCollide[selfID][otherID] = true;
 	}
-	if ((otherType == HB_TYPE_FIRE || otherType == HB_TYPE_ATTACK || otherType == HB_TYPE_ICE) && HitBoxIDArray[otherID]->Game_Object != this) {
-		if (HitBoxIDArray[selfID]->Type == HB_TYPE_ICE) {
-			return;
+	if (HitBoxIDArray[selfID]->Type == HB_TYPE_ICE && otherType == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Game_Object != IceBergArray[0]->Parent) {
+		GameObject* goCollided = HitBoxIDArray[otherID]->Game_Object;
+		if (goCollided->GO_Type == GO_Character) {
+			if (Z_Position > goCollided->Z_Position) {
+				goCollided->Position = goCollided->Position + RealVector2D(0, (Z_Position - goCollided->Z_Position) - 25);
+			}
+			else {
+				goCollided->Position = goCollided->Position + RealVector2D(0, (Z_Position - goCollided->Z_Position) + 25);
+			}
+			goCollided->Z_Position = goCollided->Position.get_y();
 		}
+		return;
+	}
+	if ((otherType == HB_TYPE_FIRE || otherType == HB_TYPE_ATTACK || otherType == HB_TYPE_ICE) && HitBoxIDArray[otherID]->Game_Object != this) {
 		if (HitBoxIDArray[otherID]->Game_Object->Direction*Direction == -1) {
 			for (int i = 0; i < 3; i++) {
 				if (IceBergArray[i]->IsActive) {
@@ -242,8 +247,6 @@ void IceBergWall::OnCollision(int otherID, int selfID) {
 		}
 		else {
 			for (int i = 2; i >= 0; i--) {
-				DEBUG_INFO("other ID = {}", otherID);
-				DEBUG_INFO("self ID = {}", selfID);
 				if (IceBergArray[i]->IsActive) {
 					IceBergArray[i]->GoBack();
 					break;

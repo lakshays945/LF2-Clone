@@ -14,4 +14,5 @@ public:
 	int IceBergIndex = 0;
 	void SpecialAttack1Calculations(const double dt, const double t);
 	void SpecialAttack2Calculations(const double dt, const double t);
+	void SpecialAttack3Calculations(const double dt, const double t);
 };

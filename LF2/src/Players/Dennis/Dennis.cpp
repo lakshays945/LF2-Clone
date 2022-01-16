@@ -31,10 +31,13 @@ const std::vector <double> JumpingAttackTimes = { 0.15,0.4,0.55,2 };
 const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
 const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME };
 
-const std::vector<RealVector2D> Getting_HitLocations = { {0,0}, {480,320} };
-const std::vector <double> Getting_HitTimes = { 0.05,0.6 };
+const std::vector<RealVector2D> Getting_HitLocations1 = { {0,0}, {480,320} };
+const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
 
-const std::vector<RealVector2D> FallingBackLocations = { {0,240},{80,240},{160,240},{240,240},{320,240} };
+const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
+const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
+
+const std::vector<RealVector2D> FallingBackLocations = { {80,240},{160,240},{240,240},{320,240},{400,240} };
 const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
 
 const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
@@ -46,7 +49,10 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {80,335}, {160,335}, {240,335}, {320,335}, {400,335}, {480,335}, {560,335} };
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7 };
 
-const std::vector<RealVector2D> BurningLocations = { {640,0}, {640,80}, {400,480}, {400,480} }; //x,y
+const std::vector<RealVector2D> SpecialAttack3Locations = { {0,255}, {80,255}, {160,255}, {240,255}, {320,255}, {400,255}, {480,255}, {400,255}, {320,255}, {0,335}, {640,255} };
+const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,1,1.2,1.4};
+
+const std::vector<RealVector2D> BurningLocations = { {720,0}, {720,80}, {480,480}, {480,480} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,0.8,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {560,480}, {640,480} };
@@ -54,17 +60,6 @@ const std::vector<double> FreezeTimes = { 0.2,4.5 };
 
 
 Dennis::Dennis() {
-	//HitBox Assignments
-	DamageHitBox = HitBox(Position, 42, 74,HB_TYPE_DAMAGE);
-	DamageHitBox.AssignPlayer(this);
-	DamageHitBox.RegisterID();
-	DamageHitBox.SetScale(Scale);
-	DamageHitBox.IsActive = true;
-	AttackHitBox = HitBox(Position, 15, 15, HB_TYPE_ATTACK);
-	AttackHitBox.AssignPlayer(this);
-	AttackHitBox.RegisterID();
-	AttackHitBox.SetScale(Scale);
-
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);
@@ -77,16 +72,19 @@ Dennis::Dennis() {
 	HittingSheet[0].AssignPlayer(this);
 	HittingSheet[1].AssignPlayer(this);
 	HittingSheet[2].AssignPlayer(this);
-	Getting_HitSheet.AssignPlayer(this);
+	Getting_HitSheet[0].AssignPlayer(this);
+	Getting_HitSheet[1].AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	JumpingAttackSheet.AssignPlayer(this);
 	DashSheet.AssignPlayer(this);
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
+	SpecialAttack3Sheet.AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
 	FreezedSheet.AssignPlayer(this);
+
 
 	//Sprite and Texture Loadindg{
 	if (DennisTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -101,8 +99,9 @@ Dennis::Dennis() {
 	RunningSheet.AssignTextures(DennisTexFile0, RunningLocations, RunningTimes, 80, 80);
 	JumpingAttackSheet.AssignTextures(DennisTexFile0,JumpingAttackLocations, JumpingAttackTimes, 80, 80);
 	DashSheet.AssignTextures(DennisTexFile0, DashLocations, DashTimes, 80, 80);
-	Getting_HitSheet.AssignTextures(DennisTexFile0, Getting_HitLocations, Getting_HitTimes, 80, 80);
-	FallingBackSheet.AssignTextures(DennisTexFile0, FallingBackLocations, FallingBackTimes, 80, 80);
+	Getting_HitSheet[0].AssignTextures(DennisTexFile0, Getting_HitLocations1, Getting_HitTimes1, 80, 80);
+	Getting_HitSheet[1].AssignTextures(DennisTexFile0, Getting_HitLocations2, Getting_HitTimes2, 80, 80);
+	FallingBackSheet.AssignTextures(DennisTexFile0, FallingBackLocations, FallingBackTimes, -80, 80);
 	FallingFrontSheet.AssignTextures(DennisTexFile0, FallingFrontLocations, FallingFrontTimes, 80, 80);
 	FreezedSheet.AssignTextures(DennisTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 
@@ -110,12 +109,13 @@ Dennis::Dennis() {
 		DennisTexFile1.loadFromFile("Resource/Dennis1.png");
 	};
 	SpecialAttack1Sheet.AssignTextures(DennisTexFile1, SpecialAttack1Locations, SpecialAttack1Times, 80, 80);
-	SpecialAttack2Sheet.AssignTextures(DennisTexFile1, SpecialAttack2Locations,SpecialAttack2Times, 80, 80);
+	SpecialAttack2Sheet.AssignTextures(DennisTexFile1, SpecialAttack2Locations, SpecialAttack2Times, 80, 80);
+	SpecialAttack3Sheet.AssignTextures(DennisTexFile1, SpecialAttack3Locations,SpecialAttack3Times, 80, 80);
 
 	if (DennisTexFile2.getSize() == sf::Vector2u(0, 0)) {
 		DennisTexFile2.loadFromFile("Resource/Dennis2.png");
 	};
-	BurningSheet.AssignTextures(DennisTexFile2, BurningLocations, BurningTimes, 80, 80);
+	BurningSheet.AssignTextures(DennisTexFile2, BurningLocations, BurningTimes, -80, 80);
 
 	//Setting One Time Animations
 	JumpingSheet.OneTime = true;
@@ -123,18 +123,23 @@ Dennis::Dennis() {
 	HittingSheet[1].OneTime = true;
 	HittingSheet[2].OneTime = true;
 	DashSheet.OneTime = true;
-	Getting_HitSheet.OneTime = true;
+	Getting_HitSheet[0].OneTime = true;
+	Getting_HitSheet[1].OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
 	SpecialAttack2Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
 	BurningSheet.OneTime = true;
+	SpecialAttack3Sheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(1, { 20,12 }, 40, 26,200);
 	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
 	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
 	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50,200);
+	SpecialAttack3Sheet.AssignHitbox(2, { 20,9 }, 60, 37,-350);
+	SpecialAttack3Sheet.AssignHitbox(4, { -14.0f,15.0f }, 41, 38,-350);
+	SpecialAttack3Sheet.AssignHitbox(6, { 20,12 }, 60, 32,-350);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
@@ -172,6 +177,12 @@ Dennis::Dennis() {
 		ChaseBallArray[i].AttackHitBox.RegisterID();
 		ChaseBallArray[i].ReboundHitBox.RegisterID();
 	}
+	Helicopter_Kick.RegisterGameObject(GO_Null);
+	Helicopter_Kick.RegisterHitBox.RegisterID();
+	Helicopter_Kick.RegisterHitBox.AssignPlayer(&Helicopter_Kick);
+	Helicopter_Kick.ProjectileReboundHitBox.RegisterID();
+	Helicopter_Kick.ProjectileReboundHitBox.AssignPlayer(&Helicopter_Kick);
+	Helicopter_Kick.AssignParent(this);
 }
 
 void Dennis::SpecialAttack1Calculations(const double dt, const double t) {
@@ -194,5 +205,27 @@ void Dennis::SpecialAttack2Calculations(const double dt, const double t) {
 			}
 		}
 	}
+}
+
+void Dennis::SpecialAttack3Calculations(const double dt, const double t){
+	if ((Input_Manager.IsKeyPressed(PlayerControl.LeftKey) || Input_Manager.IsKeyPressed(PlayerControl.RightKey)) && t > 0.8) {
+		if (CurrentSheet->Time < 1) {
+			CurrentSheet->Time = 1.1;
+			Stop();
+			Position = RealVector2D(Position.get_x(), Z_Position);
+		}
+		
+	}
+	if (CurrentSheet->Time > 0.9 && CurrentSheet->Time < 1.0) {
+		CurrentSheet->Time = 0.31;
+	}
+	else if (t - dt <= 0) {
+		Velocity = RealVector2D(0, -50);
+	}
+	else if ((t - dt - 0.3) * (t - 0.3) < 0) {
+		Helicopter_Kick.Instantiate(Position);
+		Velocity = RealVector2D(250 * Direction, 0);
+	}
+	Translate(dt);
 }
 

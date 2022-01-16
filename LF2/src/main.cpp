@@ -30,6 +30,7 @@ int main() {
 		Player1Control.JumpKey = sf::Keyboard::Space;
 		Player1Control.SpecialAttack1Key = sf::Keyboard::T;
 		Player1Control.SpecialAttack2Key = sf::Keyboard::Y;
+		Player1Control.SpecialAttack3Key = sf::Keyboard::U;
 	}
 	{
 		Player2Control.UpKey = sf::Keyboard::Up;
@@ -40,14 +41,15 @@ int main() {
 		Player2Control.JumpKey = sf::Keyboard::RShift;
 		Player2Control.SpecialAttack1Key = sf::Keyboard::K;
 		Player2Control.SpecialAttack2Key = sf::Keyboard::L;
+		Player2Control.SpecialAttack3Key = sf::Keyboard::J;
 	}
-	Davis Player2;
-	Freeze Player;
+	Firen Player2;
+	Dennis Player;
 	//Player.SetScale({ 1.2f,1.2f });
 	//Player2.SetScale({ 1.2f,1.2f });
 	Player.SetControls(Player1Control);
 	Player2.SetControls(Player2Control);
-	Dennis Player3;
+	Davis Player3;
 	Firen Player4;
 	EffectManager Eff_Manager(&window);
 	Player.AssignEffectManager(&Eff_Manager);
@@ -56,7 +58,7 @@ int main() {
 	Player4.AssignEffectManager(&Eff_Manager);
 	Player2.Position = { 400,400 };
 	Player3.Position = { 500,400 };
-	Player4.Position = { 400,600 };
+	Player4.Position = { 600,400 };
 	sf::Clock Clock;
 	while (window.isOpen()) {
 		DeltaTime = (Clock.getElapsedTime()).asSeconds();
@@ -82,8 +84,8 @@ int main() {
 		window.clear(sf::Color(50, 60, 30));
 		Player.Input_Manager.Update(DeltaTime);
 		Player2.Input_Manager.Update(DeltaTime);
-		//Player3.Input_Manager.Update(DeltaTime);
-		//Player4.Input_Manager.Update(DeltaTime);
+		Player3.Input_Manager.Update(DeltaTime);
+		Player4.Input_Manager.Update(DeltaTime);
 		HandleCollisions();
 		//UpdateInputs();
 		Player.Update(DeltaTime, window);
@@ -97,7 +99,6 @@ int main() {
 		}
 		Eff_Manager.Update(DeltaTime);
 		window.display();
-		//DEBUG_INFO("Fps = {}", 1 / DeltaTime);
 	}
 	return 0;
 }

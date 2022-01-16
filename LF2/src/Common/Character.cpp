@@ -6,6 +6,20 @@ double deltaTime = 0;
 
 //Constructor 
 Character::Character() {
+	DamageHitBox = HitBox(Position, 42, 74, HB_TYPE_DAMAGE);
+	DamageHitBox.AssignPlayer(this);
+	DamageHitBox.RegisterID();
+	DamageHitBox.IsActive = true;
+	AttackHitBox = HitBox(Position, 15, 15, HB_TYPE_ATTACK);
+	AttackHitBox.AssignPlayer(this);
+	AttackHitBox.RegisterID();
+	WallHitBox = HitBox(Position, 54, 74, HB_TYPE_WALL);
+	WallHitBox.AssignPlayer(this);
+	WallHitBox.RegisterID();
+	BurningHitBox = HitBox(Position, 42, 74, HB_TYPE_FIRE);
+	BurningHitBox.AssignPlayer(this);
+	BurningHitBox.RegisterID();
+	BurningHitBox.KnockOutPower = 200;
 	JumpGravityFactor = JUMP_GRAVITY_FACTOR;
 	JumpSpeedY = DEFAULT_JUMP_VELOCITY;
 	DashSpeedX = DEFAULT_DASH_VELOCITY_X;
@@ -29,7 +43,8 @@ void Character::SetScale(RealVector2D scale) {
 	HittingSheet[0].SetScale(Scale);
 	HittingSheet[1].SetScale(Scale);
 	HittingSheet[2].SetScale(Scale);
-	Getting_HitSheet.SetScale(Scale);
+	Getting_HitSheet[0].SetScale(Scale);
+	Getting_HitSheet[1].SetScale(Scale);
 	FallingBackSheet.SetScale(Scale);
 	JumpingAttackSheet.SetScale(Scale);
 	DashSheet.SetScale(Scale);
@@ -64,15 +79,21 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		//Position = Position + RealVector2D(Direction * 10, 0);
 		break;
 	case GETTING_HIT:
+		Velocity = RealVector2D(data, 0);
 		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 4);
 		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_BLOOD, Position,0);
 		//Effect_Manager->DrawEffect(EFFECT_IMAGE_BLOOD, Position, 0.3,2);
-		CurrentSheet = &Getting_HitSheet;
+		if (CurrentSheet == &Getting_HitSheet[0]) {
+			CurrentSheet = &Getting_HitSheet[1];
+		}
+		else {
+			CurrentSheet = &Getting_HitSheet[0];
+		}
 		break;
 	case FALLINGBACK:
 		CurrentSheet = &FallingBackSheet;
 		FallBack(data);
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position - Velocity*(0.15), 2);
+		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position + Velocity*(0.15), 2);
 		break;
 	case FALLINGFRONT:
 		CurrentSheet = &FallingFrontSheet;
@@ -91,6 +112,9 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		break;
 	case SPECIALATTACK2:
 		CurrentSheet = &SpecialAttack2Sheet;
+		break;
+	case SPECIALATTACK3:
+		CurrentSheet = &SpecialAttack3Sheet;
 		break;
 	case FREEZED:
 		CurrentSheet = &FreezedSheet;
@@ -137,7 +161,9 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 	case HITTING:
 		break;
 	case GETTING_HIT:
-
+		if (TimeSinceLastState < 0.2) {
+			Translate(dt);
+		}
 		break;
 	case FALLINGBACK:
 		FallBackCalculations(dt, TimeSinceLastState);
@@ -156,6 +182,9 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 		break;
 	case SPECIALATTACK2:
 		SpecialAttack2Calculations(dt, TimeSinceLastState);
+		break;
+	case SPECIALATTACK3:
+		SpecialAttack3Calculations(dt, TimeSinceLastState);
 		break;
 	case FREEZED:
 		FreezeCalculations(dt, TimeSinceLastState);
@@ -293,7 +322,7 @@ void Character::Translate(const double dt) {
 		double w1 = HitBoxIDArray[WallID]->Width;
 		double w2 = DamageHitBox.Width;
 		double dx = abs(DamageHitBox.Center.get_x() - pos.get_x());
-		if ((dx < (w1 + w2) / 2 && abs(DamageHitBox.Center.get_x() - Direction*500*dt - pos.get_x()) >= (w1 + w2) / 2) || dx > (w1+w2)/2) {
+		if ((dx < (w1 + w2) / 2 && abs(DamageHitBox.Center.get_x() - Direction*15 - pos.get_x()) >= (w1 + w2) / 2) || dx > (w1+w2)/2) {
 			Position = Position - RealVector2D(Velocity.get_x(),0) * dt;
 		}
 		else {
@@ -302,6 +331,7 @@ void Character::Translate(const double dt) {
 	}
 	DamageHitBox.Center = Position;
 }
+
 void Character::Animate(sf::RenderWindow& window, const double dt) { //give it an animation sheet (not as a parameter) and window and it will animate
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
@@ -315,10 +345,10 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	circle.setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	circle.setRadius(2);
 	circle.setFillColor(sf::Color(0, 0, 0, 255));*/
-	if (Velocity.get_x() < 0) {
+	if (Velocity.get_x() < 0 && CurrentState != GETTING_HIT) {
 		Direction = -1;
 	}
-	else if (Velocity.get_x() > 0) {
+	else if (Velocity.get_x() > 0 && CurrentState != GETTING_HIT) {
 		Direction = 1;
 	}
 	current->setScale(Scale.get_x()*Direction, Scale.get_y());
@@ -342,18 +372,24 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	}
 	window.draw(*current);
 	DamageHitBox.DrawBox(window);
+	WallHitBox.DrawBox(window);
+	BurningHitBox.DrawBox(window);
 	//window.draw(circle);
 }
 
 void Character::OnCollision(int otherID, int selfID) {
-	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object) {
+	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object || HitBoxIDArray[otherID]->Type == HB_TYPE_TRIGGER) {
 		return;
+	}
+	if (HitBoxIDArray[selfID]->Type == HB_TYPE_WALL) {
+		CanCollide[otherID][selfID] = true;
+		CanCollide[selfID][otherID] = true;
 	}
 	if (HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Type == HB_TYPE_WALL) {
 		AtWall = true;
 		WallID = otherID;
 	}
-	if ((HitBoxIDArray[otherID]->KnockOutPower) && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK || HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE)) {
+	if ((HitBoxIDArray[otherID]->KnockOutPower > 0) && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK || HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE)) {
 		if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
 			State_Manager.TryStateChange(FALLINGBACK, 0, HitBoxIDArray[otherID]->KnockOutPower);
 		}
@@ -362,11 +398,15 @@ void Character::OnCollision(int otherID, int selfID) {
 		}
 		if (HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE) {
 			CurrentSheet = &BurningSheet;
+			BurningHitBox.Center = Position;
+			BurningHitBox.IsActive = true;
 			SetInvincible();
 		}
 	}
 	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ICE && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
-		if (CurrentState == FREEZED || Z_Position != Position.get_y()) {
+		if (CurrentState == FREEZED) {
+			WallHitBox.IsActive = false;
+			DamageHitBox.SetSize(42, 74);
 			if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
 				State_Manager.TryStateChange(FALLINGBACK, 0, 60);
 			}
@@ -376,29 +416,33 @@ void Character::OnCollision(int otherID, int selfID) {
 			SetInvincible();
 		}
 		else {
+			WallHitBox.IsActive = true;
+			DamageHitBox.SetSize(66, 74);
 			State_Manager.ForceStateChange(FREEZED);
 		}
 	}
 	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
 		if (Z_Position != Position.get_y() || CurrentState == FREEZED) {
+			WallHitBox.IsActive = false;
+			DamageHitBox.SetSize(42, 74);
 			if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
-				State_Manager.TryStateChange(FALLINGBACK, 0, 60);
+				State_Manager.TryStateChange(FALLINGBACK, 0, 100);
 			}
 			else {
-				State_Manager.TryStateChange(FALLINGFRONT, 0, 60);
+				State_Manager.TryStateChange(FALLINGFRONT, 0, 100);
 			}
 			return;
 		}
-		State_Manager.TryStateChange(GETTING_HIT,0);
+		State_Manager.TryStateChange(GETTING_HIT,0,-HitBoxIDArray[otherID]->KnockOutPower*HitBoxIDArray[otherID]->Game_Object->Direction);
 	}
 }
 
 void Character::FallBack(int SpeedX) {
 	double x = Position.get_y() - Z_Position;
 	double g = FALL_GRAVITY_SCALE * GravityVector.get_y();
-	double Vy = -(0.5 * g * FALL_DURATION * FALL_DURATION - x) / FALL_DURATION;
-	Velocity = RealVector2D(SpeedX *Direction,Vy);
-	LastPosition = RealVector2D(Position.get_x() - SpeedX * FALL_DURATION * Direction, Z_Position);
+	double Vy = (0.5 * g * FALL_DURATION * FALL_DURATION - x) / FALL_DURATION;
+	Velocity = RealVector2D(SpeedX *(-Direction),Vy);
+	LastPosition = RealVector2D(Position.get_x() + SpeedX * FALL_DURATION * (-Direction), Z_Position);
 }
 
 void Character::FallFront(int SpeedX) {
@@ -406,11 +450,14 @@ void Character::FallFront(int SpeedX) {
 	double g = FALL_GRAVITY_SCALE * GravityVector.get_y();
 	double Vy = (0.5 * g * FALL_DURATION * FALL_DURATION - x) / FALL_DURATION;
 	Velocity = RealVector2D(SpeedX * Direction, Vy);
-	DEBUG_INFO("Vx = {0} ", Velocity.get_x());
 	LastPosition = RealVector2D(Position.get_x() + SpeedX * FALL_DURATION * Direction, Z_Position);
 }
 
 void Character::FallBackCalculations(const double dt, const double t) {
+	BurningHitBox.Center = Position;
+	if (t > 0.5) {
+		BurningHitBox.IsActive = false;
+	}
 	if (t > FALL_DURATION) {
 		SetInvincible();
 		Stop();
@@ -423,11 +470,15 @@ void Character::FallBackCalculations(const double dt, const double t) {
 			LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
 		}
 	}
-	Velocity = Velocity + GravityVector * (dt*FALL_GRAVITY_SCALE);
-	Translate(-dt);
+	Velocity = Velocity - GravityVector * (dt*FALL_GRAVITY_SCALE);
+	Translate(dt);
 }
 
 void Character::FallFrontCalculations(const double dt, const double t) {
+	BurningHitBox.Center = Position;
+	if (t > 0.5) {
+		BurningHitBox.IsActive = false;
+	}
 	if (t > FALL_DURATION) {
 		SetInvincible();
 		Stop();
@@ -445,7 +496,22 @@ void Character::FallFrontCalculations(const double dt, const double t) {
 }
 
 void Character::FreezeCalculations(const double dt, const double t) {
+	if (AtWall) {
+		WallHitBox.IsActive = false;
+	}
+	WallHitBox.Center = Position;
+	if (Z_Position > Position.get_y()) {
+		Position = Position + RealVector2D(Velocity.get_x()/2, 250) * dt;
+		DamageHitBox.Center = Position;
+	}
+	else {
+		Stop();
+		Position = RealVector2D(Position.get_x(), Z_Position);
+	}
 	if (t > 3.2) {
+		WallHitBox.IsActive = false;
+		WallHitBox.IgnoreObjectID = -1;
+		DamageHitBox.SetSize(42, 74);
 		SetInvincible();
 		State_Manager.ForceStateChange(FALLINGBACK);
 	}

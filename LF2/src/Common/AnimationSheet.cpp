@@ -26,7 +26,7 @@ void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vecto
 		Sprites.push_back(sf::Sprite());
 		Sprites[i].setTexture(textureSheet);
 		Sprites[i].setTextureRect(sf::IntRect(locations[i].get_x(), locations[i].get_y(), sizeX, sizeY));
-		Sprites[i].setOrigin(sf::Vector2f(sizeX/2, sizeY/2));
+		Sprites[i].setOrigin(sf::Vector2f(abs(sizeX/2), sizeY/2));
 	}
 	for (int i = 0; i < times.size(); i++) {
 		Sprites[i].setScale(sf::Vector2f(2, 2));

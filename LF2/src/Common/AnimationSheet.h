@@ -6,14 +6,14 @@
 
 enum PlayerStates {
 	IDLE = 0, WALKING = 1, RUNNING = 2, JUMPING = 3,HITTING = 4, GETTING_HIT = 5, 
-	FALLINGBACK = 6, JUMPINGATTACK = 7, RUNATTACK = 8, DASH = 9, SPECIALATTACK1 = 10, SPECIALATTACK2 = 11, FALLINGFRONT = 12, FREEZED = 13, STATECOUNT,
+	FALLINGBACK = 6, JUMPINGATTACK = 7, RUNATTACK = 8, DASH = 9, SPECIALATTACK1 = 10, SPECIALATTACK2 = 11, SPECIALATTACK3 = 12, FALLINGFRONT = 13, FREEZED = 14, STATECOUNT,
 };
 
 struct HitBoxData {
 	double width = 0;
 	double height = 0;
 	RealVector2D offset;
-	int KnockPower = 0;
+	int KnockPower = -50;
 };
 
 class AnimationSheet {
@@ -28,7 +28,7 @@ public:
 	double MaxTime = 0; //Time taken to draw all sprites (Summation ot DrawTimes(i))
 	double Time = 0; //Time passed since 1st sprite is drawn (resets to 0 if >= MaxTime)
 	void AssignTextures(sf::Texture& textureSheet, const std::vector <RealVector2D>& locations, const std::vector<double>& times, int sizeX, int sizeY);
-	void AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower = 0);
+	void AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower = -10);
 	void AssignPlayer(GameObject* player);
 	void SetScale(RealVector2D scale);
 	int GetCorrectIndex();

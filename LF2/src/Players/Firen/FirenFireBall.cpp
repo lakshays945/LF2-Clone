@@ -74,10 +74,14 @@ void FirenFireBall::OnCollision(int otherID, int selfID) {
 				AttackHitBox.IsActive = false;
 			}
 			CurrentSheet = &EndSheet;
+			AttackHitBox.IgnoreObjectID = -1;
 			Velocity.SetMagnitude(0);
 		}
 		else if (other->Game_Object->GO_Type == GO_Projectile && (other->Type == HB_TYPE_ATTACK || other->Type == HB_TYPE_FIRE || other->Type == HB_TYPE_ICE) && self->Type == HB_TYPE_FIRE) {
 			ProjectileBall* ball = (ProjectileBall*)other->Game_Object;
+			if (ball->AttackHitBox.IgnoreObjectID == AttackHitBox.IgnoreObjectID) {
+				return;
+			}
 			CurrentStrength -= ball->MaxStrength;
 			if (CurrentStrength <= 0) {
 				CurrentSheet = &EndSheet;

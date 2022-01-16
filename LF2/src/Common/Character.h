@@ -49,13 +49,14 @@ public:
 	AnimationSheet RunningSheet;
 	AnimationSheet JumpingSheet;
 	AnimationSheet HittingSheet[3];
-	AnimationSheet Getting_HitSheet;
+	AnimationSheet Getting_HitSheet[2];
 	AnimationSheet FallingBackSheet;
 	AnimationSheet FallingFrontSheet;
 	AnimationSheet JumpingAttackSheet;
 	AnimationSheet DashSheet;
 	AnimationSheet SpecialAttack1Sheet;
 	AnimationSheet SpecialAttack2Sheet;
+	AnimationSheet SpecialAttack3Sheet;
 	AnimationSheet BurningSheet;
 	AnimationSheet FreezedSheet;
 	AnimationSheet* CurrentSheet;
@@ -67,6 +68,8 @@ public:
 	InputManager* InputManagerPtr;
 	HitBox DamageHitBox;
 	HitBox AttackHitBox;
+	HitBox WallHitBox;
+	HitBox BurningHitBox;
 	Controls PlayerControl;
 	//CONSTRUCTOR
 	Character();
@@ -86,6 +89,7 @@ public:
 	void Stop();
 	void AddForce(const double dt);
 	void Translate(const double dt);
+	void GettingHitCalculations(const double dt, const double t);
 	void Animate(sf::RenderWindow& window, const double dt);
 	void OnCollision(int otherID, int selfID);
 	void FallBack(int SpeedX);
@@ -99,6 +103,7 @@ public:
 
 	virtual void SpecialAttack1Calculations(const double dt, const double t) = 0;
 	virtual void SpecialAttack2Calculations(const double dt, const double t) = 0;
+	virtual void SpecialAttack3Calculations(const double dt, const double t) = 0;
 };
 
 extern std::vector <Character*> CharacterIDArray;

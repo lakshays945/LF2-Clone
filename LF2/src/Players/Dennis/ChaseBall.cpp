@@ -153,6 +153,9 @@ void ChaseBall::OnCollision(int otherID, int selfID) {
 		}
 		else if (other->Game_Object->GO_Type == GO_Projectile && (other->Type == HB_TYPE_ATTACK || other->Type == HB_TYPE_FIRE || other->Type == HB_TYPE_ICE) && self->Type == HB_TYPE_ATTACK) {
 			ProjectileBall* ball = (ProjectileBall*)other->Game_Object;
+			if (ball->AttackHitBox.IgnoreObjectID == AttackHitBox.IgnoreObjectID) {
+				return;
+			}
 			CurrentStrength -= ball->MaxStrength;
 			if (CurrentStrength <= 0) {
 				CurrentSheet = &EndSheet;

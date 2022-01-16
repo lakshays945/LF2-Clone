@@ -94,7 +94,7 @@ void FirenGroundFire::OnCollision(int otherID, int selfID) {
 GroundFireHitBox::GroundFireHitBox() {
 	IsActive = false;
 	AttackHitBox = HitBox(Position, 25, 25, HB_TYPE_FIRE);
-	AttackHitBox.KnockOutPower = 200;
+	AttackHitBox.KnockOutPower = 100;
 }
 
 void GroundFireHitBox::AssignParent(Firen* parent) {
@@ -151,4 +151,11 @@ void GroundFireHitBox::Animate(sf::RenderWindow& window, const double dt) {
 void GroundFireHitBox::OnCollision(int otherID, int selfID) {
 	CanCollide[otherID][selfID] = true;
 	CanCollide[selfID][otherID] = true;
+	if (HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character) {
+		Character* otherChar = (Character*)HitBoxIDArray[otherID]->Game_Object;
+		otherChar->BurningHitBox.IgnoreObjectID = Parent->ID;
+		if (Parent->CurrentState != SPECIALATTACK2) {
+			otherChar->BurningHitBox.IgnoreObjectID = -1;
+		}
+	}
 }
