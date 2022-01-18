@@ -16,8 +16,9 @@ class HitBox {
 protected:
 	static int nextID;
 public:
-	int ID;
-	int KnockOutPower = false;
+	int ID = 0;
+	int KnockOutPower = 0;
+	int KnockUpPower = 300;
 	HitBoxType Type = HB_TYPE_DAMAGE;
 	RealVector2D Center;
 	GameObject* Game_Object = nullptr;
@@ -49,6 +50,7 @@ public:
 	}
 	void RegisterID();
 	void SetScale(RealVector2D scale);
+	void Disable();
 };
 
 void HandleCollisions();

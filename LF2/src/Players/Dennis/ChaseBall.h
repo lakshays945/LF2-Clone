@@ -9,7 +9,6 @@ public:
 	double MeanY;
 	double InitialY;
 	bool BeforeMean = true;
-	bool Rebounded = false;
 	Character* Target = nullptr;
 	void Animate(sf::RenderWindow& window, const double dt);
 	bool SetTarget();

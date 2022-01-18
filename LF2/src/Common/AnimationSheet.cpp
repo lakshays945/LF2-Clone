@@ -35,12 +35,13 @@ void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vecto
 void AnimationSheet::AssignPlayer(GameObject* player) {
 	Player = player;
 }
-void AnimationSheet::AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower) {
+void AnimationSheet::AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower, int knockPowerUp) {
 	HasHitBox[index] = true;
 	HBData[index].width = width*Player->Scale.get_x();
 	HBData[index].height = height*Player->Scale.get_x();
 	HBData[index].offset = offset*Player->Scale;
 	HBData[index].KnockPower = knockPower;
+	HBData[index].KnockPowerUp = knockPowerUp;
 }
 
 void AnimationSheet::SetScale(RealVector2D scale) {

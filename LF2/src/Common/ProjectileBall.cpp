@@ -43,11 +43,12 @@ void ProjectileBall::SetScale(RealVector2D scale) {
 	ReboundHitBox.SetScale(Scale);
 }
 
-void ProjectileBall::Instantiate(RealVector2D velocity) {
+void ProjectileBall::Instantiate(RealVector2D position,RealVector2D velocity) {
 	if (Parent->Scale != Scale) {
 		SetScale(Parent->Scale);
 	}
-	Position = Parent->Position;
+	Rebounded = false;
+	Position = position;
 	InAirSheet.Time = 0;
 	EndSheet.Time = 0;
 	FastSheet.Time = 0;
@@ -66,8 +67,8 @@ void ProjectileBall::GoBack() {
 	IsActive = false;
 	Position = Parent->Position;
 	Velocity = { 0,0 };
-	AttackHitBox.IsActive = false;
-	ReboundHitBox.IsActive = false;
+	AttackHitBox.Disable();
+	ReboundHitBox.Disable();
 }
 
 void ProjectileBall::AssignParent(GameObject* parent) {
@@ -83,4 +84,5 @@ void ProjectileBall::AssignParent(GameObject* parent) {
 void ProjectileBall::Rebound() {
 	AttackHitBox.IgnoreObjectID = -1;
 	Velocity = Velocity * (-1);
+	Rebounded = true;
 }

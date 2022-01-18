@@ -2,6 +2,8 @@
 #include "Common/Character.h"
 #include "FirenFireBall.h"
 #include "FirenGroundFire.h"
+#include "FirenExplosion.h"
+
 
 class Firen : public Character {
 public:
@@ -9,6 +11,11 @@ public:
 	std::vector<FirenFireBall> BallArray;
 	std::vector<FirenGroundFire> GroundFireArray;
 	std::vector<GroundFireHitBox> FireHitBoxArray;
+	FirenExplosionBox Firen_ExplosionBoxRD;
+	FirenExplosionBox Firen_ExplosionBoxLD;
+	FirenExplosionBox Firen_ExplosionBoxRU;
+	FirenExplosionBox Firen_ExplosionBoxLU;
+	FirenExplosionAnimation Firen_ExplosionAnimation;
 	int FireSpawned = 0;
 	int FireRunSpeed = 200;
 	double FireRunSpawnRate = 0.15;

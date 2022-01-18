@@ -16,7 +16,8 @@ public:
 	AnimationSheet* CurrentSheet;
 	int MaxStrength = 150;
 	int CurrentStrength = MaxStrength;
-	void Instantiate(RealVector2D velocity = { 0,0 });
+	bool Rebounded = false;
+	void Instantiate(RealVector2D position, RealVector2D velocity = { 0,0 });
 	void GoBack();
 	void Rebound();
 	void AssignParent(GameObject* parent);

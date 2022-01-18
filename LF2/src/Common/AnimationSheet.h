@@ -14,6 +14,7 @@ struct HitBoxData {
 	double height = 0;
 	RealVector2D offset;
 	int KnockPower = -50;
+	int KnockPowerUp = 300;
 };
 
 class AnimationSheet {
@@ -28,7 +29,7 @@ public:
 	double MaxTime = 0; //Time taken to draw all sprites (Summation ot DrawTimes(i))
 	double Time = 0; //Time passed since 1st sprite is drawn (resets to 0 if >= MaxTime)
 	void AssignTextures(sf::Texture& textureSheet, const std::vector <RealVector2D>& locations, const std::vector<double>& times, int sizeX, int sizeY);
-	void AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower = -10);
+	void AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower = -10, int knockPowerUp = 300);
 	void AssignPlayer(GameObject* player);
 	void SetScale(RealVector2D scale);
 	int GetCorrectIndex();

@@ -42,11 +42,17 @@
     <ClCompile Include="src\Common\HitBox.cpp" />
     <ClCompile Include="src\Players\Dennis\HelicopterKick.cpp" />
     <ClCompile Include="src\Players\Firen\Firen.cpp" />
+    <ClCompile Include="src\Players\Firen\FirenExplosion.cpp" />
     <ClCompile Include="src\Players\Firen\FirenGroundFire.cpp" />
     <ClCompile Include="src\Players\Firen\FirenFireBall.cpp" />
     <ClCompile Include="src\Players\Freeze\Freeze.cpp" />
     <ClCompile Include="src\Players\Freeze\FreezeBall.cpp" />
     <ClCompile Include="src\Players\Freeze\IceBerg.cpp" />
+    <ClCompile Include="src\Players\Freeze\Tornado.cpp" />
+    <ClCompile Include="src\Players\John\DestructoDisk.cpp" />
+    <ClCompile Include="src\Players\John\John.cpp" />
+    <ClCompile Include="src\Players\John\JohnBlueBall.cpp" />
+    <ClCompile Include="src\Players\John\JohnShield.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common\ProjectileBall.h" />
@@ -70,11 +76,17 @@
     <ClInclude Include="src\Common\HitBox.h" />
     <ClInclude Include="src\Players\Dennis\HelicopterKick.h" />
     <ClInclude Include="src\Players\Firen\Firen.h" />
+    <ClInclude Include="src\Players\Firen\FirenExplosion.h" />
     <ClInclude Include="src\Players\Firen\FirenGroundFire.h" />
     <ClInclude Include="src\Players\Firen\FirenFireBall.h" />
     <ClInclude Include="src\Players\Freeze\Freeze.h" />
     <ClInclude Include="src\Players\Freeze\FreezeBall.h" />
+    <ClInclude Include="src\Players\Freeze\Tornado.h" />
     <ClInclude Include="src\Players\Freeze\IceBerg.h" />
+    <ClInclude Include="src\Players\John\DestructoDisk.h" />
+    <ClInclude Include="src\Players\John\John.h" />
+    <ClInclude Include="src\Players\John\JohnBlueBall.h" />
+    <ClInclude Include="src\Players\John\JohnShield.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LF2.rc" />

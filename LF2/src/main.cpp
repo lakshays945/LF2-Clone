@@ -5,6 +5,7 @@
 #include "Players/Davis/Davis.h"
 #include "Players/Firen/Firen.h"
 #include "Players/Freeze/Freeze.h"
+#include "Players/John/John.h"
 #include <iostream>
 static double DeltaTime = 0.016666667;
 const int resX = 1200;
@@ -43,22 +44,22 @@ int main() {
 		Player2Control.SpecialAttack2Key = sf::Keyboard::L;
 		Player2Control.SpecialAttack3Key = sf::Keyboard::J;
 	}
-	Firen Player2;
-	Dennis Player;
+	Freeze Player2;
+	John Player;
 	//Player.SetScale({ 1.2f,1.2f });
 	//Player2.SetScale({ 1.2f,1.2f });
 	Player.SetControls(Player1Control);
 	Player2.SetControls(Player2Control);
-	Davis Player3;
-	Firen Player4;
+	//Davis Player3;
+	//Dennis Player4;
 	EffectManager Eff_Manager(&window);
 	Player.AssignEffectManager(&Eff_Manager);
 	Player2.AssignEffectManager(&Eff_Manager);
-	Player3.AssignEffectManager(&Eff_Manager);
-	Player4.AssignEffectManager(&Eff_Manager);
+	//Player3.AssignEffectManager(&Eff_Manager);
+	//Player4.AssignEffectManager(&Eff_Manager);
 	Player2.Position = { 400,400 };
-	Player3.Position = { 500,400 };
-	Player4.Position = { 600,400 };
+	//Player3.Position = { 500,400 };
+	//Player4.Position = { 600,400 };
 	sf::Clock Clock;
 	while (window.isOpen()) {
 		DeltaTime = (Clock.getElapsedTime()).asSeconds();
@@ -84,14 +85,14 @@ int main() {
 		window.clear(sf::Color(50, 60, 30));
 		Player.Input_Manager.Update(DeltaTime);
 		Player2.Input_Manager.Update(DeltaTime);
-		Player3.Input_Manager.Update(DeltaTime);
-		Player4.Input_Manager.Update(DeltaTime);
+		//Player3.Input_Manager.Update(DeltaTime);
+		//Player4.Input_Manager.Update(DeltaTime);
 		HandleCollisions();
 		//UpdateInputs();
 		Player.Update(DeltaTime, window);
 		Player2.Update(DeltaTime, window);
-		Player3.Update(DeltaTime, window);
-		Player4.Update(DeltaTime, window);
+		//Player3.Update(DeltaTime, window);
+		//Player4.Update(DeltaTime, window);
 		std::vector <GameObject*> Temp = GameObjectIDArray;
 		std::sort(Temp.begin(), Temp.end(), SortObjects);
 		for (int i = 0; i < GameObjectIDArray.size(); i++) {

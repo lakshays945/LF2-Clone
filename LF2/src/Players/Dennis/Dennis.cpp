@@ -37,8 +37,8 @@ const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
 const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
 const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
 
-const std::vector<RealVector2D> FallingBackLocations = { {80,240},{160,240},{240,240},{320,240},{400,240} };
-const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
+const std::vector<RealVector2D> FallingBackLocations = { {80,240},{160,240},{240,240},{400,240} };
+const std::vector<double> FallingBackTimes = { 0.1,0.2,0.4,2 };
 
 const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
 const std::vector<double> FallingFrontTimes = { 0.1,0.5,0.7,2};
@@ -50,10 +50,10 @@ const std::vector<RealVector2D> SpecialAttack2Locations = { {80,335}, {160,335},
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7 };
 
 const std::vector<RealVector2D> SpecialAttack3Locations = { {0,255}, {80,255}, {160,255}, {240,255}, {320,255}, {400,255}, {480,255}, {400,255}, {320,255}, {0,335}, {640,255} };
-const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,1,1.2,1.4};
+const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.55,0.6,0.75,0.8,1,1.2,1.4};
 
-const std::vector<RealVector2D> BurningLocations = { {720,0}, {720,80}, {480,480}, {480,480} }; //x,y
-const std::vector <double> BurningTimes = { 0.25,0.5,0.8,2 };
+const std::vector<RealVector2D> BurningLocations = { {720,0}, {720,80},{480,480} }; //x,y
+const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {560,480}, {640,480} };
 const std::vector<double> FreezeTimes = { 0.2,4.5 };
@@ -189,7 +189,7 @@ void Dennis::SpecialAttack1Calculations(const double dt, const double t) {
 	if ((t - dt - 0.4) * (t - 0.4) < 0) {
 		for (int i = 0; i < BallArray.size(); i++) {
 			if (!BallArray[i].IsActive) {
-				BallArray[i].Instantiate({ (float)400 * Direction,0 });
+				BallArray[i].Instantiate(Position, RealVector2D(400 * Direction, 0));
 				return;
 			}
 		}
@@ -199,7 +199,7 @@ void Dennis::SpecialAttack2Calculations(const double dt, const double t) {
 	if ((t - dt - 0.4) * (t - 0.4) < 0) {
 		for (int i = 0; i < ChaseBallArray.size(); i++) {
 			if (!ChaseBallArray[i].IsActive) {
-				ChaseBallArray[i].Instantiate({ (float)400 * Direction,0 });
+				ChaseBallArray[i].Instantiate(Position,RealVector2D(400*Direction,0));
 				ChaseBallArray[i].SetTarget();
 				return;
 			}
@@ -217,7 +217,7 @@ void Dennis::SpecialAttack3Calculations(const double dt, const double t){
 		
 	}
 	if (CurrentSheet->Time > 0.9 && CurrentSheet->Time < 1.0) {
-		CurrentSheet->Time = 0.31;
+		CurrentSheet->Time = 0.35;
 	}
 	else if (t - dt <= 0) {
 		Velocity = RealVector2D(0, -50);

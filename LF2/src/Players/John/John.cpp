@@ -1,0 +1,226 @@
+#include "John.h"
+
+sf::Texture JohnTexFile0;
+sf::Texture JohnTexFile1;
+sf::Texture JohnTexFile2;
+
+const std::vector<RealVector2D> IdleLocations = { {0,5}, {80,5}, {160,5}, {240,5} }; //x,y
+const std::vector <double> IdleTimes = { 0.1,0.2,0.3,0.4 };
+
+const std::vector<RealVector2D> WalkingLocations = { {320,5}, {400,5}, {480,5}, {560,5}, {480,5}, {400,5} };//x,y
+const std::vector <double> WalkingTimes = { 0.15,0.3,0.45,0.6,0.75,0.9 };
+
+const std::vector<RealVector2D> Attack1Locations = { {0,85}, {80,85} };
+const std::vector <double> Attack1Times = { 0.15,0.3 };
+
+const std::vector<RealVector2D> Attack2Locations = { {160,85},{240,85} };
+const std::vector <double> Attack2Times = { 0.15,0.3 };
+
+const std::vector<RealVector2D> Attack3Locations = { {560,245},{720,165},{640,245}, {720,245} };
+const std::vector <double> Attack3Times = { 0.15,0.3,0.45,0.6 };
+
+const std::vector<RealVector2D> JumpingLocations = { {80,480}, {160,480}, {80,480} };
+const std::vector <double> JumpingTimes = { INITIAL_JUMP_PAUSE,INITIAL_JUMP_PAUSE + JUMP_DURATION,INITIAL_JUMP_PAUSE + JUMP_DURATION + JUMP_LANDING_TIME };
+
+const std::vector<RealVector2D> RunningLocations = { {80,165}, {0,165}, {80,165}, {160,165} };
+const std::vector <double> RunningTimes = { 0.15,0.3,0.45,0.6 };
+
+const std::vector<RealVector2D> JumpingAttackLocations = { {320,80},{400,80}, {480,80},{160,480} };
+const std::vector <double> JumpingAttackTimes = { 0.1,0.25,0.4,2 };
+
+const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
+const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME };
+
+const std::vector<RealVector2D> Getting_HitLocations1 = { {0,5}, {480,325} };
+const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
+
+const std::vector<RealVector2D> Getting_HitLocations2 = { {0,5}, {560,325} };
+const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
+
+
+const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{390,240} };
+const std::vector<double> FallingBackTimes = { 0.1,0.2,0.4,2 };
+
+const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
+const std::vector<double> FallingFrontTimes = { 0.1,0.5,0.7,2 };
+
+const std::vector<RealVector2D> SpecialAttack1Locations = { {635,271},{495,271},{560,31},{345,271} };
+const std::vector <double> SpecialAttack1Times = { 0.3,0.4,0.5,0.6 };
+
+const std::vector<RealVector2D> SpecialAttack2Locations = { {0,187}, {80,187}, {160,187}, {240,187},{320,187}, {403,187}, {483,187}, {563,187},{643,187}, {720,187} };
+const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0};
+
+const std::vector<RealVector2D> SpecialAttack3Locations = { {320,107}, {400,107}, {480,107}, {560,107}, {640,107}, {720,107}};
+const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6 };
+
+
+const std::vector<RealVector2D> BurningLocations = { {720,80}, {720,480},{390,240} }; //x,y
+const std::vector <double> BurningTimes = { 0.25,0.5,2 };
+
+const std::vector<RealVector2D> FreezeLocations = { {640,5}, {720,5} };
+const std::vector<double> FreezeTimes = { 0.2,4.5 };
+
+John::John() {
+	//Manager Assignments
+	State_Manager.AssignPlayer(this);
+	Input_Manager.AssignPlayer(this);
+
+	//AnimationSheet Assignments
+	IdleSheet.AssignPlayer(this);
+	WalkingSheet.AssignPlayer(this);
+	RunningSheet.AssignPlayer(this);
+	JumpingSheet.AssignPlayer(this);
+	HittingSheet[0].AssignPlayer(this);
+	HittingSheet[1].AssignPlayer(this);
+	HittingSheet[2].AssignPlayer(this);
+	Getting_HitSheet[0].AssignPlayer(this);
+	Getting_HitSheet[1].AssignPlayer(this);
+	FallingBackSheet.AssignPlayer(this);
+	JumpingAttackSheet.AssignPlayer(this);
+	DashSheet.AssignPlayer(this);
+	SpecialAttack1Sheet.AssignPlayer(this);
+	SpecialAttack2Sheet.AssignPlayer(this);
+	SpecialAttack3Sheet.AssignPlayer(this);
+	FallingBackSheet.AssignPlayer(this);
+	FallingFrontSheet.AssignPlayer(this);
+	BurningSheet.AssignPlayer(this);
+	FreezedSheet.AssignPlayer(this);
+
+	//Sprite and Texture Loadindg{
+	if (JohnTexFile0.getSize() == sf::Vector2u(0, 0)) {
+		JohnTexFile0.loadFromFile("Resource/John.png");
+	}
+	IdleSheet.AssignTextures(JohnTexFile0, IdleLocations, IdleTimes, 70, 80);
+	WalkingSheet.AssignTextures(JohnTexFile0, WalkingLocations, WalkingTimes, 70, 80);
+	HittingSheet[0].AssignTextures(JohnTexFile0, Attack1Locations, Attack1Times, 70, 80);
+	HittingSheet[1].AssignTextures(JohnTexFile0, Attack2Locations, Attack2Times, 70, 80);
+	HittingSheet[2].AssignTextures(JohnTexFile0, Attack3Locations, Attack3Times, 70, 80);
+	JumpingSheet.AssignTextures(JohnTexFile0, JumpingLocations, JumpingTimes, 70, 80);
+	RunningSheet.AssignTextures(JohnTexFile0, RunningLocations, RunningTimes, 70, 80);
+	JumpingAttackSheet.AssignTextures(JohnTexFile0, JumpingAttackLocations, JumpingAttackTimes, 80, 80);
+	DashSheet.AssignTextures(JohnTexFile0, DashLocations, DashTimes, 80, 80);
+	Getting_HitSheet[0].AssignTextures(JohnTexFile0, Getting_HitLocations1, Getting_HitTimes1, 80, 80);
+	Getting_HitSheet[1].AssignTextures(JohnTexFile0, Getting_HitLocations2, Getting_HitTimes2, 80, 80);
+	FallingBackSheet.AssignTextures(JohnTexFile0, FallingBackLocations, FallingBackTimes, -75, 80);
+	FallingFrontSheet.AssignTextures(JohnTexFile0, FallingFrontLocations, FallingFrontTimes, 75, 80);
+	BurningSheet.AssignTextures(JohnTexFile0, BurningLocations, BurningTimes, -75, 80);
+	FreezedSheet.AssignTextures(JohnTexFile0, FreezeLocations, FreezeTimes, 80, 80);
+
+	if (JohnTexFile1.getSize() == sf::Vector2u(0, 0)) {
+		JohnTexFile1.loadFromFile("Resource/John1.png");
+	};
+
+	if (JohnTexFile2.getSize() == sf::Vector2u(0, 0)) {
+		JohnTexFile2.loadFromFile("Resource/John2.png");
+	}
+	SpecialAttack1Sheet.AssignTextures(JohnTexFile2, SpecialAttack1Locations, SpecialAttack1Times, 130, 80);
+	SpecialAttack2Sheet.AssignTextures(JohnTexFile2, SpecialAttack2Locations, SpecialAttack2Times, 80, 80);
+	SpecialAttack3Sheet.AssignTextures(JohnTexFile2, SpecialAttack3Locations, SpecialAttack3Times, 80, 80);
+
+	//Setting One Time Animations
+	JumpingSheet.OneTime = true;
+	HittingSheet[0].OneTime = true;
+	HittingSheet[1].OneTime = true;
+	HittingSheet[2].OneTime = true;
+	DashSheet.OneTime = true;
+	Getting_HitSheet[0].OneTime = true;
+	Getting_HitSheet[1].OneTime = true;
+	SpecialAttack1Sheet.OneTime = true;
+	SpecialAttack2Sheet.OneTime = true;
+	SpecialAttack3Sheet.OneTime = true;
+	FallingBackSheet.OneTime = true;
+	FallingFrontSheet.OneTime = true;
+	BurningSheet.OneTime = true;
+
+	//Assigning HitBoxes to Sheets
+	JumpingAttackSheet.AssignHitbox(1, { 11,11 }, 41, 32, 200);
+	HittingSheet[0].AssignHitbox(1, { 10,19 }, 56, 41);
+	HittingSheet[1].AssignHitbox(1, { 9,18 }, 50, 45);
+	HittingSheet[2].AssignHitbox(2, { 16,6 }, 46, 65, 200);
+
+	//Initialising CurrentSheet
+	CurrentSheet = &IdleSheet;
+
+	//Variable Assignment
+	MaxSpeed = 200;
+	RunSpeed = 500;
+	JumpSpeedY = -600;
+	DashSpeedX = 600;
+	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
+
+	RegisterGameObject(GO_Character);
+	RegisterCharacter();
+	DEBUG_SUCCESS("GameObject John Registered with ID = {0}", ID);
+	DEBUG_SUCCESS("Character John Registered with ID = {0}", CharacterID);
+
+	for (int i = 0; i < 10; i++) {
+		BallArray.push_back(JohnBlueBall());
+	}
+	for (int i = 0; i < 10; i++) {
+		BallArray[i].AssignParent(this);
+		BallArray[i].RegisterGameObject(GO_Projectile);
+		BallArray[i].AttackHitBox.RegisterID();
+		BallArray[i].ReboundHitBox.RegisterID();
+	}
+	for (int i = 0; i < 10; i++) {
+		ShieldArray.push_back(JohnShield());
+	}
+	for (int i = 0; i < 10; i++) {
+		ShieldArray[i].AssignParent(this);
+		ShieldArray[i].RegisterGameObject(GO_Null);
+		ShieldArray[i].AttackHitBox.AssignPlayer(&ShieldArray[i]);
+		ShieldArray[i].AttackHitBox.RegisterID();
+	}
+	for (int i = 0; i < 10; i++) {
+		DiskArray.push_back(DestructoDisk());
+	}
+	for (int i = 0; i < 10; i++) {
+		DiskArray[i].AssignParent(this);
+		DiskArray[i].RegisterGameObject(GO_Projectile);
+		DiskArray[i].AttackHitBox.RegisterID();
+		DiskArray[i].ReboundHitBox.RegisterID();
+	}
+
+}
+
+void John::SpecialAttack1Calculations(const double dt, const double t){
+	if (t > 0.45 && t < 0.5) {
+		Velocity = RealVector2D(200 * Direction, 0);
+		Translate(-dt);
+	}
+	if ((t - dt - 0.4) * (t - 0.4) < 0) {
+		for (int i = 0; i < BallArray.size(); i++) {
+			if (!BallArray[i].IsActive) {
+				BallArray[i].Instantiate(Position + RealVector2D(Direction*30,0),RealVector2D(400 * Direction, 0));
+				return;
+			}
+		}
+	}
+}
+
+void John::SpecialAttack2Calculations(const double dt, const double t){
+	if ((t - dt - 0.97) * (t - 0.97) <= 0) {
+		Position = Position + RealVector2D(-Direction * 20, 0);
+		State_Manager.ForceStateChange(IDLE);
+	}
+	else if ((t - dt - 0.5) * (t - 0.5) <= 0) {
+		for (int i = 0; i < ShieldArray.size(); i++) {
+			if (!ShieldArray[i].IsActive) {
+				ShieldArray[i].Instantiate(Position + RealVector2D(Direction * 30, 0));
+				return;
+			}
+		}
+	}
+}
+
+void John::SpecialAttack3Calculations(const double dt, const double t){
+	if ((t - dt - 0.3) * (t - 0.3) < 0) {
+		for (int i = 0; i < DiskArray.size(); i++) {
+			if (!DiskArray[i].IsActive) {
+				DiskArray[i].Instantiate(Position + RealVector2D(0, -40), RealVector2D(500 * Direction, 0));
+				DiskArray[i].SetTarget();
+				return;
+			}
+		}
+	}
+}

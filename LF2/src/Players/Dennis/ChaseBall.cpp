@@ -146,7 +146,7 @@ void ChaseBall::OnCollision(int otherID, int selfID) {
 
 		if ((other->Type == HB_TYPE_DAMAGE || other->Type == HB_TYPE_WALL) && self->Type == HB_TYPE_ATTACK) {
 			if (other->Type == HB_TYPE_WALL) {
-				AttackHitBox.IsActive = false;
+				AttackHitBox.Disable();
 			}
 			CurrentSheet = &EndSheet;
 			Velocity.SetMagnitude(0);

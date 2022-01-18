@@ -66,7 +66,7 @@ void FreezeBall::OnCollision(int otherID, int selfID) {
 	if (other->Game_Object->ID != self->IgnoreObjectID && other->Game_Object->ID != self->Game_Object->ID) {
 		if ((other->Type == HB_TYPE_DAMAGE || other->Type == HB_TYPE_WALL) && self->Type == HB_TYPE_ICE) {
 			if (other->Type == HB_TYPE_WALL) {
-				AttackHitBox.IsActive = false;
+				AttackHitBox.Disable();
 			}
 			CurrentSheet = &EndSheet;
 			Velocity.SetMagnitude(0);

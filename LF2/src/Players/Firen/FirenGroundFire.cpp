@@ -139,7 +139,7 @@ void GroundFireHitBox::Animate(sf::RenderWindow& window, const double dt) {
 		AttackHitBox.SetSize(Parent->FireRunSpeed * Parent->FireRunSpawnRate * (Spawned-Extinguished), 10);
 	}
 	if (Spawned == Extinguished && Stopped) {
-		AttackHitBox.IsActive = false;
+		AttackHitBox.Disable();
 		IsActive = false;
 	}
 	if (Parent->CurrentState != SPECIALATTACK2) {

@@ -37,8 +37,8 @@ const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
 const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
 const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
 
-const std::vector<RealVector2D> FallingBackLocations = { {80,240},{160,240},{240,240},{320,240},{400,240} };
-const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
+const std::vector<RealVector2D> FallingBackLocations = { {80,240},{160,240},{240,240},{400,240} };
+const std::vector<double> FallingBackTimes = { 0.1,0.2,0.4,2 };
 
 const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
 const std::vector<double> FallingFrontTimes = { 0.1,0.5,0.7,2 };
@@ -49,8 +49,11 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {0,248}, {80,248}, {160,248}, {240,248}, {320,248}, {400,248}, {480,248}, {560,248} };
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.85 };
 
-const std::vector<RealVector2D> BurningLocations = { {720,0}, {720,80}, {800,480}, {720,480} }; //x,y
-const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
+const std::vector<RealVector2D> SpecialAttack3Locations = { {240,88}, {320,88}, {400,88}, {480,88}, {560,88}, {640,88}, {720,88},{720,168}, {560,168}, {480,168}, {400,168}, {320,168} };
+const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2 };
+
+const std::vector<RealVector2D> BurningLocations = { {720,0}, {720,80}, {720,480} }; //x,y
+const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {560,240}, {640,240} };
 const std::vector<double> FreezeTimes = { 0.2,4.5 };
@@ -78,6 +81,7 @@ Davis::Davis() {
 	FallingFrontSheet.AssignPlayer(this);
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
+	SpecialAttack3Sheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
 	FreezedSheet.AssignPlayer(this);
 
@@ -112,6 +116,7 @@ Davis::Davis() {
 
 	SpecialAttack1Sheet.AssignTextures(DavisTexFile2, SpecialAttack1Locations, SpecialAttack1Times, 80, 80);
 	SpecialAttack2Sheet.AssignTextures(DavisTexFile2, SpecialAttack2Locations, SpecialAttack2Times, 80, 80);
+	SpecialAttack3Sheet.AssignTextures(DavisTexFile2, SpecialAttack3Locations, SpecialAttack3Times, 80, 80);
 
 	//Setting One Time Animations
 	JumpingSheet.OneTime = true;
@@ -125,6 +130,7 @@ Davis::Davis() {
 	FallingFrontSheet.OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
 	SpecialAttack2Sheet.OneTime = true;
+	SpecialAttack3Sheet.OneTime = true;
 	BurningSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
@@ -135,6 +141,10 @@ Davis::Davis() {
 	HittingSheet[2].AssignHitbox(6, { 12,0 }, 25, 73,200);
 	SpecialAttack2Sheet.AssignHitbox(1, { 3,3 }, 50, 75,120);
 	SpecialAttack2Sheet.AssignHitbox(3, { 3,0 }, 40, 72, 300);
+	SpecialAttack3Sheet.AssignHitbox(1, { 15,16 }, 27, 43, -120);
+	SpecialAttack3Sheet.AssignHitbox(3, { 8,17 }, 30, 43, -120);
+	SpecialAttack3Sheet.AssignHitbox(6, { 17,8 }, 51, 51, -150);
+	SpecialAttack3Sheet.AssignHitbox(10, { 11,9 }, 30, 55, 200,600);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
@@ -166,7 +176,7 @@ void Davis::SpecialAttack1Calculations(const double dt, const double t) {
 	if ((t - dt - 0.3) * (t - 0.3) < 0) {
 		for (int i = 0; i < BallArray.size(); i++) {
 			if (!BallArray[i].IsActive) {
-				BallArray[i].Instantiate({ (float)400 * Direction,0 });
+				BallArray[i].Instantiate(Position,RealVector2D(400 * Direction, 0));
 				return;
 			}
 		}
@@ -182,11 +192,15 @@ void Davis::SpecialAttack2Calculations(const double dt, const double t) {
 		Position = LastPosition;
 		return;
 	}
-	if (AtWall) {
+	if (!WallIDs.empty()) {
 		DEBUG_INFO("HERE");
-		if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0)) {
-			Velocity = RealVector2D(0, Velocity.get_y());
-			LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
+		if(!WallIDs.empty()) {
+			int WallID = WallIDs.front();
+			WallIDs.pop();
+			if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0)) {
+				Velocity = RealVector2D(0, Velocity.get_y());
+				LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
+			}
 		}
 	}
 	Velocity = Velocity + GravityVector * dt * 1.27;
@@ -194,5 +208,11 @@ void Davis::SpecialAttack2Calculations(const double dt, const double t) {
 }
 
 void Davis::SpecialAttack3Calculations(const double dt, const double t) {
-	
+	if (t - dt <= 0) {
+		Velocity = RealVector2D(Direction * 100, 0);
+	}
+	if (t > 1) {
+		Velocity = RealVector2D(0, 0);
+	}
+	Translate(dt);
 }

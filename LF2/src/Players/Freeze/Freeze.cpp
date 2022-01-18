@@ -38,8 +38,8 @@ const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
 const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
 
 
-const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{315,240},{390,240} };
-const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
+const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{390,240} };
+const std::vector<double> FallingBackTimes = { 0.1,0.2,0.4,2 };
 
 const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
 const std::vector<double> FallingFrontTimes = { 0.1,0.5,0.7,2 };
@@ -50,8 +50,12 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.5,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {640,0},{720,0},{560,80},{640,80},{720,80}};
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.7 };
 
-const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480}, {315,240},{390,240} }; //x,y
-const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
+const std::vector<RealVector2D> SpecialAttack3Locations = { {45,92}, {125,92}, {205,92}, {285,92}, {365,92}, {445,92}, {525,92}, {605,92}, {685,92} };
+const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 };
+
+
+const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480},{390,240} }; //x,y
+const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,0}, {720,0} };
 const std::vector<double> FreezeTimes = { 0.2,4.5 };
@@ -76,6 +80,7 @@ Freeze::Freeze() {
 	DashSheet.AssignPlayer(this);
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
+	SpecialAttack3Sheet.AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
@@ -105,6 +110,7 @@ Freeze::Freeze() {
 		FreezeTexFile1.loadFromFile("Resource/Freeze1.png");
 	};
 	SpecialAttack1Sheet.AssignTextures(FreezeTexFile1, SpecialAttack1Locations, SpecialAttack1Times, 80, 80);
+	SpecialAttack3Sheet.AssignTextures(FreezeTexFile1, SpecialAttack3Locations, SpecialAttack3Times, 80, 80);
 
 	if (FreezeTexFile2.getSize() == sf::Vector2u(0, 0)) {
 		FreezeTexFile2.loadFromFile("Resource/Freeze2.png");
@@ -121,6 +127,7 @@ Freeze::Freeze() {
 	Getting_HitSheet[1].OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
 	SpecialAttack2Sheet.OneTime = true;
+	SpecialAttack3Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
 	BurningSheet.OneTime = true;
@@ -161,19 +168,6 @@ Freeze::Freeze() {
 	}
 
 	for (int i = 0; i < 10; i++) {
-		WallArray.push_back(IceBergWall());
-	}
-
-	for (int i = 0; i < 10; i++) {
-		WallArray[i].AssignParent(this);
-		WallArray[i].RegisterGameObject(GO_Null);
-		WallArray[i].WallHitBox.RegisterID();
-		WallArray[i].WallHitBox.AssignPlayer(&WallArray[i]);
-		WallArray[i].AttackHitBox.RegisterID();
-		WallArray[i].AttackHitBox.AssignPlayer(&WallArray[i]);
-	}
-
-	for (int i = 0; i < 10; i++) {
 		BergArray1.push_back(IceBerg());
 		BergArray2.push_back(IceBerg());
 		BergArray3.push_back(IceBerg());
@@ -181,27 +175,38 @@ Freeze::Freeze() {
 	for (int i = 0; i < 10; i++) {
 		BergArray1[i].SetIceTextures(1);
 		BergArray1[i].AssignParent(this);
-		BergArray1[i].AssignWall(&WallArray[i]);
 		BergArray1[i].RegisterGameObject(GO_Null);
+		BergArray1[i].WallHitBox.RegisterID();
+		BergArray1[i].WallHitBox.AssignPlayer(&BergArray1[i]);
+		BergArray1[i].AttackHitBox.RegisterID();
+		BergArray1[i].AttackHitBox.AssignPlayer(&BergArray1[i]);
 
 		BergArray2[i].SetIceTextures(2);
 		BergArray2[i].AssignParent(this);
-		BergArray2[i].AssignWall(&WallArray[i]);
 		BergArray2[i].RegisterGameObject(GO_Null);
+		BergArray2[i].WallHitBox.RegisterID();
+		BergArray2[i].WallHitBox.AssignPlayer(&BergArray2[i]);
+		BergArray2[i].AttackHitBox.RegisterID();
+		BergArray2[i].AttackHitBox.AssignPlayer(&BergArray2[i]);
+
 		
 		BergArray3[i].SetIceTextures(3);
 		BergArray3[i].AssignParent(this);
-		BergArray3[i].AssignWall(&WallArray[i]);
 		BergArray3[i].RegisterGameObject(GO_Null);
+		BergArray3[i].WallHitBox.RegisterID();
+		BergArray3[i].WallHitBox.AssignPlayer(&BergArray3[i]);
+		BergArray3[i].AttackHitBox.RegisterID();
+		BergArray3[i].AttackHitBox.AssignPlayer(&BergArray3[i]);
 	}
-
+	Freeze_Tornado.RegisterGameObject(GO_Null);
+	Freeze_Tornado.AssignParent(this);
 }
 
 void Freeze::SpecialAttack1Calculations(const double dt, const double t) {
 	if ((t - dt - 0.3) * (t - 0.3) < 0) {
 		for (int i = 0; i < BallArray.size(); i++) {
 			if (!BallArray[i].IsActive) {
-				BallArray[i].Instantiate({ (float)400 * Direction,0 });
+				BallArray[i].Instantiate(Position,RealVector2D(400 * Direction, 0));
 				return;
 			}
 		}
@@ -210,7 +215,7 @@ void Freeze::SpecialAttack1Calculations(const double dt, const double t) {
 void Freeze::SpecialAttack2Calculations(const double dt, const double t) {
 	if ((t - dt - 0.4) * (t - 0.4) <= 0) {
 		for (int i = 0; i < BergArray1.size(); i++) {
-			if (!BergArray3[i].IsActive && !WallArray[i].IsSetActive) {
+			if (!BergArray3[i].IsActive) {
 				IceBergIndex = i;
 				BergArray3[IceBergIndex].Instantiate(Position + RealVector2D(Direction * 60, -20));
 				return;
@@ -218,13 +223,15 @@ void Freeze::SpecialAttack2Calculations(const double dt, const double t) {
 		}
 	}
 	else if ((t - dt - 0.55) * (t - 0.55) <= 0) {
-		BergArray2[IceBergIndex].Instantiate(Position + RealVector2D(Direction * 100, -20));
+		BergArray2[IceBergIndex].Instantiate(Position + RealVector2D(Direction * 110, -20));
 	}
 	else if ((t - dt - 0.69) * (t - 0.69) <= 0) {
-		BergArray1[IceBergIndex].Instantiate(Position + RealVector2D(Direction * 160, -20));
+		BergArray1[IceBergIndex].Instantiate(Position + RealVector2D(Direction * 185, -20));
 	}
 }
 
-void Freeze::SpecialAttack3Calculations(const double dt, const double t)
-{
+void Freeze::SpecialAttack3Calculations(const double dt, const double t){
+	if ((t - dt - 0.4) * (t - 0.4) <= 0) {
+		Freeze_Tornado.Instantiate(Position);
+	}
 }

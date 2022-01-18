@@ -28,12 +28,18 @@ void IceBerg::SetIceTextures(int index) {
 	Index = index;
 	if (index == 1) {
 		InitialSheet.AssignTextures(IceBergTexFile, InitialLocations1, InitialTimes1, 108, 108);
+		WallHitBox = HitBox(Position,85, 135,HB_TYPE_WALL);
+		AttackHitBox = HitBox(Position, 70, 135, HB_TYPE_ICE);
 	}
 	else if (index == 2) {
 		InitialSheet.AssignTextures(IceBergTexFile, InitialLocations2, InitialTimes2, 108, 108);
+		WallHitBox = HitBox(Position, 60, 135, HB_TYPE_WALL);
+		AttackHitBox = HitBox(Position, 37, 135, HB_TYPE_ICE);
 	}
 	else {
 		InitialSheet.AssignTextures(IceBergTexFile, InitialLocations3, InitialTimes3, 108, 108);
+		WallHitBox = HitBox(Position, 50, 135, HB_TYPE_WALL);
+		AttackHitBox = HitBox(Position, 46, 135, HB_TYPE_ICE);
 	}
 }
 
@@ -41,54 +47,38 @@ void IceBerg::Instantiate(RealVector2D position) {
 	IsActive = true;
 	CurrentSheet = &InitialSheet;
 	Position = position;
-	Z_Position = Position.get_y();
+	Z_Position = Position.get_y() + 20;
 	InitialSheet.Time = 0;
 	EndSheet.Time = 0;
 	Direction = Parent->Direction;
+	AttackHitBox.IsActive = true;
+	WallHitBox.IsActive = true;
+	AttackHitBox.Center = Position;
+	WallHitBox.Center = Position;
 	TotalTime = 0;
 	if (Index == 3) {
-		Wall->Direction = Direction;
-		Wall->Instantiate(position-RealVector2D(15*Direction,0));
-		Wall->WallHitBox.SetSize(50, 135);
-		Wall->AttackHitBox.SetSize(50, 135);
-		Wall->AttackHitBox.Center = Position - RealVector2D(20*Direction,0);
-		Wall->ActiveBergs[2] = 1;
+		WallHitBox.Center = Position + RealVector2D(-Direction * 10, 0);
+		AttackHitBox.Center = Position + RealVector2D(-Direction * 13, 0);
 	}
 	else if (Index == 2) {
-		Wall->Instantiate(position - RealVector2D(25 * Direction, 0));
-		Wall->ActiveBergs[1] = 1;
-		Wall->WallHitBox.SetSize(110, 135);
-		Wall->AttackHitBox.Center = Position;
-		Wall->AttackHitBox.SetSize(80, 135);
+		WallHitBox.Center = Position + RealVector2D(-Direction * 4, 0);
 	}
 	else {
-		Wall->ActiveBergs[0] = 1;
-		if (Wall->ActiveBergs[2]) {
-			Wall->Instantiate(position - RealVector2D(55 * Direction, 0));
-			Wall->WallHitBox.SetSize(175, 135);
-		}
-		else if(!Wall->ActiveBergs[1] && !Wall->ActiveBergs[2]) {
-			Wall->Instantiate(position - RealVector2D(10 * Direction, 0));
-			Wall->WallHitBox.SetSize(90, 135);
-		}
-		else {
-			Wall->Instantiate(position - RealVector2D(30 * Direction, 0));
-			Wall->WallHitBox.SetSize(140, 135);
-		}
-		Wall->AttackHitBox.Center = Position;
-		Wall->AttackHitBox.SetSize(80, 135);
-		Wall->IsSetActive = true;
+		WallHitBox.Center = Position + RealVector2D(-Direction * 10, 0);
+		AttackHitBox.Center = Position + RealVector2D(-Direction * 4, 0);
 	}
 }
 
 void IceBerg::GoBack() {
+	AttackHitBox.Disable();
+	WallHitBox.Disable();
 	IsActive = false;
 	Position = Parent->Position;
-	Wall->ReduceSize(Index);
 }
 
 void IceBerg::AssignParent(GameObject* parent) {
 	Parent = parent;
+	AttackHitBox.IgnoreObjectID = Parent->ID;
 }
 
 void IceBerg::Animate(sf::RenderWindow& window, const double dt) {
@@ -96,6 +86,10 @@ void IceBerg::Animate(sf::RenderWindow& window, const double dt) {
 		return;
 	}
 	TotalTime += dt;
+	if (TotalTime > 0.3) {
+		AttackHitBox.Center = Parent->Position;
+		AttackHitBox.Disable();
+	}
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
 	if (CorrectIndex == -1) {
@@ -108,150 +102,34 @@ void IceBerg::Animate(sf::RenderWindow& window, const double dt) {
 	current->setScale(Scale.get_x() * Direction, Scale.get_y());
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
+	AttackHitBox.DrawBox(window);
+	WallHitBox.DrawBox(window);
 }
 
 void IceBerg::OnCollision(int otherID, int selfID) {
-}
-
-void IceBerg::AssignWall(IceBergWall* wall) {
-	Wall = wall;
-	Wall->IceBergArray[Index-1] = this;
-}
-
-IceBergWall::IceBergWall() {
-	IsActive = false;
-	WallHitBox.IsActive = false;
-	AttackHitBox.IsActive = false;
-	WallHitBox = HitBox(Position, 100, 100, HB_TYPE_WALL);
-	AttackHitBox = HitBox(Position, 30, 30, HB_TYPE_ICE);
-}
-
-void IceBergWall::GoBack() {
-	IsSetActive = false;
-	IsActive = false;
-	WallHitBox.IsActive = false;
-	AttackHitBox.IsActive = false;
-	Position = Parent->Position;
-}
-
-void IceBergWall::Instantiate(RealVector2D position) {
-	TotalTime = 0;
-	
-	IsActive = true;
-	WallHitBox.IsActive = true;
-	AttackHitBox.IsActive = true;
-	Position = position;
-	Z_Position = Position.get_y() + 20.0;
-	WallHitBox.Center = Position;
-	AttackHitBox.Center = Position;
-	AttackHitBox.SetSize(50, 135);
-	WallHitBox.SetSize(50, 135);
-}
-
-void IceBergWall::ReduceSize(int index) {
-	index--;
-	ActiveBergs[index] = false;
-	if (index == 2) {
-		if (ActiveBergs[0] && ActiveBergs[1]) {
-			WallHitBox.Center = WallHitBox.Center + RealVector2D(20 * Direction, 0);
-			WallHitBox.SetSize(135, 135);
-		}
-		else if (!ActiveBergs[0] && ActiveBergs[1]) {
-			WallHitBox.Center = WallHitBox.Center + RealVector2D(18 * Direction, 0);
-			WallHitBox.SetSize(87, 135);
-		}
-		else {
-			GoBack();
-		}
-	}
-	else if (index == 1) {
-		if (ActiveBergs[2]) {
-			WallHitBox.Center = WallHitBox.Center + RealVector2D(-30 * Direction, 0);
-			WallHitBox.SetSize(50, 135);
-		}
-		else if (ActiveBergs[0]) {
-			WallHitBox.Center = WallHitBox.Center + RealVector2D(25 * Direction, 0);
-			WallHitBox.SetSize(90, 135);
-		}
-		else {
-			GoBack();
-		}
-	}
-	else {
-		if (ActiveBergs[2] && ActiveBergs[1]) {
-			WallHitBox.Center = WallHitBox.Center + RealVector2D(-35 * Direction, 0);
-			WallHitBox.SetSize(110, 135);
-		}
-		else if (ActiveBergs[1] && !ActiveBergs[2]) {
-			WallHitBox.Center = WallHitBox.Center + RealVector2D(-30 * Direction, 0);
-			WallHitBox.SetSize(66, 135);
-		}
-		else if (!ActiveBergs[1] && ActiveBergs[2]) {
-			WallHitBox.Center = WallHitBox.Center + RealVector2D(-60 * Direction, 0);
-			WallHitBox.SetSize(66, 135);
-		}
-		else {
-			GoBack();
-		}
-	}
-}
-
-void IceBergWall::AssignParent(GameObject* parent) {
-	Parent = parent;
-	AttackHitBox.IgnoreObjectID = Parent->ID;
-}
-
-void IceBergWall::Animate(sf::RenderWindow& window, const double dt) {
-	if (!IsActive) {
-		return;
-	}
-	TotalTime += dt;
-	if (TotalTime > 0.3) {
-		AttackHitBox.Center = Parent->Position;
-		AttackHitBox.IsActive = false;
-	}
-	if (!IceBergArray[0] && !IceBergArray[1] && !IceBergArray[2]) {
-		GoBack();
-	}
-	WallHitBox.DrawBox(window);
-	AttackHitBox.DrawBox(window);
-}
-
-void IceBergWall::OnCollision(int otherID, int selfID) {
 	HitBoxType otherType = HitBoxIDArray[otherID]->Type;
 	if (HitBoxIDArray[selfID]->Type == HB_TYPE_WALL) {
 		CanCollide[otherID][selfID] = true;
 		CanCollide[selfID][otherID] = true;
 	}
-	if (HitBoxIDArray[selfID]->Type == HB_TYPE_ICE && otherType == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Game_Object != IceBergArray[0]->Parent) {
+	if (HitBoxIDArray[selfID]->Type == HB_TYPE_ICE && otherType == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Game_Object != Parent) {
 		GameObject* goCollided = HitBoxIDArray[otherID]->Game_Object;
 		if (goCollided->GO_Type == GO_Character) {
 			if (Z_Position > goCollided->Z_Position) {
-				goCollided->Position = goCollided->Position + RealVector2D(0, (Z_Position - goCollided->Z_Position) - 25);
+				goCollided->Position = goCollided->Position + RealVector2D(0, -26);
 			}
 			else {
-				goCollided->Position = goCollided->Position + RealVector2D(0, (Z_Position - goCollided->Z_Position) + 25);
+				goCollided->Position = goCollided->Position + RealVector2D(0, 26);
 			}
 			goCollided->Z_Position = goCollided->Position.get_y();
+			HitBoxIDArray[otherID]->Center = goCollided->Position;
 		}
 		return;
 	}
 	if ((otherType == HB_TYPE_FIRE || otherType == HB_TYPE_ATTACK || otherType == HB_TYPE_ICE) && HitBoxIDArray[otherID]->Game_Object != this) {
-		if (HitBoxIDArray[otherID]->Game_Object->Direction*Direction == -1) {
-			for (int i = 0; i < 3; i++) {
-				if (IceBergArray[i]->IsActive) {
-					IceBergArray[i]->GoBack();
-					break;
-				}
-			}
+		if (HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character && abs(HitBoxIDArray[otherID]->Game_Object->Z_Position - Z_Position) > 23) {
+			return;
 		}
-		else {
-			for (int i = 2; i >= 0; i--) {
-				if (IceBergArray[i]->IsActive) {
-					IceBergArray[i]->GoBack();
-					break;
-				}
-			}
-		}
+		GoBack();
 	}
 }

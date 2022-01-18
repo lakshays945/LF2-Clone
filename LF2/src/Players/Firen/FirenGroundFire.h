@@ -3,6 +3,7 @@
 #include "Common/HitBox.h"
 #include "Common/AnimationSheet.h"
 
+
 class Firen;
 class GroundFireHitBox : public GameObject {
 public:

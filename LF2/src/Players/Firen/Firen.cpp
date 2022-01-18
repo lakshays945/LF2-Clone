@@ -12,7 +12,7 @@ const std::vector <double> WalkingTimes = { 0.15,0.3,0.45,0.6,0.75,0.9 };
 const std::vector<RealVector2D> Attack1Locations = { {0,80}, {80,80} };
 const std::vector <double> Attack1Times = { 0.1,0.2};
 
-const std::vector<RealVector2D> Attack2Locations = { {160,80},{240,80}};
+const std::vector<RealVector2D> Attack2Locations = { {160,80},{240,80} };
 const std::vector <double> Attack2Times = { 0.1,0.2 };
 
 const std::vector<RealVector2D> Attack3Locations = { {560,80}, {640,80}, {720,80}, {720,160},{720,240},{720,320} };
@@ -37,8 +37,8 @@ const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
 const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
 
 
-const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{315,240},{390,240} };
-const std::vector<double> FallingBackTimes = { 0.1,0.2,0.3,0.4,2 };
+const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{390,240} };
+const std::vector<double> FallingBackTimes = { 0.1,0.2,0.4,2 };
 
 const std::vector<RealVector2D> FallingFrontLocations = { {80,320},{160,320},{400,320}, {320,320} };
 const std::vector<double> FallingFrontTimes = { 0.1,0.5,0.7,2 };
@@ -49,8 +49,11 @@ const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.6 };
 const std::vector<RealVector2D> SpecialAttack2Locations = { {0,175}, {80,175}, {160,175}, {80,175}};
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4};
 
-const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480}, {315,240},{390,240} }; //x,y
-const std::vector <double> BurningTimes = { 0.25,0.5,0.7,2 };
+const std::vector<RealVector2D> SpecialAttack3Locations = { {400,255}, {480,255}, {560,255}, {640,255}, {720,255}, {720,335}, {640,335} };
+const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.5,0.9,0.95,1 };
+
+const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480},{390,240} }; //x,y
+const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,0}, {720,0} };
 const std::vector<double> FreezeTimes = { 0.2,4.5 };
@@ -75,6 +78,7 @@ Firen::Firen() {
 	DashSheet.AssignPlayer(this);
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
+	SpecialAttack3Sheet.AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
@@ -105,6 +109,7 @@ Firen::Firen() {
 	};
 	SpecialAttack1Sheet.AssignTextures(FirenTexFile1, SpecialAttack1Locations, SpecialAttack1Times, 80, 80);
 	SpecialAttack2Sheet.AssignTextures(FirenTexFile1, SpecialAttack2Locations, SpecialAttack2Times, 80, 80);
+	SpecialAttack3Sheet.AssignTextures(FirenTexFile1, SpecialAttack3Locations, SpecialAttack3Times, 80, 80);
 
 	//Setting One Time Animations
 	JumpingSheet.OneTime = true;
@@ -115,6 +120,7 @@ Firen::Firen() {
 	Getting_HitSheet[0].OneTime = true;
 	Getting_HitSheet[1].OneTime = true;
 	SpecialAttack1Sheet.OneTime = true;
+	SpecialAttack3Sheet.OneTime = true;
 	//SpecialAttack2Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
@@ -171,6 +177,28 @@ Firen::Firen() {
 		GroundFireArray[i].AssignParent(this);
 		GroundFireArray[i].RegisterGameObject(GO_Weapon);
 	}
+	Firen_ExplosionBoxRD.RegisterGameObject(GO_Null);
+	Firen_ExplosionBoxRD.ExplosionHitBox.RegisterID();
+	Firen_ExplosionBoxRD.AssignParent(this);
+	Firen_ExplosionBoxRD.ExplosionHitBox.AssignPlayer(&Firen_ExplosionBoxRD);
+	Firen_ExplosionBoxRD.AssignOffset({43,30});
+	Firen_ExplosionBoxLD.RegisterGameObject(GO_Null);
+	Firen_ExplosionBoxLD.ExplosionHitBox.RegisterID();
+	Firen_ExplosionBoxLD.AssignParent(this);
+	Firen_ExplosionBoxLD.ExplosionHitBox.AssignPlayer(&Firen_ExplosionBoxLD);
+	Firen_ExplosionBoxLD.AssignOffset({ -43,30 });
+	Firen_ExplosionBoxRU.RegisterGameObject(GO_Null);
+	Firen_ExplosionBoxRU.ExplosionHitBox.RegisterID();
+	Firen_ExplosionBoxRU.AssignParent(this);
+	Firen_ExplosionBoxRU.ExplosionHitBox.AssignPlayer(&Firen_ExplosionBoxRU);
+	Firen_ExplosionBoxRU.AssignOffset({ 43,-12 });
+	Firen_ExplosionBoxLU.RegisterGameObject(GO_Null);
+	Firen_ExplosionBoxLU.ExplosionHitBox.RegisterID();
+	Firen_ExplosionBoxLU.AssignParent(this);
+	Firen_ExplosionBoxLU.ExplosionHitBox.AssignPlayer(&Firen_ExplosionBoxLU);
+	Firen_ExplosionBoxLU.AssignOffset({ -43,-12 });
+	Firen_ExplosionAnimation.RegisterGameObject(GO_Null);
+	Firen_ExplosionAnimation.AssignParent(this);
 }
 
 
@@ -178,7 +206,7 @@ void Firen::SpecialAttack1Calculations(const double dt, const double t) {
 	if ((t - dt - 0.4) * (t - 0.4) < 0) {
 		for (int i = 0; i < BallArray.size(); i++) {
 			if (!BallArray[i].IsActive) {
-				BallArray[i].Instantiate({ (float)800 * Direction,0 });
+				BallArray[i].Instantiate(Position,RealVector2D(800 * Direction, 0));
 				return;
 			}
 		}
@@ -212,6 +240,12 @@ void Firen::SpecialAttack2Calculations(const double dt, const double t) {
 	}
 }
 
-void Firen::SpecialAttack3Calculations(const double dt, const double t)
-{
+void Firen::SpecialAttack3Calculations(const double dt, const double t){
+	if ((t-dt-0.6)*(t-0.6) <= 0) {
+		Firen_ExplosionBoxRD.Instantiate(Position);
+		Firen_ExplosionBoxLD.Instantiate(Position);
+		Firen_ExplosionBoxRU.Instantiate(Position);
+		Firen_ExplosionBoxLU.Instantiate(Position);
+		Firen_ExplosionAnimation.Instantiate(Position);
+	}
 }

@@ -6,6 +6,7 @@
 #include "HitBox.h"
 #include <vector>
 #include "GameObject/GameObject.h"
+#include <queue>
 
 #define JUMP_DURATION 0.8
 #define INITIAL_JUMP_PAUSE 0.2
@@ -21,11 +22,9 @@
 #define MAX_LAST_TIME 20
 #define JUMP_GRAVITY_FACTOR -(DEFAULT_JUMP_VELOCITY*2)/(DEFAULT_GRAVITY_CONSTANT*JUMP_DURATION)
 #define DASH_GRAVITY_SCALE -(DEFAULT_DASH_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*DASH_DURATION)
-#define FALL_DURATION 0.7
+
 #define FALL_VELOCITY_Y 300
 #define FALL_VELOCITY_X 200
-#define FALL_GRAVITY_SCALE -(FALL_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*FALL_DURATION)
-
 
 class Character: public GameObject  {
 protected:
@@ -33,17 +32,17 @@ protected:
 public:
 	int CharacterID;
 	RealVector2D LastPosition;
-	int WallID = 0;
+	std::queue <int> WallIDs;
 	float MaxSpeed = 200;
 	int JumpSpeedY = -600;
 	int DashSpeedX = 600;
 	int RunSpeed = 300;
 	double JumpGravityFactor;
+	double FallDuration = 0.7;
 	double TimeSinceLastState = 0;
 	bool JustStateChanged = false;
 	bool Invincible = false;
 	double InvincibleTime = 10;
-	bool AtWall = false;
 	AnimationSheet IdleSheet;
 	AnimationSheet WalkingSheet;
 	AnimationSheet RunningSheet;
@@ -92,8 +91,8 @@ public:
 	void GettingHitCalculations(const double dt, const double t);
 	void Animate(sf::RenderWindow& window, const double dt);
 	void OnCollision(int otherID, int selfID);
-	void FallBack(int SpeedX);
-	void FallFront(int SpeedX);
+	void FallBack(int SpeedX, int SpeedY = 300);
+	void FallFront(int SpeedX, int SpeedY = 300);
 	void FallBackCalculations(const double dt, const double t);
 	void FallFrontCalculations(const double dt, const double t);
 	void FreezeCalculations(const double dt, const double t);

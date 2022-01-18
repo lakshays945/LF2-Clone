@@ -96,8 +96,19 @@ void HitBox::SetScale(RealVector2D scale) {
 	Box.setOrigin(sf::Vector2f(Width / 2, Height / 2));
 }
 
+void HitBox::Disable(){
+	IsActive = false;
+	for (int i = 0; i < CanCollide.size(); i++) {
+		CanCollide[ID][i] = true;
+		CanCollide[i][ID] = true;
+	}
+}
+
 void HandleCollisions() {
 	for (int i = 0; i < HitBoxIDArray.size(); i++) {
+		if (!HitBoxIDArray[i]->IsActive) {
+			continue;
+		}
 		for (int j = i+1; j < HitBoxIDArray.size(); j++) {
 			if (HitBoxIDArray[i]->JustCollided(HitBoxIDArray[j])) {
 				// j is ID and i is also ID
