@@ -56,7 +56,7 @@ const std::vector<RealVector2D> BurningLocations = { {720,0}, {720,80}, {720,480
 const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {560,240}, {640,240} };
-const std::vector<double> FreezeTimes = { 0.2,4.5 };
+const std::vector<double> FreezeTimes = { 0.2,6 };
 
 
 Davis::Davis() {

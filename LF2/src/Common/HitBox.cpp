@@ -24,6 +24,16 @@ HitBox::HitBox(RealVector2D center, double width, double height, HitBoxType type
 HitBox::HitBox() {
 }
 
+bool HitBox::AreColliding(HitBox* other){
+	if (abs(Game_Object->Z_Position - other->Game_Object->Z_Position) > COLLISION_THRESHOLD) {
+		return false;
+	}
+	if (abs(Center.get_x() - other->Center.get_x()) <= (Width + other->Width) / 2 && abs(Center.get_y() - other->Center.get_y()) <= (Height + other->Height) / 2) {
+		return true; //xyz
+	}
+	return false;
+}
+
 bool HitBox::JustCollided(HitBox* other) {
 	if (!IsActive || !other->IsActive) {
 		CanCollide[ID][other->ID] = true;

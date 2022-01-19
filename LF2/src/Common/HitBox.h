@@ -29,7 +29,7 @@ public:
 	HitBox(RealVector2D center, double width, double height, HitBoxType type);
 
 	HitBox();
-
+	bool AreColliding(HitBox* other);
 	bool JustCollided(HitBox* other);
 	void AssignPlayer(GameObject* player);
 	void SetSize(const double width, const double height) {

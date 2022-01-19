@@ -213,6 +213,7 @@ void Character::Attack(const double lastPressed) {
 
 void Character::Jump(const double lastPressed) {
 	LastPosition = Position + Velocity * JUMP_DURATION;
+	Z_Velocity = Velocity.get_y();
 	Velocity = Velocity + RealVector2D(0, JumpSpeedY);
 }
 
@@ -223,14 +224,18 @@ void Character::JumpCalculation(const double dt, const double t) {
 	}
 	//in air phase
 	if (t > INITIAL_JUMP_PAUSE && t < INITIAL_JUMP_PAUSE + JUMP_DURATION) {
+		Z_Position = Z_Position + Z_Velocity * dt;
 		Velocity = Velocity + GravityVector * (dt * JumpGravityFactor);
-		if(!WallIDs.empty()) {
+		while(!WallIDs.empty()) {
 			int WallID = WallIDs.front();
 			WallIDs.pop();
-			if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0)) {
+			Velocity = Velocity + RealVector2D(0, -Z_Velocity);
+			if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0) && (abs(HitBoxIDArray[WallID]->Game_Object->Z_Position - Z_Position) < 23)) {
 				Velocity = RealVector2D(0, Velocity.get_y());
 				LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
 			}
+			LastPosition = RealVector2D(LastPosition.get_x(), LastPosition.get_y() - (JUMP_DURATION - (t - INITIAL_JUMP_PAUSE) ) * Z_Velocity*1.1);
+			Z_Velocity = 0;
 		}
 		Translate(dt);
 	}
@@ -260,9 +265,9 @@ void Character::Dash() {
 	int D = Input_Manager.IsKeyPressed(PlayerControl.DownKey);
 	int R = Input_Manager.IsKeyPressed(PlayerControl.RightKey);
 	int L = Input_Manager.IsKeyPressed(PlayerControl.LeftKey);
-
 	//InputManager::GetDeviceState(this->deviceID);
 	RealVector2D DashVelocity((R - L) * DashSpeedX, DEFAULT_DASH_VELOCITY_Y*(1+U-D));
+	Z_Velocity = DEFAULT_DASH_VELOCITY_Y * (U - D);
 	LastPosition = Position + (DashVelocity-RealVector2D(0,DEFAULT_DASH_VELOCITY_Y)) * DASH_DURATION;
 	Velocity = DashVelocity;
 }
@@ -270,25 +275,25 @@ void Character::Dash() {
 void Character::DashCalculations(const double dt, const double t) {
 	//in air phase
 	if (t < DASH_DURATION) {
+		Z_Position = Z_Position + Z_Velocity * dt;
 		Velocity = Velocity + GravityVector * (dt * DASH_GRAVITY_SCALE);
-		if(!WallIDs.empty()) {
+		while(!WallIDs.empty()) {
 			int WallID = WallIDs.front();
 			WallIDs.pop();
-			if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0)) {
+			Velocity = Velocity + RealVector2D(0, -Z_Velocity);
+			if ((Position.get_x() > HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() < 0) || (Position.get_x() < HitBoxIDArray[WallID]->Center.get_x() && Velocity.get_x() > 0) && (abs(HitBoxIDArray[WallID]->Game_Object->Z_Position - Z_Position) < 23)) {
 				Velocity = RealVector2D(0, Velocity.get_y());
 				LastPosition = RealVector2D(Position.get_x(), LastPosition.get_y());
 			}
+			LastPosition = RealVector2D(LastPosition.get_x(), LastPosition.get_y() - (DASH_DURATION-t) * Z_Velocity*1.1);
+			Z_Velocity = 0;
 		}
 		Translate(dt);
 	}
 	//landed phase
 	else if(t >= DASH_DURATION + 0.1) {
-		if (!WallIDs.empty()) {
-			Position = LastPosition;
-		}
-		else {
-			Position = RealVector2D(Position.get_x(), LastPosition.get_y());
-		}
+		Position = LastPosition;
+		Z_Position = Position.get_y();
 		if (Input_Manager.GetLastPressed(PlayerControl.JumpKey) < 0.05 && (Input_Manager.IsKeyPressed(PlayerControl.RightKey)^Input_Manager.IsKeyPressed(PlayerControl.LeftKey))) {
 			ChangeState(DASH, 0);
 		}
@@ -334,7 +339,7 @@ void Character::Translate(const double dt) {
 		double w1 = HitBoxIDArray[WallID]->Width;
 		double w2 = DamageHitBox.Width;
 		double dx = abs(DamageHitBox.Center.get_x() - pos.get_x());
-		if ((dx < (w1 + w2) / 2 && abs(DamageHitBox.Center.get_x() - Direction*15 - pos.get_x()) >= (w1 + w2) / 2) && (abs(HitBoxIDArray[WallID]->Game_Object->Z_Position - Z_Position) < 23)) {
+		if ((dx < (w1 + w2) / 2 && abs(DamageHitBox.Center.get_x() - Direction*10 - pos.get_x()) >= (w1 + w2) / 2) && (abs(HitBoxIDArray[WallID]->Game_Object->Z_Position - Z_Position) < 23)) {
 			if (!Xwall && !Ywall) {
 				Position = Position - RealVector2D(Velocity.get_x(), 0) * dt;
 				Xwall = true;
@@ -433,12 +438,12 @@ void Character::OnCollision(int otherID, int selfID) {
 			else {
 				State_Manager.TryStateChange(FALLINGFRONT,60,300);
 			}
-			SetInvincible();
 		}
 		else {
 			WallHitBox.IsActive = true;
 			DamageHitBox.SetSize(66, 74);
 			State_Manager.ForceStateChange(FREEZED);
+			Stop();
 		}
 	}
 	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
@@ -538,19 +543,29 @@ void Character::FallFrontCalculations(const double dt, const double t) {
 void Character::FreezeCalculations(const double dt, const double t) {
 	WallHitBox.Center = Position;
 	if (Z_Position > Position.get_y()) {
-		Position = Position + RealVector2D(Velocity.get_x()/2, 250) * dt;
+		Velocity = Velocity + RealVector2D(0, 950) * dt;
 		DamageHitBox.Center = Position;
+		Translate(dt);
 	}
 	else {
-		Stop();
+		if (Velocity.Magnitude() > 350) {
+			WallHitBox.Disable();
+			WallHitBox.IgnoreObjectID = -1;
+			DamageHitBox.SetSize(42, 74);
+			SetInvincible();
+			State_Manager.TryStateChange(FALLINGBACK, 50, 300);
+			Position = RealVector2D(Position.get_x(), Z_Position);
+			return;
+		}
 		Position = RealVector2D(Position.get_x(), Z_Position);
+		Stop();
 	}
 	if (t > 3.2) {
 		WallHitBox.Disable();
 		WallHitBox.IgnoreObjectID = -1;
 		DamageHitBox.SetSize(42, 74);
 		SetInvincible();
-		State_Manager.TryStateChange(FALLINGBACK,50,300);
+		State_Manager.TryStateChange(FALLINGBACK, 50, 100);
 	}
 }
 

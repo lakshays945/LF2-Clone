@@ -58,7 +58,7 @@ const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480},{390,2
 const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,0}, {720,0} };
-const std::vector<double> FreezeTimes = { 0.2,4.5 };
+const std::vector<double> FreezeTimes = { 0.2,6 };
 
 Freeze::Freeze() {
 	//Manager Assignments
@@ -200,6 +200,10 @@ Freeze::Freeze() {
 	}
 	Freeze_Tornado.RegisterGameObject(GO_Null);
 	Freeze_Tornado.AssignParent(this);
+	Freeze_Tornado.AttackHitBox.AssignPlayer(&Freeze_Tornado);
+	Freeze_Tornado.AttackHitBox.RegisterID();
+	Freeze_Tornado.ForceFieldBox.AssignPlayer(&Freeze_Tornado);
+	Freeze_Tornado.ForceFieldBox.RegisterID();
 }
 
 void Freeze::SpecialAttack1Calculations(const double dt, const double t) {
@@ -232,6 +236,7 @@ void Freeze::SpecialAttack2Calculations(const double dt, const double t) {
 
 void Freeze::SpecialAttack3Calculations(const double dt, const double t){
 	if ((t - dt - 0.4) * (t - 0.4) <= 0) {
+		Freeze_Tornado.GoBack();
 		Freeze_Tornado.Instantiate(Position);
 	}
 }

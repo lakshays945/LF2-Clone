@@ -43,6 +43,7 @@ public:
 	bool JustStateChanged = false;
 	bool Invincible = false;
 	double InvincibleTime = 10;
+	double Z_Velocity = 0;
 	AnimationSheet IdleSheet;
 	AnimationSheet WalkingSheet;
 	AnimationSheet RunningSheet;

@@ -56,7 +56,7 @@ const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480},{390,2
 const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,0}, {720,0} };
-const std::vector<double> FreezeTimes = { 0.2,4.5 };
+const std::vector<double> FreezeTimes = { 0.2,6 };
 
 Firen::Firen() {
 	//Manager Assignments

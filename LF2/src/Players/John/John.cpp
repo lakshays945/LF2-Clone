@@ -58,7 +58,7 @@ const std::vector<RealVector2D> BurningLocations = { {720,80}, {720,480},{390,24
 const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,5}, {720,5} };
-const std::vector<double> FreezeTimes = { 0.2,4.5 };
+const std::vector<double> FreezeTimes = { 0.2,6 };
 
 John::John() {
 	//Manager Assignments
