@@ -65,6 +65,10 @@ void DavisBlueBall::Animate(sf::RenderWindow& window, const double dt) {
 	ReboundHitBox.DrawBox(window);
 }
 
+void DavisBlueBall::OnCollisionExit(int otherID, int selfID)
+{
+}
+
 void DavisBlueBall::OnCollision(int otherID, int selfID) {
 	HitBox* self = HitBoxIDArray[selfID];
 	HitBox* other = HitBoxIDArray[otherID];
@@ -88,7 +92,7 @@ void DavisBlueBall::OnCollision(int otherID, int selfID) {
 				Velocity.SetMagnitude(0);
 			}
 		}
-		else if (other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_REBOUND && HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character) {
+		else if (other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_REBOUND && (HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character || (HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Weapon))) {
 			ReboundHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;
 			AttackHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;
 			Rebound();

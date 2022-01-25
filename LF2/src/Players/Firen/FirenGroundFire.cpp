@@ -91,6 +91,10 @@ void FirenGroundFire::OnCollision(int otherID, int selfID) {
 
 }
 
+void FirenGroundFire::OnCollisionExit(int otherID, int selfID)
+{
+}
+
 GroundFireHitBox::GroundFireHitBox() {
 	IsActive = false;
 	AttackHitBox = HitBox(Position, 25, 25, HB_TYPE_FIRE);
@@ -158,4 +162,8 @@ void GroundFireHitBox::OnCollision(int otherID, int selfID) {
 			otherChar->BurningHitBox.IgnoreObjectID = -1;
 		}
 	}
+}
+
+void GroundFireHitBox::OnCollisionExit(int otherID, int selfID)
+{
 }

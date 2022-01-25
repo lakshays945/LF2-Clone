@@ -90,3 +90,7 @@ void FirenFireBall::OnCollision(int otherID, int selfID) {
 		}
 	}
 }
+
+void FirenFireBall::OnCollisionExit(int otherID, int selfID)
+{
+}

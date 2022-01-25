@@ -44,6 +44,10 @@ void HelicopterKick::OnCollision(int otherID, int selfID){
 	}
 }
 
+void HelicopterKick::OnCollisionExit(int otherID, int selfID)
+{
+}
+
 void HelicopterKick::AssignParent(Dennis* parent){
 	Parent = parent;
 	RegisterHitBox.IgnoreObjectID = Parent->ID;
@@ -69,7 +73,13 @@ void HelicopterKick::Animate(sf::RenderWindow& window, const double dt){
 	Position = Parent->Position;
 	RegisterHitBox.SetSize(Parent->AttackHitBox.Width, Parent->AttackHitBox.Height);
 	RegisterHitBox.Center = Parent->AttackHitBox.Center;
-	RegisterHitBox.IsActive = Parent->AttackHitBox.IsActive;
+	if (!Parent->AttackHitBox.IsActive) {
+		RegisterHitBox.Disable();
+	}
+	else {
+		RegisterHitBox.IsActive = true;
+		RegisterHitBox.SetScale({ 1.5,1.5 });
+	}
 	ProjectileReboundHitBox.Center = Position + RealVector2D(0, 15);
 	if (Parent->CurrentState != SPECIALATTACK3) {
 		GoBack();

@@ -126,6 +126,10 @@ void DestructoDisk::OnCollision(int otherID, int selfID){
 	}
 }
 
+void DestructoDisk::OnCollisionExit(int otherID, int selfID)
+{
+}
+
 void DestructoDisk::CalculateVelocity(const double dt){
 	if (Target == nullptr) {
 		DEBUG_WARNING("No Target for DestructoDisk");

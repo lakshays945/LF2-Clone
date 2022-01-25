@@ -44,6 +44,10 @@ void AnimationSheet::AssignHitbox(const int index, RealVector2D offset, const in
 	HBData[index].KnockPowerUp = knockPowerUp;
 }
 
+void AnimationSheet::AssignWPNOffsets(const std::vector<RealVector2D>& offsets){
+	WeaponOffsets = offsets;
+}
+
 void AnimationSheet::SetScale(RealVector2D scale) {
 	for (int i = 0; i < HBData.size(); i++) {
 		if (HasHitBox[i]) {

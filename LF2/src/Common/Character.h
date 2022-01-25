@@ -6,6 +6,7 @@
 #include "HitBox.h"
 #include <vector>
 #include "GameObject/GameObject.h"
+#include "Weapons/Weapon.h"
 #include <queue>
 
 #define JUMP_DURATION 0.8
@@ -57,8 +58,13 @@ public:
 	AnimationSheet SpecialAttack1Sheet;
 	AnimationSheet SpecialAttack2Sheet;
 	AnimationSheet SpecialAttack3Sheet;
+	AnimationSheet SpecialAttack4Sheet;
 	AnimationSheet BurningSheet;
 	AnimationSheet FreezedSheet;
+	AnimationSheet WPNAttackSheet[2];
+	AnimationSheet WPNJumpAttackSheet;
+	AnimationSheet WPNThrowSheet;
+	AnimationSheet WeaponPickSheet;
 	AnimationSheet* CurrentSheet;
 	int Up = 0, Down = 0, Right = 0, Left = 0;
 	int ComboStreak = 0; //the index of hitting_animation sheet
@@ -71,6 +77,10 @@ public:
 	HitBox WallHitBox;
 	HitBox BurningHitBox;
 	Controls PlayerControl;
+	Weapon* CurrentWeapon = nullptr;
+	int WeaponHolderType = 0;
+	RealVector2D WeaponPosOffsets[STATECOUNT];
+	std::vector <int> WeaponsInRangeID;
 	//CONSTRUCTOR
 	Character();
 
@@ -92,18 +102,22 @@ public:
 	void GettingHitCalculations(const double dt, const double t);
 	void Animate(sf::RenderWindow& window, const double dt);
 	void OnCollision(int otherID, int selfID);
+	void OnCollisionExit(int otherID, int selfID);
 	void FallBack(int SpeedX, int SpeedY = 300);
 	void FallFront(int SpeedX, int SpeedY = 300);
 	void FallBackCalculations(const double dt, const double t);
 	void FallFrontCalculations(const double dt, const double t);
 	void FreezeCalculations(const double dt, const double t);
 	void SetInvincible();
+	void DeFreeze();
 	void SetControls(Controls control);
+	void PickWeapon();
 	//-----------------------------------PLAYER-SPECIFIC-METHODS----------------------------------------
 
 	virtual void SpecialAttack1Calculations(const double dt, const double t) = 0;
 	virtual void SpecialAttack2Calculations(const double dt, const double t) = 0;
 	virtual void SpecialAttack3Calculations(const double dt, const double t) = 0;
+	virtual void SpecialAttack4Calculations(const double dt, const double t) = 0;
 };
 
 extern std::vector <Character*> CharacterIDArray;

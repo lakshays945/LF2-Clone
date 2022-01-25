@@ -20,6 +20,7 @@ public:
 	void GoBack();
 	void AssignParent(GameObject* parent);
 	void OnCollision(int otherID, int selfID);
+	void OnCollisionExit(int otherID, int selfID);
 	void Animate(sf::RenderWindow& window, const double dt);
 	int Index = 0;
 };

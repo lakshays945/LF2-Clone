@@ -5,10 +5,12 @@ sf::Texture FreezeTexFile1;
 sf::Texture FreezeTexFile2;
 
 const std::vector<RealVector2D> IdleLocations = { {0,0}, {80,0}, {160,0}, {240,0} }; //x,y
-const std::vector <double> IdleTimes = { 0.1,0.2,0.3,0.4 };
+const std::vector <double> IdleTimes = { 0.15,0.3,0.45,0.6 };
+const std::vector <RealVector2D> IdleWPNOffsets = { {-4,-16}, {-4,-16}, {-4,-17}, {-4,-17} };
 
 const std::vector<RealVector2D> WalkingLocations = { {320,0}, {400,0}, {480,0}, {560,0}, {480,0}, {400,0} };//x,y
 const std::vector <double> WalkingTimes = { 0.15,0.3,0.45,0.6,0.75,0.9 };
+const std::vector <RealVector2D> WalkingWPNOffsets = { {-4,-16}, {-4,-17}, {-4,-16}, {-4,-17}, {-4,-16}, {-4,-17} };
 
 const std::vector<RealVector2D> Attack1Locations = { {0,80}, {80,80} };
 const std::vector <double> Attack1Times = { 0.1,0.2 };
@@ -21,21 +23,26 @@ const std::vector <double> Attack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8 };
 
 const std::vector<RealVector2D> JumpingLocations = { {80,480}, {160,480}, {80,480} };
 const std::vector <double> JumpingTimes = { INITIAL_JUMP_PAUSE,INITIAL_JUMP_PAUSE + JUMP_DURATION,INITIAL_JUMP_PAUSE + JUMP_DURATION + JUMP_LANDING_TIME };
+const std::vector <RealVector2D> JumpingWPNOffsets = { {-7,10}, {-22,-12}, {-7,10} };
 
-const std::vector<RealVector2D> RunningLocations = { {80,160}, {0,160}, {80,160}, {160,160} };
+const std::vector<RealVector2D> RunningLocations = { {80,160}, {160,160} , {80,160},  {0,160} };
 const std::vector <double> RunningTimes = { 0.15,0.3,0.45,0.6 };
+const std::vector <RealVector2D> RunningWPNOffsets = { {17,-10}, {-9,14} , {17,-10}, {16,-17} };
 
 const std::vector<RealVector2D> JumpingAttackLocations = { {320,80},{400,80}, {480,80},{160,480} };
 const std::vector <double> JumpingAttackTimes = { 0.1,0.25,0.4,2 };
 
 const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
-const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME };
+const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME};
+const std::vector <RealVector2D> DashWPNOffsets = { {-12,-18}, {-13,10} };
 
 const std::vector<RealVector2D> Getting_HitLocations1 = { {0,0}, {480,320} };
 const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
+const std::vector <RealVector2D> Get_Hit1WPNOffsets = { {4,-27}, {12,-2} };
 
 const std::vector<RealVector2D> Getting_HitLocations2 = { {0,0}, {560,320} };
 const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
+const std::vector <RealVector2D> Get_Hit2WPNOffsets = { {4,-27}, {12,-2} };
 
 
 const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{390,240} };
@@ -46,19 +53,45 @@ const std::vector<double> FallingFrontTimes = { 0.1,0.5,0.7,2 };
 
 const std::vector<RealVector2D> SpecialAttack1Locations = { {45,12},{125,12},{205,12},{285,12},{365,12},{445,12} };
 const std::vector <double> SpecialAttack1Times = { 0.1,0.2,0.3,0.4,0.5,0.6 };
+const std::vector <RealVector2D> SpecialAttack1WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0},{0,0} };
 
 const std::vector<RealVector2D> SpecialAttack2Locations = { {640,0},{720,0},{560,80},{640,80},{720,80}};
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.7 };
+const std::vector <RealVector2D> SpecialAttack2WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
 
 const std::vector<RealVector2D> SpecialAttack3Locations = { {45,92}, {125,92}, {205,92}, {285,92}, {365,92}, {445,92}, {525,92}, {605,92}, {685,92} };
 const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9 };
+const std::vector <RealVector2D> SpecialAttack3WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
 
+const std::vector<RealVector2D> SpecialAttack4Locations = { {45,172}, {125,172}, {205,172}, {285,172}, {365,172}, {445,172}};
+const std::vector <double> SpecialAttack4Times = { 0.1,0.2,0.3,0.4,0.5,0.6 };
+const std::vector <RealVector2D> SpecialAttack4WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
 
 const std::vector<RealVector2D> BurningLocations = { {635,240}, {635,480},{390,240} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,0}, {720,0} };
 const std::vector<double> FreezeTimes = { 0.2,6 };
+
+const std::vector<RealVector2D> WPNAttack1Locations = { {0,0}, {80,0}, {160,0}, {240,0} };
+const std::vector<double> WPNAttack1Times = { 0.1,0.2,0.3,0.4 };
+const std::vector <RealVector2D> WPNAttack1Offsets = { {-34,-8}, {-6,-39}, {35,10}, {33,14} };
+
+const std::vector<RealVector2D> WPNAttack2Locations = { {320,0}, {400,0}, {480,0} };
+const std::vector<double> WPNAttack2Times = { 0.1,0.2,0.4 };
+const std::vector <RealVector2D> WPNAttack2Offsets = { {-15,-8}, {-9,-25}, {30,6} };
+
+const std::vector<RealVector2D> WPNJumpAttackLocations = { {0,80}, {80,80}, {160,80}, {160,80} };
+const std::vector<double> WPNJumpAttackTimes = { 0.1,0.2,0.3,2 };
+const std::vector <RealVector2D> WPNJumpAttackOffsets = {  {-33,-20}, {-6,-54}, {20,11}, {22,11} };
+
+const std::vector<RealVector2D> WPNThrowLocations = { {320,160}, {400,160}, {480,160} };
+const std::vector<double> WPNThrowTimes = { 0.1,0.2,0.5 };
+const std::vector <RealVector2D> WPNThrowOffsets = { {-34,-8}, {-6,-39}, {35,10} };
+
+const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
+const std::vector<double> WeaponPickTimes = { 0.2 };
+const std::vector <RealVector2D> WPNPickOffsets = { {20,30} };
 
 Freeze::Freeze() {
 	//Manager Assignments
@@ -81,10 +114,16 @@ Freeze::Freeze() {
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
 	SpecialAttack3Sheet.AssignPlayer(this);
+	SpecialAttack4Sheet.AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
 	FreezedSheet.AssignPlayer(this);
+	WPNAttackSheet[0].AssignPlayer(this);
+	WPNAttackSheet[1].AssignPlayer(this);
+	WPNJumpAttackSheet.AssignPlayer(this);
+	WPNThrowSheet.AssignPlayer(this);
+	WeaponPickSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (FreezeTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -105,17 +144,40 @@ Freeze::Freeze() {
 	FallingFrontSheet.AssignTextures(FreezeTexFile0, FallingFrontLocations, FallingFrontTimes, 75, 80);
 	BurningSheet.AssignTextures(FreezeTexFile0, BurningLocations, BurningTimes, -75, 80);
 	FreezedSheet.AssignTextures(FreezeTexFile0, FreezeLocations, FreezeTimes, 80, 80);
+	WeaponPickSheet.AssignTextures(FreezeTexFile0, WeaponPickLocations, WeaponPickTimes, 75, 75);
+
+	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
+	WalkingSheet.AssignWPNOffsets(WalkingWPNOffsets);
+	JumpingSheet.AssignWPNOffsets(JumpingWPNOffsets);
+	RunningSheet.AssignWPNOffsets(RunningWPNOffsets);
+	DashSheet.AssignWPNOffsets(DashWPNOffsets);
+	WPNAttackSheet[0].AssignWPNOffsets(WPNAttack1Offsets);
+	WPNAttackSheet[1].AssignWPNOffsets(WPNAttack2Offsets);
+	WPNJumpAttackSheet.AssignWPNOffsets(WPNJumpAttackOffsets);
+	WPNThrowSheet.AssignWPNOffsets(WPNThrowOffsets);
+	Getting_HitSheet[0].AssignWPNOffsets(Get_Hit1WPNOffsets);
+	Getting_HitSheet[1].AssignWPNOffsets(Get_Hit2WPNOffsets);
+	SpecialAttack1Sheet.AssignWPNOffsets(SpecialAttack1WPNOffsets);
+	SpecialAttack2Sheet.AssignWPNOffsets(SpecialAttack2WPNOffsets);
+	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
+	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
+	SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
 
 	if (FreezeTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		FreezeTexFile1.loadFromFile("Resource/Freeze1.png");
 	};
 	SpecialAttack1Sheet.AssignTextures(FreezeTexFile1, SpecialAttack1Locations, SpecialAttack1Times, 80, 80);
 	SpecialAttack3Sheet.AssignTextures(FreezeTexFile1, SpecialAttack3Locations, SpecialAttack3Times, 80, 80);
+	SpecialAttack4Sheet.AssignTextures(FreezeTexFile1, SpecialAttack4Locations, SpecialAttack4Times, 80, 80);
 
 	if (FreezeTexFile2.getSize() == sf::Vector2u(0, 0)) {
 		FreezeTexFile2.loadFromFile("Resource/Freeze2.png");
 	}
 	SpecialAttack2Sheet.AssignTextures(FreezeTexFile2, SpecialAttack2Locations, SpecialAttack2Times, 80, 80);
+	WPNAttackSheet[0].AssignTextures(FreezeTexFile2, WPNAttack1Locations, WPNAttack1Times, 80, 75);
+	WPNAttackSheet[1].AssignTextures(FreezeTexFile2, WPNAttack2Locations, WPNAttack2Times, 80, 80);
+	WPNJumpAttackSheet.AssignTextures(FreezeTexFile2, WPNJumpAttackLocations, WPNJumpAttackTimes, 80, 75);
+	WPNThrowSheet.AssignTextures(FreezeTexFile2, WPNThrowLocations, WPNThrowTimes, 80, 80);
 
 	//Setting One Time Animations
 	JumpingSheet.OneTime = true;
@@ -128,9 +190,14 @@ Freeze::Freeze() {
 	SpecialAttack1Sheet.OneTime = true;
 	SpecialAttack2Sheet.OneTime = true;
 	SpecialAttack3Sheet.OneTime = true;
+	SpecialAttack4Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
 	BurningSheet.OneTime = true;
+	WPNAttackSheet[0].OneTime = true;
+	WPNAttackSheet[1].OneTime = true;
+	WPNThrowSheet.OneTime = true;
+	WeaponPickSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31, 200);
@@ -153,6 +220,7 @@ Freeze::Freeze() {
 	RegisterCharacter();
 	DEBUG_SUCCESS("GameObject Freeze Registered with ID = {0}", ID);
 	DEBUG_SUCCESS("Character Freeze Registered with ID = {0}", CharacterID);
+	WeaponHolderType = 3;
 
 	for (int i = 0; i < 10; i++) {
 		BallArray.push_back(FreezeBall());
@@ -235,8 +303,25 @@ void Freeze::SpecialAttack2Calculations(const double dt, const double t) {
 }
 
 void Freeze::SpecialAttack3Calculations(const double dt, const double t){
+	if (Freeze_Tornado.IsActive) {
+		State_Manager.ForceStateChange(IDLE);
+		return;
+	}
 	if ((t - dt - 0.4) * (t - 0.4) <= 0) {
 		Freeze_Tornado.GoBack();
 		Freeze_Tornado.Instantiate(Position);
+	}
+}
+
+void Freeze::SpecialAttack4Calculations(const double dt, const double t){
+	if (t - dt <= 0) {
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Throw(RealVector2D(-25+rand()%50, -25 + rand() % 50), false);
+		}
+	}
+	if (t > 0.55) {
+		CurrentWeapon = new IceSword;
+		CurrentWeapon->AttackHitBox.IgnoreObjectID = ID;
+		State_Manager.ForceStateChange(IDLE);
 	}
 }

@@ -25,6 +25,9 @@ Character::Character() {
 	JumpSpeedY = DEFAULT_JUMP_VELOCITY;
 	DashSpeedX = DEFAULT_DASH_VELOCITY_X;
 	RunSpeed = DEFAULT_RUN_VELOCITY;
+	for (int i = 0; i < STATECOUNT; i++) {
+		WeaponPosOffsets[i] = RealVector2D(0, 0);
+	}
 }
 
 int Character::nextCharacterID = 0;
@@ -62,64 +65,147 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 	CurrentState = state;
 	switch (state) {
 	case IDLE:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_IDLE,WeaponHolderType);
+			CurrentWeapon->Hide = false;
+		}
 		CurrentSheet = &IdleSheet;
 		break;
 	case WALKING:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_WALKING, WeaponHolderType);
+		}
 		CurrentSheet = &WalkingSheet;
 		break;
 	case RUNNING:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_RUNNING, WeaponHolderType);
+		}
 		Run(lastPressed, data);
 		CurrentSheet = &RunningSheet;
 		break;
 	case JUMPING:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_JUMPING);
+		}
 		CurrentSheet = &JumpingSheet;
 		break;
 	case HITTING:
 		Attack(lastPressed);
-		CurrentSheet = &HittingSheet[ComboStreak];
+		if (CurrentWeapon == nullptr) {
+			CurrentSheet = &HittingSheet[ComboStreak];
+		}
+		else {
+			if (ComboStreak == 2) {
+				ComboStreak = 0;
+			}
+			if (CurrentSheet == &RunningSheet && ((Direction == 1 && Input_Manager.IsKeyPressed(PlayerControl.RightKey)) || (Direction == -1 && Input_Manager.IsKeyPressed(PlayerControl.LeftKey)))) {
+				CurrentWeapon->ChangeState(WPN_HITTING, 0);
+				State_Manager.ForceStateChange(THROWWEAPON);
+			}
+			else {
+				CurrentWeapon->ChangeState(WPN_HITTING, ComboStreak);
+				CurrentSheet = &WPNAttackSheet[ComboStreak];
+			}
+		}
 		Velocity = RealVector2D(30 * Direction, 0);
 		//Position = Position + RealVector2D(Direction * 10, 0);
 		break;
 	case GETTING_HIT:
 		Velocity = RealVector2D(data, 0);
 		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 4);
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_BLOOD, Position,0);
+		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_BLOOD, Position,0);
 		//Effect_Manager->DrawEffect(EFFECT_IMAGE_BLOOD, Position, 0.3,2);
 		if (CurrentSheet == &Getting_HitSheet[0]) {
 			CurrentSheet = &Getting_HitSheet[1];
+			if (CurrentWeapon != nullptr) {
+				CurrentWeapon->ChangeState(WPN_GETTING_HIT, 1);
+			}
 		}
 		else {
 			CurrentSheet = &Getting_HitSheet[0];
+			if (CurrentWeapon != nullptr) {
+				CurrentWeapon->ChangeState(WPN_GETTING_HIT, 0);
+			}
 		}
 		break;
 	case FALLINGBACK:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Throw(RealVector2D(0, -100));
+			CurrentWeapon = nullptr;
+		}
 		CurrentSheet = &FallingBackSheet;
 		FallBack(lastPressed,data);
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position + Velocity*(0.15), 2);
+		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position + Velocity*(0.15), 2);
 		break;
 	case FALLINGFRONT:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Throw(RealVector2D(0, -100));
+			CurrentWeapon = nullptr;
+		}
 		CurrentSheet = &FallingFrontSheet;
 		FallFront(lastPressed,data);
-		Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position + Velocity*(0.15), 2);
+		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position + Velocity*(0.15), 2);
 		break;
 	case JUMPINGATTACK:
-		CurrentSheet = &JumpingAttackSheet;
+		if (CurrentWeapon == nullptr) {
+			CurrentSheet = &JumpingAttackSheet;
+		}
+		else {
+			CurrentSheet = &WPNJumpAttackSheet;
+			CurrentWeapon->ChangeState(WPN_JUMP_ATTACK);
+		}
 		return;//special
 	case DASH:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_DASH);
+		}
 		CurrentSheet = &DashSheet;
 		Dash();
 		break;
 	case SPECIALATTACK1:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_SPL_ATTACK);
+			CurrentWeapon->Hide = true;
+		}
 		CurrentSheet = &SpecialAttack1Sheet;
 		break;
 	case SPECIALATTACK2:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_SPL_ATTACK);
+			CurrentWeapon->Hide = true;
+		}
 		CurrentSheet = &SpecialAttack2Sheet;
 		break;
 	case SPECIALATTACK3:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_SPL_ATTACK);
+			CurrentWeapon->Hide = true;
+		}
 		CurrentSheet = &SpecialAttack3Sheet;
 		break;
+	case SPECIALATTACK4:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->ChangeState(WPN_SPL_ATTACK);
+			CurrentWeapon->Hide = true;
+		}
+		CurrentSheet = &SpecialAttack4Sheet;
+		break;
 	case FREEZED:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Throw(RealVector2D(0, -100));
+			CurrentWeapon = nullptr;
+		}
 		CurrentSheet = &FreezedSheet;
+		break;
+	case THROWWEAPON:
+		CurrentSheet = &WPNThrowSheet;
+		CurrentWeapon->ChangeState(WPN_HITTING);
+		break;
+	case WEAPONPICK:
+		Stop();
+		CurrentSheet = &WeaponPickSheet;
+		PickWeapon();
 		break;
 	default:
 		break;
@@ -140,32 +226,60 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 			DamageHitBox.IsActive = true;
 		}
 	}
+
+	if (CurrentWeapon != nullptr) {
+		CurrentWeapon->Direction = Direction;
+	}
+
 	switch (CurrentState) {
 	case IDLE:
 		AddForce(dt);
 		Translate(dt);
 		Z_Position = Position.get_y();
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position + 1;
+		}
 		break;
 	case WALKING:
 		AddForce(dt);
 		Translate(dt);
 		Z_Position = Position.get_y();
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position + 1;
+		}
 		break;
 	case RUNNING:
 		Translate(dt);
 		Z_Position = Position.get_y();
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position + 1;
+		}
 		break;
 	case JUMPING:
 		JumpCalculation(dt, TimeSinceLastState);
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position + 1;
+		}
 		break;
 	case HITTING:
 		if (TimeSinceLastState < 0.2) {
 			Translate(dt);
 		}
+		if (CurrentWeapon != nullptr) {
+			if (ComboStreak == 0) {
+				CurrentWeapon->Z_Position = Z_Position + 1;
+			}
+			else {
+				CurrentWeapon->Z_Position = Z_Position - 1;
+			}
+		}
 		break;
 	case GETTING_HIT:
 		if (TimeSinceLastState < 0.2) {
 			Translate(dt);
+		}
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position + 1;
 		}
 		break;
 	case FALLINGBACK:
@@ -178,19 +292,44 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 		JumpCalculation(dt, TimeSinceLastState);
 		break;
 	case DASH:
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position + 1;
+		}
 		DashCalculations(dt, TimeSinceLastState);
 		break;
 	case SPECIALATTACK1:
 		SpecialAttack1Calculations(dt, TimeSinceLastState);
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position - 1;
+		}
 		break;
 	case SPECIALATTACK2:
 		SpecialAttack2Calculations(dt, TimeSinceLastState);
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position - 1;
+		}
 		break;
 	case SPECIALATTACK3:
 		SpecialAttack3Calculations(dt, TimeSinceLastState);
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position - 1;
+		}
+		break;
+	case SPECIALATTACK4:
+		SpecialAttack4Calculations(dt, TimeSinceLastState);
+		if (CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position - 1;
+		}
 		break;
 	case FREEZED:
 		FreezeCalculations(dt, TimeSinceLastState);
+		break;
+	case THROWWEAPON:
+		if (TimeSinceLastState > 0.2 && CurrentWeapon != nullptr) {
+			CurrentWeapon->Z_Position = Z_Position + 1;
+			CurrentWeapon->Throw(RealVector2D(Direction * 800, 0),true);
+			CurrentWeapon = nullptr;
+		}
 		break;
 	default:
 		break;
@@ -354,7 +493,14 @@ void Character::Translate(const double dt) {
 			}
 		}
 	}
+	if (CurrentWeapon != nullptr) {
+		CurrentWeapon->Z_Position = Z_Position + 1;
+	}
 	DamageHitBox.Center = Position;
+}
+
+void Character::GettingHitCalculations(const double dt, const double t)
+{
 }
 
 void Character::Animate(sf::RenderWindow& window, const double dt) { //give it an animation sheet (not as a parameter) and window and it will animate
@@ -378,6 +524,11 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	}
 	current->setScale(Scale.get_x()*Direction, Scale.get_y());
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
+	if (CurrentWeapon != nullptr) {
+		RealVector2D offset = RealVector2D((CurrentSheet->WeaponOffsets[CorrectIndex].get_x()) * Direction, CurrentSheet->WeaponOffsets[CorrectIndex].get_y());
+		CurrentWeapon->SetPosition(Position + offset, CurrentWeapon->Z_Position);
+		CurrentWeapon->Direction = Direction;
+	}
 	if (CurrentSheet->HasHitBox[CorrectIndex]) {
 		AttackHitBox.IsActive = true;
 		int dx = CurrentSheet->HBData[CorrectIndex].offset.get_x() * Direction;
@@ -404,7 +555,68 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 }
 
 void Character::OnCollision(int otherID, int selfID) {
-	if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object || HitBoxIDArray[otherID]->Type == HB_TYPE_TRIGGER) {
+	HitBox* self = HitBoxIDArray[selfID];
+	HitBox* other = HitBoxIDArray[otherID];
+	if (self->Type == HB_TYPE_DAMAGE && other->Game_Object != this && CurrentSheet != &BurningSheet) {
+		switch (other->Type) {
+			case HB_TYPE_ATTACK:
+				if (other->KnockOutPower > 0) {
+					if (Direction * other->Game_Object->Direction < 0) {
+						State_Manager.TryStateChange(FALLINGBACK, other->KnockOutPower, other->KnockUpPower);
+					}
+					else {
+						State_Manager.TryStateChange(FALLINGFRONT, other->KnockOutPower, other->KnockUpPower);
+					}
+				}
+				else {
+					State_Manager.TryStateChange(GETTING_HIT, Direction*other->Game_Object->Direction, -other->KnockOutPower * other->Game_Object->Direction);
+				}
+				break;
+			case HB_TYPE_FIRE:
+				if (Direction * other->Game_Object->Direction < 0) {
+					State_Manager.TryStateChange(FALLINGBACK, other->KnockOutPower, other->KnockUpPower);
+				}
+				else {
+					State_Manager.TryStateChange(FALLINGFRONT, other->KnockOutPower, other->KnockUpPower);
+				}
+				CurrentSheet = &BurningSheet;
+				BurningHitBox.Center = Position;
+				BurningHitBox.IsActive = true;
+				SetInvincible();
+				break;
+			case HB_TYPE_ICE:
+				WallHitBox.IsActive = true;
+				DamageHitBox.SetSize(66, 74);
+				State_Manager.TryStateChange(FREEZED, Direction * other->Game_Object->Direction);
+				if (CurrentState == FREEZED) {
+					Stop();
+				}
+				break;
+			case HB_TYPE_TRIGGER:
+				if (other->Game_Object->GO_Type == GO_Weapon) {
+					WeaponsInRangeID.push_back(HitBoxIDArray[otherID]->Game_Object->ID);
+				}
+				break;
+			case HB_TYPE_WALL:
+				WallIDs.push(otherID);
+				break;
+		}
+	}
+	else if (self->Type == HB_TYPE_FIRE && other->Game_Object != this) {
+
+	}
+	else if (self->Type == HB_TYPE_WALL && other->Game_Object != this) {
+		CanCollide[otherID][selfID] = true;
+		CanCollide[selfID][otherID] = true;
+	}
+	else if(self->Type == HB_TYPE_ATTACK && other->Game_Object != this) {
+
+	}
+	/*if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object || HitBoxIDArray[otherID]->Type == HB_TYPE_TRIGGER) {
+		if (HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Weapon && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
+			WeaponsInRangeID.push_back(HitBoxIDArray[otherID]->Game_Object->ID);
+			//DEBUG_INFO("WPN of ID = {} entered", HitBoxIDArray[otherID]->Game_Object->ID);
+		}
 		return;
 	}
 	if (HitBoxIDArray[selfID]->Type == HB_TYPE_WALL) {
@@ -417,9 +629,11 @@ void Character::OnCollision(int otherID, int selfID) {
 	if ((HitBoxIDArray[otherID]->KnockOutPower > 0) && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK || (HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE && !BurningHitBox.IsActive))) {
 		if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
 			State_Manager.TryStateChange(FALLINGBACK,HitBoxIDArray[otherID]->KnockOutPower,HitBoxIDArray[otherID]->KnockUpPower);
+			WallHitBox.Disable();
 		}
 		else {
 			State_Manager.TryStateChange(FALLINGFRONT,HitBoxIDArray[otherID]->KnockOutPower, HitBoxIDArray[otherID]->KnockUpPower);
+			WallHitBox.Disable();
 		}
 		if (HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE) {
 			CurrentSheet = &BurningSheet;
@@ -459,6 +673,19 @@ void Character::OnCollision(int otherID, int selfID) {
 			return;
 		}
 		State_Manager.TryStateChange(GETTING_HIT,0,-HitBoxIDArray[otherID]->KnockOutPower*HitBoxIDArray[otherID]->Game_Object->Direction);
+	}*/
+}
+
+void Character::OnCollisionExit(int otherID, int selfID){
+	//DEBUG_INFO("Player Exited");
+	if (HitBoxIDArray[otherID]->Type == HB_TYPE_TRIGGER && HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Weapon && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
+		for (int i = 0; i < WeaponsInRangeID.size(); i++) {
+			if (HitBoxIDArray[otherID]->Game_Object->ID == WeaponsInRangeID[i]) {
+				//DEBUG_INFO("WPN of ID = {} removed", HitBoxIDArray[otherID]->Game_Object->ID);
+				WeaponsInRangeID.erase(WeaponsInRangeID.begin() + i);
+				break;
+			}
+		}
 	}
 }
 
@@ -472,9 +699,9 @@ void Character::FallBack(int SpeedX, int SpeedY) {
 	BurningSheet.DrawTimes[0] = FallDuration / 2;
 	BurningSheet.DrawTimes[1] = FallDuration-0.2;
 	BurningSheet.DrawTimes[2] = 1.4 + FallDuration;
-	DEBUG_INFO("duration = {}", FallDuration);
 	double Vy = -SpeedY;
 	Velocity = RealVector2D(SpeedX *(-Direction),Vy);
+	DEBUG_INFO("SpeedY = {}", Vy);
 	LastPosition = RealVector2D(Position.get_x() + SpeedX * FallDuration * (-Direction), Z_Position);
 }
 
@@ -488,7 +715,6 @@ void Character::FallFront(int SpeedX, int SpeedY) {
 	BurningSheet.DrawTimes[0] = FallDuration / 2;
 	BurningSheet.DrawTimes[1] = FallDuration - 0.2;
 	BurningSheet.DrawTimes[2] = 1.4 + FallDuration;
-	DEBUG_INFO("duration = {}", FallDuration);
 	double Vy = -SpeedY;
 	Velocity = RealVector2D(SpeedX * Direction, Vy);
 	LastPosition = RealVector2D(Position.get_x() + SpeedX * FallDuration * Direction, Z_Position);
@@ -549,10 +775,7 @@ void Character::FreezeCalculations(const double dt, const double t) {
 	}
 	else {
 		if (Velocity.Magnitude() > 350) {
-			WallHitBox.Disable();
-			WallHitBox.IgnoreObjectID = -1;
-			DamageHitBox.SetSize(42, 74);
-			SetInvincible();
+			DeFreeze();
 			State_Manager.TryStateChange(FALLINGBACK, 50, 300);
 			Position = RealVector2D(Position.get_x(), Z_Position);
 			return;
@@ -561,10 +784,7 @@ void Character::FreezeCalculations(const double dt, const double t) {
 		Stop();
 	}
 	if (t > 3.2) {
-		WallHitBox.Disable();
-		WallHitBox.IgnoreObjectID = -1;
-		DamageHitBox.SetSize(42, 74);
-		SetInvincible();
+		DeFreeze();
 		State_Manager.TryStateChange(FALLINGBACK, 50, 100);
 	}
 }
@@ -575,12 +795,31 @@ void Character::SetInvincible() {
 	InvincibleTime = 0;
 }
 
+void Character::DeFreeze(){
+	WallHitBox.Disable();
+	WallHitBox.IgnoreObjectID = -1;
+	DamageHitBox.SetSize(42, 74);
+	SetInvincible();
+}
+
 void Character::SetControls(Controls control) {
 	PlayerControl = control;
 	Input_Manager.SetControls(PlayerControl);
 }
 
- //Player Specific
+void Character::PickWeapon(){
+	double minDist = 10000;
+	int id = 0;
+	for (int i = 0; i < WeaponsInRangeID.size(); i++) {
+		if (minDist > Position.DistanceFrom(GameObjectIDArray[WeaponsInRangeID[i]]->Position)) {
+			minDist = Position.DistanceFrom(GameObjectIDArray[WeaponsInRangeID[i]]->Position);
+			id = WeaponsInRangeID[i];
+		}
+	}
+	CurrentWeapon = (Weapon*)GameObjectIDArray[id];
+	CurrentWeapon->AssignParent(this);
+}
+
 
 
 

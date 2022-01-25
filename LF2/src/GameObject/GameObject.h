@@ -22,9 +22,11 @@ public:
 	RealVector2D Scale = {1,1};
 	double Z_Position = Position.get_y();
 	virtual void OnCollision(int otherID, int selfID) = 0;
+	virtual void OnCollisionExit(int otherID, int selfID) = 0;
 	virtual void Animate(sf::RenderWindow& window, const double dt) = 0;
 	EffectManager* Effect_Manager = nullptr;
 	void AssignEffectManager(EffectManager* effectManager);
 };
 
 extern std::vector <GameObject*> GameObjectIDArray;
+void AddGameObject(GameObject* object);

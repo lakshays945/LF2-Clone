@@ -43,9 +43,9 @@ public:
 		if (!IsActive) {
 			return;
 		}
-		circle.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
+		circle.setPosition(sf::Vector2f(Center.get_x(), Game_Object->Z_Position));
 		Box.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
-		//window.draw(Box);
+		window.draw(Box);
 		//window.draw(circle);
 	}
 	void RegisterID();
@@ -57,3 +57,4 @@ void HandleCollisions();
 
 extern std::vector <HitBox*> HitBoxIDArray;
 extern std::vector <std::vector< bool>> CanCollide;
+extern std::vector <std::vector< bool>> JustCollidedArray;

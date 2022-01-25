@@ -65,6 +65,10 @@ void FirenExplosionBox::OnCollision(int otherID, int selfID){
 	}
 }
 
+void FirenExplosionBox::OnCollisionExit(int otherID, int selfID)
+{
+}
+
 FirenExplosionAnimation::FirenExplosionAnimation() {
 	IsActive = false;
 	if (ExplosionTexFile.getSize() == sf::Vector2u(0, 0)) {
@@ -108,4 +112,8 @@ void FirenExplosionAnimation::Animate(sf::RenderWindow& window, const double dt)
 
 void FirenExplosionAnimation::OnCollision(int otherID, int selfID){
 
+}
+
+void FirenExplosionAnimation::OnCollisionExit(int otherID, int selfID)
+{
 }

@@ -95,3 +95,7 @@ void JohnShield::OnCollision(int otherID, int selfID){
 		AttackHitBox.Disable();
 	}
 }
+
+void JohnShield::OnCollisionExit(int otherID, int selfID)
+{
+}

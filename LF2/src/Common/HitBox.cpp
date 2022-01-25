@@ -15,9 +15,11 @@ HitBox::HitBox(RealVector2D center, double width, double height, HitBoxType type
 	Box.setOutlineThickness(-2);
 	Box.setOutlineColor(sf::Color(255, 0, 0));
 	Box.setOrigin(sf::Vector2f(width / 2, height / 2));
-	circle.setPosition(sf::Vector2f(center.get_x(), center.get_y()));
+	if (Game_Object != nullptr) {
+		circle.setPosition(sf::Vector2f(center.get_x(), Game_Object->Z_Position));
+	}
 	circle.setFillColor(sf::Color(0, 0, 0, 255));
-	circle.setRadius(1);
+	circle.setRadius(5);
 	//circle.setOrigin(sf::Vector2f(3.0 / 2, 3.0 / 2));
 }
 
@@ -41,6 +43,10 @@ bool HitBox::JustCollided(HitBox* other) {
 		return false;
 	}
 	if (abs(Game_Object->Z_Position - other->Game_Object->Z_Position) > COLLISION_THRESHOLD) {
+		if (!CanCollide[ID][other->ID]) {
+			HitBoxIDArray[other->ID]->Game_Object->OnCollisionExit(ID, other->ID);
+			HitBoxIDArray[ID]->Game_Object->OnCollisionExit(other->ID,ID);
+		}
 		CanCollide[ID][other->ID] = true;
 		CanCollide[other->ID][ID] = true;
 		return false;
@@ -54,6 +60,10 @@ bool HitBox::JustCollided(HitBox* other) {
 		return true; //xyz
 	}
 	else {
+		if (!CanCollide[ID][other->ID]) {
+			HitBoxIDArray[other->ID]->Game_Object->OnCollisionExit(ID, other->ID);
+			HitBoxIDArray[ID]->Game_Object->OnCollisionExit(other->ID, ID);
+		}
 		CanCollide[ID][other->ID] = true;
 		CanCollide[other->ID][ID] = true;
 	}
@@ -70,8 +80,8 @@ void HitBox::RegisterID() {
 	HitBoxIDArray.push_back(this);
 	std::vector <bool> newRow;
 	for (int i = 0; i < CanCollide.size(); i++) {
-		CanCollide[i].push_back(true);
-		newRow.push_back(true);
+		CanCollide[i].push_back(false);
+		newRow.push_back(false);
 	}
 	newRow.push_back(false);
 	CanCollide.push_back(newRow);
@@ -108,7 +118,14 @@ void HitBox::SetScale(RealVector2D scale) {
 
 void HitBox::Disable(){
 	IsActive = false;
-	for (int i = 0; i < CanCollide.size(); i++) {
+	for (int i = 0; i < HitBoxIDArray.size(); i++) {
+		if (i == ID) {
+			continue;
+		}
+		if (!CanCollide[ID][i]) {
+			HitBoxIDArray[i]->Game_Object->OnCollisionExit(ID,i);
+			HitBoxIDArray[ID]->Game_Object->OnCollisionExit(i, ID);
+		}
 		CanCollide[ID][i] = true;
 		CanCollide[i][ID] = true;
 	}

@@ -1,5 +1,5 @@
 #include "IceBerg.h"
-
+#include "Weapons/Weapon.h"
 sf::Texture IceBergTexFile;
 
 const std::vector<RealVector2D> InitialLocations1 = { {0,0},{110,0},{220,0}, {330,0}, {440,0}, {550,0} }; //108 x 108
@@ -52,7 +52,6 @@ void IceBerg::Instantiate(RealVector2D position) {
 	EndSheet.Time = 0;
 	Direction = Parent->Direction;
 	AttackHitBox.IsActive = true;
-	WallHitBox.IsActive = true;
 	AttackHitBox.Center = Position;
 	WallHitBox.Center = Position;
 	TotalTime = 0;
@@ -89,6 +88,7 @@ void IceBerg::Animate(sf::RenderWindow& window, const double dt) {
 	if (TotalTime > 0.3) {
 		AttackHitBox.Center = Parent->Position;
 		AttackHitBox.Disable();
+		WallHitBox.IsActive = true;
 	}
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
@@ -126,10 +126,25 @@ void IceBerg::OnCollision(int otherID, int selfID) {
 		}
 		return;
 	}
-	if ((otherType == HB_TYPE_FIRE || otherType == HB_TYPE_ATTACK || otherType == HB_TYPE_ICE) && HitBoxIDArray[otherID]->Game_Object != this) {
+	if ((otherType == HB_TYPE_FIRE || otherType == HB_TYPE_ATTACK || otherType == HB_TYPE_ICE) && HitBoxIDArray[otherID]->Game_Object != this && selfID == WallHitBox.ID) {
 		if (HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character && abs(HitBoxIDArray[otherID]->Game_Object->Z_Position - Z_Position) > 23) {
 			return;
 		}
 		GoBack();
 	}
+	if (selfID == AttackHitBox.ID && HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Weapon) {
+		Weapon* ColWeapon = (Weapon*)HitBoxIDArray[otherID]->Game_Object;
+		ColWeapon->AttackHitBox.IgnoreObjectID = Parent->ID;
+		if (Index == 1){
+			ColWeapon->Throw(RealVector2D(Direction*(350 + rand() % 50), -300), true);
+		}
+		else {
+			ColWeapon->Throw(RealVector2D(Direction * (350 + rand() % 50), -300),true);
+		}
+
+	}
+}
+
+void IceBerg::OnCollisionExit(int otherID, int selfID)
+{
 }

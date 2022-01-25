@@ -5,10 +5,12 @@ sf::Texture JohnTexFile1;
 sf::Texture JohnTexFile2;
 
 const std::vector<RealVector2D> IdleLocations = { {0,5}, {80,5}, {160,5}, {240,5} }; //x,y
-const std::vector <double> IdleTimes = { 0.1,0.2,0.3,0.4 };
+const std::vector <double> IdleTimes = { 0.15,0.3,0.45,0.6 };
+const std::vector <RealVector2D> IdleWPNOffsets = { {4,1}, {4,1}, {4,0}, {4,0} };
 
 const std::vector<RealVector2D> WalkingLocations = { {320,5}, {400,5}, {480,5}, {560,5}, {480,5}, {400,5} };//x,y
 const std::vector <double> WalkingTimes = { 0.15,0.3,0.45,0.6,0.75,0.9 };
+const std::vector <RealVector2D> WalkingWPNOffsets = { {10,2}, {6,2}, {4,2}, {3,2}, {4,2}, {6,2 } };
 
 const std::vector<RealVector2D> Attack1Locations = { {0,85}, {80,85} };
 const std::vector <double> Attack1Times = { 0.15,0.3 };
@@ -21,21 +23,26 @@ const std::vector <double> Attack3Times = { 0.15,0.3,0.45,0.6 };
 
 const std::vector<RealVector2D> JumpingLocations = { {80,480}, {160,480}, {80,480} };
 const std::vector <double> JumpingTimes = { INITIAL_JUMP_PAUSE,INITIAL_JUMP_PAUSE + JUMP_DURATION,INITIAL_JUMP_PAUSE + JUMP_DURATION + JUMP_LANDING_TIME };
+const std::vector <RealVector2D> JumpingWPNOffsets = { {-5,0}, {-23,-22}, {-5,0} };
 
-const std::vector<RealVector2D> RunningLocations = { {80,165}, {0,165}, {80,165}, {160,165} };
+const std::vector<RealVector2D> RunningLocations = { {80,160}, {0,160}, {80,160}, {160,160} };
 const std::vector <double> RunningTimes = { 0.15,0.3,0.45,0.6 };
+const std::vector <RealVector2D> RunningWPNOffsets = { {30,-5}, {3,11} , {30,-5}, {19,-17} };
 
 const std::vector<RealVector2D> JumpingAttackLocations = { {320,80},{400,80}, {480,80},{160,480} };
 const std::vector <double> JumpingAttackTimes = { 0.1,0.25,0.4,2 };
 
 const std::vector<RealVector2D> DashLocations = { {240,480},{80,480} };
 const std::vector <double> DashTimes = { DASH_DURATION, DASH_DURATION + DASH_LANDING_TIME };
+const std::vector <RealVector2D> DashWPNOffsets = { {-7,-20}, {-7,-2} };
 
 const std::vector<RealVector2D> Getting_HitLocations1 = { {0,5}, {480,325} };
 const std::vector <double> Getting_HitTimes1 = { 0.05,0.6 };
+const std::vector <RealVector2D> Get_Hit1WPNOffsets = { {0,0}, {-30,-30} };
 
 const std::vector<RealVector2D> Getting_HitLocations2 = { {0,5}, {560,325} };
 const std::vector <double> Getting_HitTimes2 = { 0.05,0.6 };
+const std::vector <RealVector2D> Get_Hit2WPNOffsets = { {0,0}, {-38,-15} };
 
 
 const std::vector<RealVector2D> FallingBackLocations = { {75,240},{155,240},{235,240},{390,240} };
@@ -46,19 +53,41 @@ const std::vector<double> FallingFrontTimes = { 0.1,0.5,0.7,2 };
 
 const std::vector<RealVector2D> SpecialAttack1Locations = { {635,271},{495,271},{560,31},{345,271} };
 const std::vector <double> SpecialAttack1Times = { 0.3,0.4,0.5,0.6 };
+const std::vector <RealVector2D> SpecialAttack1WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0} };
 
 const std::vector<RealVector2D> SpecialAttack2Locations = { {0,187}, {80,187}, {160,187}, {240,187},{320,187}, {403,187}, {483,187}, {563,187},{643,187}, {720,187} };
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0};
+const std::vector <RealVector2D> SpecialAttack2WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0},{0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
 
 const std::vector<RealVector2D> SpecialAttack3Locations = { {320,107}, {400,107}, {480,107}, {560,107}, {640,107}, {720,107}};
 const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6 };
-
+const std::vector <RealVector2D> SpecialAttack3WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
 
 const std::vector<RealVector2D> BurningLocations = { {720,80}, {720,480},{390,240} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
 const std::vector<RealVector2D> FreezeLocations = { {640,5}, {720,5} };
 const std::vector<double> FreezeTimes = { 0.2,6 };
+
+const std::vector<RealVector2D> WPNAttack1Locations = { {-6,-3}, {80,0}, {160,0}, {240,0} };
+const std::vector<double> WPNAttack1Times = { 0.1,0.2,0.3,0.4 };
+const std::vector <RealVector2D> WPNAttack1Offsets = { {-25,-7}, {-23,-44}, {22,3}, {27,10} };
+
+const std::vector<RealVector2D> WPNAttack2Locations = { {320,0}, {400,0}, {480,0} };
+const std::vector<double> WPNAttack2Times = { 0.1,0.2,0.4 };
+const std::vector <RealVector2D> WPNAttack2Offsets = { {-15,-8}, {-9,-25}, {27,6} };
+
+const std::vector<RealVector2D> WPNJumpAttackLocations = { {0,80}, {80,80}, {160,80}, {240,80} };
+const std::vector<double> WPNJumpAttackTimes = { 0.1,0.2,0.3,2 };
+const std::vector <RealVector2D> WPNJumpAttackOffsets = { {-35,-40}, {-16,-52}, {17,9}, {17,13} };
+
+const std::vector<RealVector2D> WPNThrowLocations = { {320,160}, {400,160}, {480,160} };
+const std::vector<double> WPNThrowTimes = { 0.1,0.2,0.5 };
+const std::vector <RealVector2D> WPNThrowOffsets = { {-45,-14}, {0,-44}, {22,3} };
+
+const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
+const std::vector<double> WeaponPickTimes = { 0.2 };
+const std::vector <RealVector2D> WPNPickOffsets = { {26,25} };
 
 John::John() {
 	//Manager Assignments
@@ -81,10 +110,16 @@ John::John() {
 	SpecialAttack1Sheet.AssignPlayer(this);
 	SpecialAttack2Sheet.AssignPlayer(this);
 	SpecialAttack3Sheet.AssignPlayer(this);
+	SpecialAttack4Sheet.AssignPlayer(this);
 	FallingBackSheet.AssignPlayer(this);
 	FallingFrontSheet.AssignPlayer(this);
 	BurningSheet.AssignPlayer(this);
 	FreezedSheet.AssignPlayer(this);
+	WPNAttackSheet[0].AssignPlayer(this);
+	WPNAttackSheet[1].AssignPlayer(this);
+	WPNJumpAttackSheet.AssignPlayer(this);
+	WPNThrowSheet.AssignPlayer(this);
+	WeaponPickSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (JohnTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -105,10 +140,33 @@ John::John() {
 	FallingFrontSheet.AssignTextures(JohnTexFile0, FallingFrontLocations, FallingFrontTimes, 75, 80);
 	BurningSheet.AssignTextures(JohnTexFile0, BurningLocations, BurningTimes, -75, 80);
 	FreezedSheet.AssignTextures(JohnTexFile0, FreezeLocations, FreezeTimes, 80, 80);
+	WeaponPickSheet.AssignTextures(JohnTexFile0, WeaponPickLocations, WeaponPickTimes, 80, 80);
+
+	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
+	WalkingSheet.AssignWPNOffsets(WalkingWPNOffsets);
+	JumpingSheet.AssignWPNOffsets(JumpingWPNOffsets);
+	RunningSheet.AssignWPNOffsets(RunningWPNOffsets);
+	DashSheet.AssignWPNOffsets(DashWPNOffsets);
+	WPNAttackSheet[0].AssignWPNOffsets(WPNAttack1Offsets);
+	WPNAttackSheet[1].AssignWPNOffsets(WPNAttack2Offsets);
+	WPNJumpAttackSheet.AssignWPNOffsets(WPNJumpAttackOffsets);
+	WPNThrowSheet.AssignWPNOffsets(WPNThrowOffsets);
+	Getting_HitSheet[0].AssignWPNOffsets(Get_Hit1WPNOffsets);
+	Getting_HitSheet[1].AssignWPNOffsets(Get_Hit2WPNOffsets);
+	SpecialAttack1Sheet.AssignWPNOffsets(SpecialAttack1WPNOffsets);
+	SpecialAttack2Sheet.AssignWPNOffsets(SpecialAttack2WPNOffsets);
+	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
+	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
+	//SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
 
 	if (JohnTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		JohnTexFile1.loadFromFile("Resource/John1.png");
 	};
+
+	WPNAttackSheet[0].AssignTextures(JohnTexFile1, WPNAttack1Locations, WPNAttack1Times, 80, 80);
+	WPNAttackSheet[1].AssignTextures(JohnTexFile1, WPNAttack2Locations, WPNAttack2Times, 80, 80);
+	WPNJumpAttackSheet.AssignTextures(JohnTexFile1, WPNJumpAttackLocations, WPNJumpAttackTimes, 80, 80);
+	WPNThrowSheet.AssignTextures(JohnTexFile1, WPNThrowLocations, WPNThrowTimes, 80, 80);
 
 	if (JohnTexFile2.getSize() == sf::Vector2u(0, 0)) {
 		JohnTexFile2.loadFromFile("Resource/John2.png");
@@ -131,6 +189,10 @@ John::John() {
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
 	BurningSheet.OneTime = true;
+	WPNAttackSheet[0].OneTime = true;
+	WPNAttackSheet[1].OneTime = true;
+	WPNThrowSheet.OneTime = true;
+	WeaponPickSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(1, { 11,11 }, 41, 32, 200);
@@ -147,6 +209,7 @@ John::John() {
 	JumpSpeedY = -600;
 	DashSpeedX = 600;
 	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
+	WeaponHolderType = 1;
 
 	RegisterGameObject(GO_Character);
 	RegisterCharacter();
@@ -223,4 +286,8 @@ void John::SpecialAttack3Calculations(const double dt, const double t){
 			}
 		}
 	}
+}
+
+void John::SpecialAttack4Calculations(const double dt, const double t)
+{
 }

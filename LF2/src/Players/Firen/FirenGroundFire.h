@@ -21,6 +21,7 @@ public:
 	void Instantiate(RealVector2D position);
 	void Animate(sf::RenderWindow& window, const double dt);
 	void OnCollision(int otherID, int selfID);
+	void OnCollisionExit(int otherID, int selfID);
 };
 
 class FirenGroundFire : public GameObject {
@@ -40,4 +41,5 @@ public:
 	void AssignParent(GameObject* parent);
 	void Animate(sf::RenderWindow &window, const double dt);
 	void OnCollision(int otherID, int selfID);
+	void OnCollisionExit(int otherID, int selfID);
 };
