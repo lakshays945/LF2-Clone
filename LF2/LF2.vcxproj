@@ -58,6 +58,10 @@
     <ClCompile Include="src\Players\John\JohnShield.cpp" />
     <ClCompile Include="src\Players\Woody\Woody.cpp" />
     <ClCompile Include="src\Players\Woody\WoodyBall.cpp" />
+    <ClCompile Include="src\UI\Button.cpp" />
+    <ClCompile Include="src\UI\Element.cpp" />
+    <ClCompile Include="src\UI\Image.cpp" />
+    <ClCompile Include="src\UI\Text.cpp" />
     <ClCompile Include="src\Weapons\BaseBallBat.cpp" />
     <ClCompile Include="src\Weapons\HookWeapon.cpp" />
     <ClCompile Include="src\Weapons\IceSword.cpp" />
@@ -101,6 +105,10 @@
     <ClInclude Include="src\Players\John\JohnShield.h" />
     <ClInclude Include="src\Players\Woody\Woody.h" />
     <ClInclude Include="src\Players\Woody\WoodyBall.h" />
+    <ClInclude Include="src\UI\Button.h" />
+    <ClInclude Include="src\UI\Element.h" />
+    <ClInclude Include="src\UI\Image.h" />
+    <ClInclude Include="src\UI\Text.h" />
     <ClInclude Include="src\Weapons\BaseBallBat.h" />
     <ClInclude Include="src\Weapons\HookWeapon.h" />
     <ClInclude Include="src\Weapons\IceSword.h" />
