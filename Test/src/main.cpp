@@ -8,6 +8,10 @@ int main()
 {
     std::cout << "Hello World!\n";
     UI_Text* t = new UI_Text("hhhh", 2);
+    std::cout << "Test1!\n";
+    std::cout << "Test2!\n";
+    std::cout << "Test3!\n";
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
