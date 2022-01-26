@@ -1,7 +1,7 @@
 #include "Image.h"
 
 UI_Image::UI_Image(const std::string& fileName, sf::IntRect locationData) {
-	Type = UI_IMAGE;
+	Type = UI_TYPE_IMAGE;
 	Texture.loadFromFile(fileName);
 	Image.setTexture(Texture);
 	Image.setTextureRect(locationData);

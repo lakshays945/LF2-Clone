@@ -2,7 +2,7 @@
 
 
 UI_Text::UI_Text(const std::string& value, int size) {
-	Type = UI_TEXT;
+	Type = UI_TYPE_TEXT;
 	Text.setString(value);
 	Text.setCharacterSize(size);
 }

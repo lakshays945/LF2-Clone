@@ -4,7 +4,7 @@
 
 
 enum UI_Types {
-	UI_TEXT = 0, UI_IMAGE = 1, UI_BUTTON = 2
+	UI_TYPE_TEXT = 0, UI_TYPE_IMAGE = 1, UI_TYPE_BUTTON = 2
 };
 
 class UI_Element {
