@@ -5,9 +5,9 @@
 
 class UI_Button : public UI_Element {
 public:
-	UI_Button(const std::string& imageFile, const sf::IntRect& imageLocationData, const std::string& textValue, int textSize);
+	UI_Button(const std::string& imageFile, const sf::IntRect& imageLocationData, const std::string& textValue, unsigned int textSize);
 	UI_Listener Listener;
-	UI_Image Image;
-	UI_Text Text;
+	UI_Image B_Image;
+	UI_Text B_Text;
 	void Animate(sf::RenderWindow& window);
 };

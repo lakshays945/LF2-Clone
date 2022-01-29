@@ -39,15 +39,7 @@ public:
 		Box.setSize(sf::Vector2f(width, height));
 		Box.setOrigin(sf::Vector2f(width / 2, height / 2));
 	}
-	void DrawBox(sf::RenderWindow &window){
-		if (!IsActive) {
-			return;
-		}
-		circle.setPosition(sf::Vector2f(Center.get_x(), Game_Object->Z_Position));
-		Box.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
-		window.draw(Box);
-		//window.draw(circle);
-	}
+	void DrawBox(sf::RenderWindow& window);
 	void RegisterID();
 	void SetScale(RealVector2D scale);
 	void Disable();

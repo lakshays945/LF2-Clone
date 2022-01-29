@@ -4,9 +4,10 @@
 class UI_Image : public UI_Element {
 public:	
 	bool IsActive = true;
-	UI_Image(const std::string& fileName, sf::IntRect locationData);
+	UI_Image(sf::Sprite &image);
 	UI_Image();
-	sf::Texture Texture;
 	sf::Sprite Image;
-	void Animate(sf::RenderWindow& window);
+	void AlignAtCenter();
+	void Animate(sf::RenderWindow& window, const double dt);
+	void SetImage(sf::Sprite &image);
 };

@@ -10,7 +10,7 @@
 #include "Weapons/BaseBallBat.h"
 #include "Weapons/HookWeapon.h"
 #include "Weapons/IceSword.h"
-static double DeltaTime = 0.016666667;
+double DeltaTime = 0.016666667;
 const int resX = 1200;
 const int resY = 800;
 

@@ -135,13 +135,8 @@ void IceBerg::OnCollision(int otherID, int selfID) {
 	if (selfID == AttackHitBox.ID && HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Weapon) {
 		Weapon* ColWeapon = (Weapon*)HitBoxIDArray[otherID]->Game_Object;
 		ColWeapon->AttackHitBox.IgnoreObjectID = Parent->ID;
-		if (Index == 1){
-			ColWeapon->Throw(RealVector2D(Direction*(350 + rand() % 50), -300), true);
-		}
-		else {
-			ColWeapon->Throw(RealVector2D(Direction * (350 + rand() % 50), -300),true);
-		}
-
+		ColWeapon->Throw(RealVector2D(Direction * (350 + rand() % 50), -300), true);
+		ColWeapon->Direction = Direction;
 	}
 }
 

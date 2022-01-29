@@ -131,6 +131,16 @@ void HitBox::Disable(){
 	}
 }
 
+void HitBox::DrawBox(sf::RenderWindow& window) {
+	if (!IsActive) {
+		return;
+	}
+	circle.setPosition(sf::Vector2f(Center.get_x(), Game_Object->Z_Position));
+	Box.setPosition(sf::Vector2f(Center.get_x(), Center.get_y()));
+	window.draw(Box);
+	//window.draw(circle);
+}
+
 void HandleCollisions() {
 	for (int i = 0; i < HitBoxIDArray.size(); i++) {
 		if (!HitBoxIDArray[i]->IsActive) {

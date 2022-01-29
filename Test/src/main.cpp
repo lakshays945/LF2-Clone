@@ -3,15 +3,37 @@
 
 #include <iostream>
 #include "UI/Text.h"
+#include "UI/Image.h"
+#include "UI/Button.h"
+#include "UI/Scene.h"
+
+const int resX = 1200;
+const int resY = 800;
+
+double DeltaTime = 0.016666667;
 
 int main()
 {
-    std::cout << "Hello World!\n";
-    UI_Text* t = new UI_Text("hhhh", 2);
-    std::cout << "Test1!\n";
-    std::cout << "Test2!\n";
-    std::cout << "Test3!\n";
+    sf::RenderWindow window(sf::VideoMode(resX, resY), "UI");
 
+    Scene_Main_Menu MainMenu;
+    MainMenu.IsActive = true;
+
+    Scene_Character_Select CharacterSelect;
+    CharacterSelect.IsActive = true;
+
+    sf::Clock Clock;
+
+    while (window.isOpen())
+    {
+        DeltaTime = (Clock.getElapsedTime()).asSeconds();
+        Clock.restart();
+        window.clear(sf::Color(150,150,150));
+        //window.draw(UIBackGroundSpr);
+        MainMenu.Animate(window, DeltaTime);
+        //SelectImage.Animate(window, DeltaTime);
+        window.display();
+    }
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
