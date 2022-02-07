@@ -18,9 +18,11 @@ int main()
 
     Scene_Main_Menu MainMenu;
     MainMenu.IsActive = true;
-
     Scene_Character_Select CharacterSelect;
     CharacterSelect.IsActive = true;
+
+    SceneManager.push_back(&MainMenu);
+    SceneManager.push_back(&CharacterSelect);
 
     sf::Clock Clock;
 
@@ -30,7 +32,7 @@ int main()
         Clock.restart();
         window.clear(sf::Color(150,150,150));
         //window.draw(UIBackGroundSpr);
-        MainMenu.Animate(window, DeltaTime);
+        SceneManager[CurrentSceneIndex]->Animate(window, DeltaTime);
         //SelectImage.Animate(window, DeltaTime);
         window.display();
     }

@@ -14,6 +14,7 @@ class UI_SCENE {
 public:
 	bool IsActive = false;
 	UI_SCENE_ID SceneID;
+	int* currentSceneIndex = nullptr;
 	virtual void Update(const double dt) = 0;
 	virtual void Animate(sf::RenderWindow& window, const double dt) = 0;
 };
@@ -36,3 +37,8 @@ public:
 	void Animate(sf::RenderWindow& window, const double dt);
 	void Update(const double dt);
 };
+
+void InitialisizeScenes();
+
+extern std::vector<UI_SCENE*> SceneManager;
+extern int CurrentSceneIndex;

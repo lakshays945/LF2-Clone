@@ -1,6 +1,10 @@
 #include "Scene.h"
 
+std::vector<UI_SCENE*> SceneManager;
+int CurrentSceneIndex = 0;
+
 Scene_Main_Menu::Scene_Main_Menu() {
+	currentSceneIndex = &CurrentSceneIndex;
 	SceneID = _SCENE_ID_MAIN_MENU;
 	Buttons[0] = UI_Button(ButtonsSpr, "Fonts/Roboto.ttf", "Play", 20);
 	Buttons[0].B_Image.Image.setTextureRect(sf::IntRect(15, 425, 275, 55));
@@ -19,15 +23,18 @@ Scene_Main_Menu::Scene_Main_Menu() {
 	Background.AlignAtCenter();
 	Background.SetPosition(RealVector2D(600, 400));
 
-
-	for (int i = 0; i < NUMBEROF(Buttons); i++) {
+	for (int i = 1; i < NUMBEROF(Buttons); i++) {
 		Buttons[i].UpdateListenerSize();
 		Buttons[i].OnClick = [&]() {
 			std::cout << "OnLeftClick Called\n";
 			return 0;
 		};
+		Buttons[0].OnClick = [&]() {
+			*currentSceneIndex = 1;
+			return 0;
+		};
 	}
-	static_assert(NUMBEROF(Buttons) == 3, "error");
+	//static_assert(NUMBEROF(Buttons) == 3, "error");
 }
 
 void Scene_Main_Menu::Animate(sf::RenderWindow& window, const double dt) {
@@ -50,7 +57,7 @@ void Scene_Main_Menu::Update(const double dt) {
 }
 
 Scene_Character_Select::Scene_Character_Select() {
-
+	currentSceneIndex = &CurrentSceneIndex;
 	Background.SetImage(BackGroundSpr);
 	Background.AlignAtCenter();
 	Background.SetPosition({ 600,400 });
@@ -132,12 +139,10 @@ void Scene_Character_Select::Animate(sf::RenderWindow& window, const double dt) 
 void Scene_Character_Select::Update(const double dt) {
 
 }
-//@Lakshay teri awaaz nhi aa rhi
-//in case tum kuch bol rhe ho toh
-//koi sun raha hai vaise ?
-//mai and apoorve sir (on stream)
-//maine vaise kuch bola nhi
-//sahi h
-//ab aayi aavaj ?
-//nope
-//rejoin krta
+
+void InitialisizeScenes(){
+	Scene_Character_Select* CharacterSelect = new Scene_Character_Select;
+	Scene_Main_Menu* MainMenu = new Scene_Main_Menu;
+	SceneManager.push_back(MainMenu);
+	SceneManager.push_back(CharacterSelect);
+}
