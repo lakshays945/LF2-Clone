@@ -7,9 +7,8 @@ enum GameObjectType {
 };
 
 class GameObject {
-protected:
-	static int nextID;
 public:
+	static int nextID;
 	GameObjectType GO_Type = GO_Null;
 	int HealthPoints = 0;
 	GameObject();

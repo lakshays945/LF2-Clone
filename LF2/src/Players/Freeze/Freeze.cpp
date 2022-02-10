@@ -93,6 +93,10 @@ const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
 const std::vector<double> WeaponPickTimes = { 0.2 };
 const std::vector <RealVector2D> WPNPickOffsets = { {20,30} };
 
+const std::vector<RealVector2D> GuardLocations = { {480,400} };
+const std::vector<double> GuardTimes = { 0.8 };
+const std::vector<RealVector2D> WPNGuardOffsets = { {-5,-15} };
+
 Freeze::Freeze() {
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
@@ -124,6 +128,7 @@ Freeze::Freeze() {
 	WPNJumpAttackSheet.AssignPlayer(this);
 	WPNThrowSheet.AssignPlayer(this);
 	WeaponPickSheet.AssignPlayer(this);
+	GuardSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (FreezeTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -145,6 +150,7 @@ Freeze::Freeze() {
 	BurningSheet.AssignTextures(FreezeTexFile0, BurningLocations, BurningTimes, -75, 80);
 	FreezedSheet.AssignTextures(FreezeTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 	WeaponPickSheet.AssignTextures(FreezeTexFile0, WeaponPickLocations, WeaponPickTimes, 75, 75);
+	GuardSheet.AssignTextures(FreezeTexFile0, GuardLocations, GuardTimes, 80, 80);
 
 	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
 	WalkingSheet.AssignWPNOffsets(WalkingWPNOffsets);
@@ -162,6 +168,7 @@ Freeze::Freeze() {
 	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
 	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
 	SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
+	GuardSheet.AssignWPNOffsets(WPNGuardOffsets);
 
 	if (FreezeTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		FreezeTexFile1.loadFromFile("Resource/Freeze1.png");
@@ -198,6 +205,7 @@ Freeze::Freeze() {
 	WPNAttackSheet[1].OneTime = true;
 	WPNThrowSheet.OneTime = true;
 	WeaponPickSheet.OneTime = true;
+	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31, 200);

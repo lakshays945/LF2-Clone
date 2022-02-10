@@ -16,13 +16,7 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(resX, resY), "UI");
 
-    Scene_Main_Menu MainMenu;
-    MainMenu.IsActive = true;
-    Scene_Character_Select CharacterSelect;
-    CharacterSelect.IsActive = true;
-
-    SceneManager.push_back(&MainMenu);
-    SceneManager.push_back(&CharacterSelect);
+    InitialisizeScenes();
 
     sf::Clock Clock;
 
@@ -31,10 +25,11 @@ int main()
         DeltaTime = (Clock.getElapsedTime()).asSeconds();
         Clock.restart();
         window.clear(sf::Color(150,150,150));
-        //window.draw(UIBackGroundSpr);
         SceneManager[CurrentSceneIndex]->Animate(window, DeltaTime);
-        //SelectImage.Animate(window, DeltaTime);
         window.display();
+    }
+    for (int i = 0; i < SceneManager.size(); i++) {
+        delete SceneManager[i];
     }
 }
 

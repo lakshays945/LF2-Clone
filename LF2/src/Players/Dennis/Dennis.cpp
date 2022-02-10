@@ -92,6 +92,10 @@ const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
 const std::vector<double> WeaponPickTimes = {0.2};
 const std::vector <RealVector2D> WPNPickOffsets = { {26,25} };
 
+const std::vector<RealVector2D> GuardLocations = { {480,400} };
+const std::vector<double> GuardTimes = { 0.8 };
+const std::vector<RealVector2D> WPNGuardOffsets = { {25,-17} };
+
 
 Dennis::Dennis() {
 	//Manager Assignments
@@ -124,6 +128,7 @@ Dennis::Dennis() {
 	WPNJumpAttackSheet.AssignPlayer(this);
 	WPNThrowSheet.AssignPlayer(this);
 	WeaponPickSheet.AssignPlayer(this);
+	GuardSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (DennisTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -144,6 +149,7 @@ Dennis::Dennis() {
 	FallingFrontSheet.AssignTextures(DennisTexFile0, FallingFrontLocations, FallingFrontTimes, 80, 80);
 	FreezedSheet.AssignTextures(DennisTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 	WeaponPickSheet.AssignTextures(DennisTexFile0, WeaponPickLocations, WeaponPickTimes, 80, 80);
+	GuardSheet.AssignTextures(DennisTexFile0, GuardLocations, GuardTimes, 80, 80);
 
 	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
 	WalkingSheet.AssignWPNOffsets(WalkingWPNOffsets);
@@ -161,6 +167,7 @@ Dennis::Dennis() {
 	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
 	SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
 	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
+	GuardSheet.AssignWPNOffsets(WPNGuardOffsets);
 
 	if (DennisTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		DennisTexFile1.loadFromFile("Resource/Dennis1.png");
@@ -199,6 +206,7 @@ Dennis::Dennis() {
 	WPNJumpAttackSheet.OneTime = true;
 	WPNThrowSheet.OneTime = true;
 	WeaponPickSheet.OneTime = true;
+	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(1, { 20,12 }, 40, 26,200);

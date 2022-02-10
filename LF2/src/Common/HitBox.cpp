@@ -117,6 +117,7 @@ void HitBox::SetScale(RealVector2D scale) {
 }
 
 void HitBox::Disable(){
+	if (!IsActive) return;
 	IsActive = false;
 	for (int i = 0; i < HitBoxIDArray.size(); i++) {
 		if (i == ID) {

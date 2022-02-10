@@ -61,6 +61,8 @@
     <ClCompile Include="src\UI\Button.cpp" />
     <ClCompile Include="src\UI\Element.cpp" />
     <ClCompile Include="src\UI\Image.cpp" />
+    <ClCompile Include="src\UI\Scene.cpp" />
+    <ClCompile Include="src\UI\Scenes\GameScene.cpp" />
     <ClCompile Include="src\UI\Text.cpp" />
     <ClCompile Include="src\Weapons\BaseBallBat.cpp" />
     <ClCompile Include="src\Weapons\HookWeapon.cpp" />
@@ -112,6 +114,8 @@
     <ClInclude Include="src\UI\Button.h" />
     <ClInclude Include="src\UI\Element.h" />
     <ClInclude Include="src\UI\Image.h" />
+    <ClInclude Include="src\UI\Scene.h" />
+    <ClInclude Include="src\UI\Scenes\GameScene.h" />
     <ClInclude Include="src\UI\Text.h" />
     <ClInclude Include="src\Weapons\BaseBallBat.h" />
     <ClInclude Include="src\Weapons\HookWeapon.h" />

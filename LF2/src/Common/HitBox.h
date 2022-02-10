@@ -14,8 +14,8 @@ class HitBox {
 	sf::CircleShape circle;
 	double TimeSinceActive = 0;
 protected:
-	static int nextID;
 public:
+	static int nextID;
 	int ID = 0;
 	int KnockOutPower = 0;
 	int KnockUpPower = 300;

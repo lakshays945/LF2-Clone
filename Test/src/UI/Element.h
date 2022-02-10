@@ -35,6 +35,7 @@ public:
 class UI_Listener {
 public:
 	bool Clicked = false;
+	bool CanClick = false;
 	UI_Button* Parent = nullptr;
 	void Listen(const sf::RenderWindow &window);
 	void AssignParent(UI_Button* parent);

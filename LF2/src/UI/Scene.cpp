@@ -1,10 +1,7 @@
 #include "Scene.h"
-
-std::vector<UI_SCENE*> SceneManager;
-int CurrentSceneIndex = 0;
+#include "Scenes/GameScene.h"
 
 Scene_Main_Menu::Scene_Main_Menu() {
-	currentSceneIndex = &CurrentSceneIndex;
 	SceneID = _SCENE_ID_MAIN_MENU;
 	Buttons[0] = UI_Button(ButtonsSpr, "Fonts/Roboto.ttf", "Play", 20);
 	Buttons[0].B_Image.Image.setTextureRect(sf::IntRect(15, 425, 275, 55));
@@ -30,7 +27,7 @@ Scene_Main_Menu::Scene_Main_Menu() {
 			return 0;
 		};
 		Buttons[0].OnClick = [&]() {
-			*currentSceneIndex = 1;
+			Manager->CurrentScene = 1;
 			return 0;
 		};
 		Buttons[2].OnClick = [&]() {
@@ -64,7 +61,6 @@ void Scene_Main_Menu::Update(const double dt) {
 }
 
 Scene_Character_Select::Scene_Character_Select() {
-	currentSceneIndex = &CurrentSceneIndex;
 	Background.SetImage(BackGroundSpr);
 	Background.AlignAtCenter();
 	Background.SetPosition({ 600,400 });
@@ -124,7 +120,19 @@ Scene_Character_Select::Scene_Character_Select() {
 	Buttons[4].AlignAtCenter();
 	Buttons[4].SetPosition(RealVector2D(600,600));
 	Buttons[4].OnClick = [&]() {
-		*currentSceneIndex = 0;
+		Manager->CurrentScene = 0;
+		return 0;
+	};
+
+	Buttons[5] = UI_Button(ButtonsSpr, "Fonts/Roboto.ttf", "Start", 20);
+	Buttons[5].B_Image.Image.setTextureRect(sf::IntRect(15, 425, 275, 55));
+	Buttons[5].AlignAtCenter();
+	Buttons[5].SetPosition(RealVector2D(600, 200));
+	Buttons[5].OnClick = [&]() {
+		Manager->CurrentScene = 2;
+		Scene_Game_Scene* scene = (Scene_Game_Scene*) Manager->SceneIDArray[2];
+		scene->StartGame(PlayerSelectImage[0].Image.getTextureRect().left / 120, PlayerSelectImage[1].Image.getTextureRect().left / 120);
+		DEBUG_INFO("1 = {}, 2 = {}", PlayerSelectImage[0].Image.getTextureRect().left / 120, PlayerSelectImage[1].Image.getTextureRect().left / 120);
 		return 0;
 	};
 
@@ -155,11 +163,20 @@ void Scene_Character_Select::Update(const double dt) {
 
 }
 
-void InitialisizeScenes(){
+void SceneManager::InitialisizeScenes(){
 	Scene_Character_Select* CharacterSelect = new Scene_Character_Select;
 	Scene_Main_Menu* MainMenu = new Scene_Main_Menu;
+	Scene_Game_Scene* GameScene = new Scene_Game_Scene;
+
+	CharacterSelect->Manager = this;
+	MainMenu->Manager = this;
+	GameScene->Manager = this;
+
 	MainMenu->IsActive = true;
 	CharacterSelect->IsActive = true;
-	SceneManager.push_back(MainMenu);
-	SceneManager.push_back(CharacterSelect);
+	GameScene->IsActive = true;
+
+	SceneIDArray.push_back(MainMenu);
+	SceneIDArray.push_back(CharacterSelect);
+	SceneIDArray.push_back(GameScene);
 }

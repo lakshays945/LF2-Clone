@@ -93,6 +93,10 @@ const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
 const std::vector<double> WeaponPickTimes = { 0.2 };
 const std::vector <RealVector2D> WPNPickOffsets = { {0,25} };
 
+const std::vector<RealVector2D> GuardLocations = { {480,400} };
+const std::vector<double> GuardTimes = { 0.8 };
+const std::vector<RealVector2D> WPNGuardOffsets = { {0,-15} };
+
 Deep::Deep() {
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
@@ -124,6 +128,7 @@ Deep::Deep() {
 	WPNJumpAttackSheet.AssignPlayer(this);
 	WPNThrowSheet.AssignPlayer(this);
 	WeaponPickSheet.AssignPlayer(this);
+	GuardSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (DeepTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -144,6 +149,7 @@ Deep::Deep() {
 	FreezedSheet.AssignTextures(DeepTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 	FreezedSheet.AssignTextures(DeepTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 	WeaponPickSheet.AssignTextures(DeepTexFile0, WeaponPickLocations, WeaponPickTimes, 75, 80);
+	GuardSheet.AssignTextures(DeepTexFile0, GuardLocations, GuardTimes, 80, 80);
 
 
 	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
@@ -162,6 +168,7 @@ Deep::Deep() {
 	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
 	SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
 	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
+	GuardSheet.AssignWPNOffsets(WPNGuardOffsets);
 
 	if (DeepTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		DeepTexFile1.loadFromFile("Resource/Deep1.png");
@@ -205,6 +212,7 @@ Deep::Deep() {
 	WPNAttackSheet[1].OneTime = true;
 	WPNThrowSheet.OneTime = true;
 	WeaponPickSheet.OneTime = true;
+	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(1, { 14,11 }, 47, 46, 200);

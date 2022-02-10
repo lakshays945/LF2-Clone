@@ -39,7 +39,11 @@ void UI_Listener::AssignParent(UI_Button* parent){
 void UI_Listener::Listen(const sf::RenderWindow &window) {
 	bool IsMouseOn = (abs(sf::Mouse::getPosition(window).x - Parent->Position.get_x()) <= (Width / 2) && abs(sf::Mouse::getPosition(window).y - Parent->Position.get_y()) <= (Height / 2));
 	if (IsMouseOn) {
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !Clicked) {
+		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			CanClick = true;
+		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && CanClick) {
+			CanClick = false;
 			Clicked = true;
 		}
 		else {
@@ -47,6 +51,7 @@ void UI_Listener::Listen(const sf::RenderWindow &window) {
 		}
 	}
 	else {
+		CanClick = false;
 		if (Parent->B_Text.Text.getFillColor() != sf::Color(150,150,150)) {
 			Parent->B_Text.Text.setFillColor(sf::Color(150, 150, 150));
 			Parent->B_Image.Image.setColor(sf::Color(255,255,255,200));

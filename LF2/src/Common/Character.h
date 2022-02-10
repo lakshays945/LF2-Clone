@@ -29,8 +29,8 @@
 
 class Character: public GameObject  {
 protected:
-	static int nextCharacterID;
 public:
+	static int nextCharacterID;
 	int CharacterID;
 	RealVector2D LastPosition;
 	std::queue <int> WallIDs;
@@ -65,6 +65,7 @@ public:
 	AnimationSheet WPNJumpAttackSheet;
 	AnimationSheet WPNThrowSheet;
 	AnimationSheet WeaponPickSheet;
+	AnimationSheet GuardSheet;
 	AnimationSheet* CurrentSheet;
 	int Up = 0, Down = 0, Right = 0, Left = 0;
 	int ComboStreak = 0; //the index of hitting_animation sheet
@@ -81,6 +82,7 @@ public:
 	int WeaponHolderType = 0;
 	RealVector2D WeaponPosOffsets[STATECOUNT];
 	std::vector <int> WeaponsInRangeID;
+	int GuardResistance = 100;
 	//CONSTRUCTOR
 	Character();
 

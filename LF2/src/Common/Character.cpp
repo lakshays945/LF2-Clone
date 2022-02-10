@@ -207,6 +207,10 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		CurrentSheet = &WeaponPickSheet;
 		PickWeapon();
 		break;
+	case GUARD:
+		Stop();
+		CurrentSheet = &GuardSheet;
+		break;
 	default:
 		break;
 	}
@@ -226,7 +230,9 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 			DamageHitBox.IsActive = true;
 		}
 	}
-
+	if (CurrentState != GUARD && GuardResistance < 100) {
+		GuardResistance += dt * 50.0;
+	}
 	if (CurrentWeapon != nullptr) {
 		CurrentWeapon->Direction = Direction;
 	}
@@ -329,6 +335,11 @@ void Character::Update(const double dt, sf::RenderWindow& window) {
 			CurrentWeapon->Z_Position = Z_Position + 1;
 			CurrentWeapon->Throw(RealVector2D(Direction * 800, 0),true);
 			CurrentWeapon = nullptr;
+		}
+		break;
+	case GUARD:
+		if (TimeSinceLastState < 0.4) {
+			Translate(dt);
 		}
 		break;
 	default:
@@ -516,10 +527,10 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	circle.setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	circle.setRadius(2);
 	circle.setFillColor(sf::Color(0, 0, 0, 255));*/
-	if (Velocity.get_x() < 0 && CurrentState != GETTING_HIT) {
+	if (Velocity.get_x() < 0 && CurrentState != GETTING_HIT && CurrentState != GUARD) {
 		Direction = -1;
 	}
-	else if (Velocity.get_x() > 0 && CurrentState != GETTING_HIT) {
+	else if (Velocity.get_x() > 0 && CurrentState != GETTING_HIT && CurrentState != GUARD) {
 		Direction = 1;
 	}
 	current->setScale(Scale.get_x()*Direction, Scale.get_y());
@@ -562,34 +573,80 @@ void Character::OnCollision(int otherID, int selfID) {
 			case HB_TYPE_ATTACK:
 				if (other->KnockOutPower > 0) {
 					if (Direction * other->Game_Object->Direction < 0) {
-						State_Manager.TryStateChange(FALLINGBACK, other->KnockOutPower, other->KnockUpPower);
+						if (CurrentState == GUARD && GuardResistance > 0) {
+							CurrentSheet->Time = 0.3;
+							TimeSinceLastState = 0.3;
+							GuardResistance -= 55;
+							Velocity = RealVector2D(-Direction * 200, 0);
+						}
+						else {
+							State_Manager.TryStateChange(FALLINGBACK, other->KnockOutPower, other->KnockUpPower);
+						}
 					}
 					else {
 						State_Manager.TryStateChange(FALLINGFRONT, other->KnockOutPower, other->KnockUpPower);
 					}
 				}
 				else {
-					State_Manager.TryStateChange(GETTING_HIT, Direction*other->Game_Object->Direction, -other->KnockOutPower * other->Game_Object->Direction);
+					if (Direction * other->Game_Object->Direction < 0 && CurrentState == GUARD && GuardResistance > 0) {
+						CurrentSheet->Time = 0.3;
+						TimeSinceLastState = 0.3;
+						GuardResistance -= 55;
+						Velocity = RealVector2D(-Direction * 100, 0);
+					}
+					else {
+						State_Manager.TryStateChange(GETTING_HIT, Direction * other->Game_Object->Direction, -other->KnockOutPower * other->Game_Object->Direction);
+					}
 				}
 				break;
 			case HB_TYPE_FIRE:
 				if (Direction * other->Game_Object->Direction < 0) {
-					State_Manager.TryStateChange(FALLINGBACK, other->KnockOutPower, other->KnockUpPower);
+					if (CurrentState == GUARD && GuardResistance > 0) {
+						CurrentSheet->Time = 0.3;
+						TimeSinceLastState = 0.3;
+						GuardResistance -= 55;
+						Velocity = RealVector2D(-Direction * 200, 0);
+					}
+					else {
+						State_Manager.TryStateChange(FALLINGBACK, other->KnockOutPower, other->KnockUpPower);
+						CurrentSheet = &BurningSheet;
+						BurningHitBox.Center = Position;
+						BurningHitBox.IsActive = true;
+						SetInvincible();
+					}
 				}
 				else {
 					State_Manager.TryStateChange(FALLINGFRONT, other->KnockOutPower, other->KnockUpPower);
+					CurrentSheet = &BurningSheet;
+					BurningHitBox.Center = Position;
+					BurningHitBox.IsActive = true;
+					SetInvincible();
 				}
-				CurrentSheet = &BurningSheet;
-				BurningHitBox.Center = Position;
-				BurningHitBox.IsActive = true;
-				SetInvincible();
 				break;
 			case HB_TYPE_ICE:
-				WallHitBox.IsActive = true;
-				DamageHitBox.SetSize(66, 74);
-				State_Manager.TryStateChange(FREEZED, Direction * other->Game_Object->Direction);
-				if (CurrentState == FREEZED) {
-					Stop();
+				if (Direction * other->Game_Object->Direction < 0) {
+					if (CurrentState == GUARD && GuardResistance > 0) {
+						CurrentSheet->Time = 0.3;
+						TimeSinceLastState = 0.3;
+						GuardResistance -= 55;
+						Velocity = RealVector2D(-Direction * 200, 0);
+					}
+					else {
+						WallHitBox.IsActive = true;
+						DamageHitBox.SetSize(66, 74);
+						State_Manager.TryStateChange(FREEZED, Direction * other->Game_Object->Direction);
+						if (CurrentState == FREEZED) {
+							Stop();
+						}
+					}
+				}
+				else {
+					WallHitBox.IsActive = true;
+					DamageHitBox.SetSize(66, 74);
+					State_Manager.TryStateChange(FREEZED, Direction * other->Game_Object->Direction);
+					if (CurrentState == FREEZED) {
+						Stop();
+					}
 				}
 				break;
 			case HB_TYPE_TRIGGER:

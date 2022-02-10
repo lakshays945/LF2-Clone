@@ -89,6 +89,10 @@ const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
 const std::vector<double> WeaponPickTimes = { 0.2 };
 const std::vector <RealVector2D> WPNPickOffsets = { {26,25} };
 
+const std::vector<RealVector2D> GuardLocations = { {480,405} };
+const std::vector<double> GuardTimes = { 0.8 };
+const std::vector<RealVector2D> WPNGuardOffsets = { {10,-10} };
+
 John::John() {
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
@@ -120,6 +124,7 @@ John::John() {
 	WPNJumpAttackSheet.AssignPlayer(this);
 	WPNThrowSheet.AssignPlayer(this);
 	WeaponPickSheet.AssignPlayer(this);
+	GuardSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (JohnTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -141,6 +146,7 @@ John::John() {
 	BurningSheet.AssignTextures(JohnTexFile0, BurningLocations, BurningTimes, -75, 80);
 	FreezedSheet.AssignTextures(JohnTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 	WeaponPickSheet.AssignTextures(JohnTexFile0, WeaponPickLocations, WeaponPickTimes, 80, 80);
+	GuardSheet.AssignTextures(JohnTexFile0, GuardLocations, GuardTimes, 80, 80);
 
 	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
 	WalkingSheet.AssignWPNOffsets(WalkingWPNOffsets);
@@ -158,6 +164,7 @@ John::John() {
 	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
 	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
 	//SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
+	GuardSheet.AssignWPNOffsets(WPNGuardOffsets);
 
 	if (JohnTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		JohnTexFile1.loadFromFile("Resource/John1.png");
@@ -193,6 +200,7 @@ John::John() {
 	WPNAttackSheet[1].OneTime = true;
 	WPNThrowSheet.OneTime = true;
 	WeaponPickSheet.OneTime = true;
+	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(1, { 11,11 }, 41, 32, 200);

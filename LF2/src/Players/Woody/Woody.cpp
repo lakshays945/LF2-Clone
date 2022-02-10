@@ -94,6 +94,10 @@ const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
 const std::vector<double> WeaponPickTimes = { 0.2 };
 const std::vector <RealVector2D> WPNPickOffsets = { {26,21} };
 
+const std::vector<RealVector2D> GuardLocations = { {480,400} };
+const std::vector<double> GuardTimes = { 0.8 };
+const std::vector<RealVector2D> WPNGuardOffsets = { {26,-13} };
+
 Woody::Woody() {
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
@@ -125,6 +129,7 @@ Woody::Woody() {
 	WPNJumpAttackSheet.AssignPlayer(this);
 	WPNThrowSheet.AssignPlayer(this);
 	WeaponPickSheet.AssignPlayer(this);
+	GuardSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (WoodyTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -144,6 +149,8 @@ Woody::Woody() {
 	FallingBackSheet.AssignTextures(WoodyTexFile0, FallingBackLocations, FallingBackTimes, -80, 80);
 	FallingFrontSheet.AssignTextures(WoodyTexFile0, FallingFrontLocations, FallingFrontTimes, 80, 80);
 	WeaponPickSheet.AssignTextures(WoodyTexFile0, WeaponPickLocations, WeaponPickTimes, 80, 80);
+	GuardSheet.AssignTextures(WoodyTexFile0, GuardLocations, GuardTimes, 80, 80);
+
 
 	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
 	WalkingSheet.AssignWPNOffsets(WalkingWPNOffsets);
@@ -161,6 +168,7 @@ Woody::Woody() {
 	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
 	SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
 	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
+	GuardSheet.AssignWPNOffsets(WPNGuardOffsets);
 
 	if (WoodyTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		WoodyTexFile1.loadFromFile("Resource/Woody1.png");
@@ -199,6 +207,7 @@ Woody::Woody() {
 	WPNAttackSheet[1].OneTime = true;
 	WPNThrowSheet.OneTime = true;
 	WeaponPickSheet.OneTime = true;
+	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(1, { 8,15 }, 40, 31, 200);

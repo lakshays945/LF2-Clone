@@ -92,6 +92,10 @@ const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
 const std::vector<double> WeaponPickTimes = { 0.2 };
 const std::vector <RealVector2D> WPNPickOffsets = { {26,25} };
 
+const std::vector<RealVector2D> GuardLocations = { {480,400} };
+const std::vector<double> GuardTimes = {0.8};
+const std::vector<RealVector2D> WPNGuardOffsets = { {15,-11} };
+
 Davis::Davis() {
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
@@ -123,6 +127,7 @@ Davis::Davis() {
 	WPNJumpAttackSheet.AssignPlayer(this);
 	WPNThrowSheet.AssignPlayer(this);
 	WeaponPickSheet.AssignPlayer(this);
+	GuardSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg
 	if (DavisTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -142,6 +147,7 @@ Davis::Davis() {
 	FallingFrontSheet.AssignTextures(DavisTexFile0, FallingFrontLocations, FallingFrontTimes, 80, 80);
 	FreezedSheet.AssignTextures(DavisTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 	WeaponPickSheet.AssignTextures(DavisTexFile0, WeaponPickLocations, WeaponPickTimes, 80, 80);
+	GuardSheet.AssignTextures(DavisTexFile0, GuardLocations, GuardTimes, 80, 80);
 
 	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
 	WalkingSheet.AssignWPNOffsets(WalkingWPNOffsets);
@@ -159,6 +165,7 @@ Davis::Davis() {
 	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
 	SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
 	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
+	GuardSheet.AssignWPNOffsets(WPNGuardOffsets);
 
 	if (DavisTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		DavisTexFile1.loadFromFile("Resource/Davis1.png");
@@ -198,6 +205,7 @@ Davis::Davis() {
 	WPNAttackSheet[1].OneTime = true;
 	WPNThrowSheet.OneTime = true;
 	WeaponPickSheet.OneTime = true;
+	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(3, { 5,10 }, 47, 29,200);

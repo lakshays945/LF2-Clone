@@ -92,6 +92,10 @@ const std::vector<RealVector2D> WeaponPickLocations = { {480,240} };
 const std::vector<double> WeaponPickTimes = { 0.2 };
 const std::vector <RealVector2D> WPNPickOffsets = { {26,25} };
 
+const std::vector<RealVector2D> GuardLocations = { {480,400} };
+const std::vector<double> GuardTimes = { 0.8 };
+const std::vector<RealVector2D> WPNGuardOffsets = { {0,-7} };
+
 Firen::Firen() {
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
@@ -123,6 +127,7 @@ Firen::Firen() {
 	WPNJumpAttackSheet.AssignPlayer(this);
 	WPNThrowSheet.AssignPlayer(this);
 	WeaponPickSheet.AssignPlayer(this);
+	GuardSheet.AssignPlayer(this);
 
 	//Sprite and Texture Loadindg{
 	if (FirenTexFile0.getSize() == sf::Vector2u(0, 0)) {
@@ -144,6 +149,7 @@ Firen::Firen() {
 	BurningSheet.AssignTextures(FirenTexFile0, BurningLocations, BurningTimes, -75, 80);
 	FreezedSheet.AssignTextures(FirenTexFile0, FreezeLocations, FreezeTimes, 80, 80);
 	WeaponPickSheet.AssignTextures(FirenTexFile0, WeaponPickLocations, WeaponPickTimes, 75, 75);
+	GuardSheet.AssignTextures(FirenTexFile0, GuardLocations, GuardTimes, 80, 80);
 
 	IdleSheet.AssignWPNOffsets(IdleWPNOffsets);
 	WalkingSheet.AssignWPNOffsets(WalkingWPNOffsets);
@@ -161,6 +167,7 @@ Firen::Firen() {
 	SpecialAttack3Sheet.AssignWPNOffsets(SpecialAttack3WPNOffsets);
 	SpecialAttack4Sheet.AssignWPNOffsets(SpecialAttack4WPNOffsets);
 	WeaponPickSheet.AssignWPNOffsets(WPNPickOffsets);
+	GuardSheet.AssignWPNOffsets(WPNGuardOffsets);
 
 	if (FirenTexFile1.getSize() == sf::Vector2u(0, 0)) {
 		FirenTexFile1.loadFromFile("Resource/Firen1.png");
@@ -196,6 +203,7 @@ Firen::Firen() {
 	WPNAttackSheet[1].OneTime = true;
 	WPNThrowSheet.OneTime = true;
 	WeaponPickSheet.OneTime = true;
+	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
 	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31,200);

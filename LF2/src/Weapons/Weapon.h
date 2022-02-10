@@ -9,8 +9,8 @@ enum WeaponType {
 
 class Weapon : public GameObject {
 protected:
-	static int nextID;
 public:
+	static int nextID;
 	Weapon();
 	int WeaponID;
 	AnimationSheet OnFloorSheet;
