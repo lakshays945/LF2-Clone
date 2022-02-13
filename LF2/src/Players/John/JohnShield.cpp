@@ -27,6 +27,7 @@ JohnShield::JohnShield(){
 	AttackHitBox = HitBox(Position, 35, 50, HB_TYPE_ATTACK);
 	AttackHitBox.KnockOutPower = 250;
 	AttackHitBox.KnockUpPower = 350;
+	AttackHitBox.Damage = 50;
 	CurrentSheet = &InitialSheet;
 }
 

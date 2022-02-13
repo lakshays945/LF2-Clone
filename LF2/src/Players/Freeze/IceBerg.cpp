@@ -41,6 +41,7 @@ void IceBerg::SetIceTextures(int index) {
 		WallHitBox = HitBox(Position, 50, 135, HB_TYPE_WALL);
 		AttackHitBox = HitBox(Position, 46, 135, HB_TYPE_ICE);
 	}
+	AttackHitBox.Damage = 60;
 }
 
 void IceBerg::Instantiate(RealVector2D position) {

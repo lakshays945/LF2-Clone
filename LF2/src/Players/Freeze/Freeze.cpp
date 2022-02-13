@@ -208,21 +208,14 @@ Freeze::Freeze() {
 	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
-	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31, 200);
-	HittingSheet[0].AssignHitbox(1, { 24,17 }, 22, 45);
-	HittingSheet[1].AssignHitbox(1, { 11,19 }, 32, 42);
-	HittingSheet[2].AssignHitbox(1, { 10,3 }, 36, 46);
-	HittingSheet[2].AssignHitbox(5, { 10,16 }, 42, 54, 200);
+	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31, 200,200,35);
+	HittingSheet[0].AssignHitbox(1, { 24,17 }, 22, 45,-10,300,20);
+	HittingSheet[1].AssignHitbox(1, { 11,19 }, 32, 42,-10,300,20);
+	HittingSheet[2].AssignHitbox(1, { 10,3 }, 36, 46,-10,300,20);
+	HittingSheet[2].AssignHitbox(5, { 10,16 }, 42, 54, 200,300,65);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
-
-	//Variable Assignment
-	MaxSpeed = 200;
-	RunSpeed = 500;
-	JumpSpeedY = -600;
-	DashSpeedX = 600;
-	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
 
 	RegisterGameObject(GO_Character);
 	RegisterCharacter();
@@ -280,6 +273,17 @@ Freeze::Freeze() {
 	Freeze_Tornado.AttackHitBox.RegisterID();
 	Freeze_Tornado.ForceFieldBox.AssignPlayer(&Freeze_Tornado);
 	Freeze_Tornado.ForceFieldBox.RegisterID();
+
+	//Variable Assignment
+	MaxSpeed = 200;
+	RunSpeed = 500;
+	JumpSpeedY = -600;
+	DashSpeedX = 600;
+	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
+	SpecialAttackMP[0] = 20;
+	SpecialAttackMP[1] = 30;
+	SpecialAttackMP[2] = 60;
+	SpecialAttackMP[3] = 30;
 }
 
 void Freeze::SpecialAttack1Calculations(const double dt, const double t) {
@@ -329,6 +333,8 @@ void Freeze::SpecialAttack4Calculations(const double dt, const double t){
 	}
 	if (t > 0.55) {
 		CurrentWeapon = new IceSword;
+		CurrentWeapon->Position = Position;
+		CurrentWeapon->PickUpHitBox.Disable();
 		CurrentWeapon->AttackHitBox.IgnoreObjectID = ID;
 		State_Manager.ForceStateChange(IDLE);
 	}

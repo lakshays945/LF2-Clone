@@ -23,6 +23,7 @@ FlameThrow::FlameThrow(){
 	AttackHitBox = HitBox(Position, 30, 30, HB_TYPE_FIRE);
 	AttackHitBox.KnockOutPower = 100;
 	AttackHitBox.KnockUpPower = 300;
+	AttackHitBox.Damage = 85;
 }
 
 void FlameThrow::OnCollision(int otherID, int selfID) {

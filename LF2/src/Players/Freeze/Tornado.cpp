@@ -17,6 +17,7 @@ Tornado::Tornado(){
 		WeaponsIn.push_back(false);
 	}
 	AttackHitBox = HitBox(Position, 150, 500, HB_TYPE_ICE);
+	AttackHitBox.Damage = 75;
 	ForceFieldBox = HitBox(Position, 150, 100, HB_TYPE_TRIGGER);
 }
 

@@ -83,6 +83,9 @@ public:
 	RealVector2D WeaponPosOffsets[STATECOUNT];
 	std::vector <int> WeaponsInRangeID;
 	int GuardResistance = 100;
+	int HealthPoints = 600;
+	double ManaPoints = 100;
+	int SpecialAttackMP[4] = { 100,100,100,100 };
 	//CONSTRUCTOR
 	Character();
 

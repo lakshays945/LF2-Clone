@@ -206,22 +206,14 @@ Firen::Firen() {
 	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
-	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31,200);
-	HittingSheet[0].AssignHitbox(1, { 10,17 }, 22, 44);
-	HittingSheet[1].AssignHitbox(1, { 15,1 }, 15, 50);
-	HittingSheet[2].AssignHitbox(1, { 10,21 }, 41, 34);
-	HittingSheet[2].AssignHitbox(4, { 6,14 }, 44, 55,200);
+	JumpingAttackSheet.AssignHitbox(2, { 8,15 }, 40, 31,200,200,35);
+	HittingSheet[0].AssignHitbox(1, { 10,17 }, 22, 44,-10,300,20);
+	HittingSheet[1].AssignHitbox(1, { 15,1 }, 15, 50,-10,300,20);
+	HittingSheet[2].AssignHitbox(1, { 10,21 }, 41, 34,-10,300,20);
+	HittingSheet[2].AssignHitbox(4, { 6,14 }, 44, 55,200,300,55);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
-
-	//Variable Assignment
-	MaxSpeed = 200;
-	RunSpeed = 500;
-	JumpSpeedY = -600;
-	DashSpeedX = 600;
-	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
-	WeaponHolderType = 1;
 
 	RegisterGameObject(GO_Character);
 	RegisterCharacter();
@@ -262,6 +254,8 @@ Firen::Firen() {
 		FireHitBoxArray[i].RegisterGameObject(GO_Null);
 		FireHitBoxArray[i].AttackHitBox.AssignPlayer(&FireHitBoxArray[i]);
 		FireHitBoxArray[i].AttackHitBox.RegisterID();
+		FireHitBoxArray[i].LeadingHitBox.AssignPlayer(&FireHitBoxArray[i]);
+		FireHitBoxArray[i].LeadingHitBox.RegisterID();
 	}
 	for (int i = 0; i < 30; i++) {
 		GroundFireArray.push_back(FirenGroundFire());
@@ -292,6 +286,18 @@ Firen::Firen() {
 	Firen_ExplosionBoxLU.AssignOffset({ -43,-12 });
 	Firen_ExplosionAnimation.RegisterGameObject(GO_Null);
 	Firen_ExplosionAnimation.AssignParent(this);
+
+	//Variable Assignment
+	MaxSpeed = 200;
+	RunSpeed = 500;
+	JumpSpeedY = -600;
+	DashSpeedX = 600;
+	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
+	WeaponHolderType = 1;
+	SpecialAttackMP[0] = 15;
+	SpecialAttackMP[1] = 15;
+	SpecialAttackMP[2] = 60;
+	SpecialAttackMP[3] = 30;
 	
 }
 
@@ -308,6 +314,8 @@ void Firen::SpecialAttack1Calculations(const double dt, const double t) {
 }
 
 void Firen::SpecialAttack2Calculations(const double dt, const double t) {
+	ManaPoints -= 15 * dt;
+	if (ManaPoints <= 0) State_Manager.ForceStateChange(IDLE);
 	if (t-dt <= 0) {
 		FireSpawned = 0;
 		Velocity = RealVector2D(FireRunSpeed * Direction, 0);
@@ -345,6 +353,8 @@ void Firen::SpecialAttack3Calculations(const double dt, const double t){
 }
 
 void Firen::SpecialAttack4Calculations(const double dt, const double t){
+	ManaPoints -= 15 * dt;
+	if (ManaPoints <= 0) State_Manager.ForceStateChange(IDLE);
 	if (t - dt <= 0) {
 		FireSpawned = 0;
 		for (int i = 0; i < FlameThrowArray.size(); i++) {

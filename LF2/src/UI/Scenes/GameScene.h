@@ -12,11 +12,39 @@
 #include "Weapons/HookWeapon.h"
 #include "Weapons/IceSword.h"
 
+class UI_HealthBar : public UI_Element {
+public:
+	UI_HealthBar();
+	UI_Image Background;
+	UI_Image HealthBar;
+	Character* Parent = nullptr;
+	int HpPrecent = 100;
+	void UpdateSize(int hpPercent);
+	void Animate(sf::RenderWindow& window, const double dt);
+};
+
+class UI_StaminaBar : public UI_Element {
+public:
+	UI_StaminaBar();
+	UI_Image Background;
+	UI_Image StaminaBar;
+	Character* Parent = nullptr;
+	int StaminaPrecent = 100;
+	void UpdateSize(int hpPercent);
+	void Animate(sf::RenderWindow& window, const double dt);
+};
+
 class Scene_Game_Scene : public UI_SCENE {
 public:
 	Scene_Game_Scene();
 	Character* Player1 = nullptr;
 	Character* Player2 = nullptr;
+	UI_Image Player1Image;
+	UI_Image Player2Image;
+	UI_HealthBar Player1HealthBar;
+	UI_StaminaBar Player1StaminaBar;
+	UI_HealthBar Player2HealthBar;
+	UI_StaminaBar Player2StaminaBar;
 	std::vector<GameObject*> Temp;
 	bool Paused = false;
 	void Animate(sf::RenderWindow& window, const double dt);

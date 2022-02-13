@@ -80,8 +80,8 @@ void HitBox::RegisterID() {
 	HitBoxIDArray.push_back(this);
 	std::vector <bool> newRow;
 	for (int i = 0; i < CanCollide.size(); i++) {
-		CanCollide[i].push_back(false);
-		newRow.push_back(false);
+		CanCollide[i].push_back(true);
+		newRow.push_back(true);
 	}
 	newRow.push_back(false);
 	CanCollide.push_back(newRow);

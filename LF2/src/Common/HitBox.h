@@ -19,6 +19,7 @@ public:
 	int ID = 0;
 	int KnockOutPower = 0;
 	int KnockUpPower = 300;
+	int Damage = 5;
 	HitBoxType Type = HB_TYPE_DAMAGE;
 	RealVector2D Center;
 	GameObject* Game_Object = nullptr;

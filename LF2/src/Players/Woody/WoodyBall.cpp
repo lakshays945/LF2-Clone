@@ -22,6 +22,7 @@ WoodyBall::WoodyBall() {
 	ReboundHitBox = HitBox(Position, 45, 25, HB_TYPE_REBOUND);
 	AttackHitBox.KnockOutPower = 150;
 	MaxStrength = 150;
+	AttackHitBox.Damage = 45;
 	CurrentStrength = MaxStrength;
 }
 

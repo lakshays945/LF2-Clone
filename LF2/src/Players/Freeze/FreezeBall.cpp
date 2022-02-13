@@ -20,6 +20,7 @@ FreezeBall::FreezeBall() {
 	ReboundHitBox = HitBox(Position, 45, 25, HB_TYPE_REBOUND);
 	MaxStrength = 150;
 	CurrentStrength = MaxStrength;
+	AttackHitBox.Damage = 40;
 }
 
 void FreezeBall::Animate(sf::RenderWindow& window, const double dt) {

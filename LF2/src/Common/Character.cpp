@@ -113,9 +113,6 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		break;
 	case GETTING_HIT:
 		Velocity = RealVector2D(data, 0);
-		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_IMPACT, Position, 4);
-		//Effect_Manager->AnimateEffect(EFFECT_ANIMATION_BLOOD, Position,0);
-		//Effect_Manager->DrawEffect(EFFECT_IMAGE_BLOOD, Position, 0.3,2);
 		if (CurrentSheet == &Getting_HitSheet[0]) {
 			CurrentSheet = &Getting_HitSheet[1];
 			if (CurrentWeapon != nullptr) {
@@ -164,6 +161,8 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		Dash();
 		break;
 	case SPECIALATTACK1:
+		if (SpecialAttackMP[0] <= ManaPoints) { ManaPoints -= SpecialAttackMP[0]; }
+		else { State_Manager.ForceStateChange(IDLE); return; }
 		if (CurrentWeapon != nullptr) {
 			CurrentWeapon->ChangeState(WPN_SPL_ATTACK);
 			CurrentWeapon->Hide = true;
@@ -171,6 +170,8 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		CurrentSheet = &SpecialAttack1Sheet;
 		break;
 	case SPECIALATTACK2:
+		if (SpecialAttackMP[1] <= ManaPoints) { ManaPoints -= SpecialAttackMP[1]; }
+		else { State_Manager.ForceStateChange(IDLE); return; }
 		if (CurrentWeapon != nullptr) {
 			CurrentWeapon->ChangeState(WPN_SPL_ATTACK);
 			CurrentWeapon->Hide = true;
@@ -178,6 +179,8 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		CurrentSheet = &SpecialAttack2Sheet;
 		break;
 	case SPECIALATTACK3:
+		if (SpecialAttackMP[2] <= ManaPoints) { ManaPoints -= SpecialAttackMP[2]; }
+		else { State_Manager.ForceStateChange(IDLE); return; }
 		if (CurrentWeapon != nullptr) {
 			CurrentWeapon->ChangeState(WPN_SPL_ATTACK);
 			CurrentWeapon->Hide = true;
@@ -185,6 +188,8 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 		CurrentSheet = &SpecialAttack3Sheet;
 		break;
 	case SPECIALATTACK4:
+		if (SpecialAttackMP[3] <= ManaPoints) { ManaPoints -= SpecialAttackMP[3]; }
+		else { State_Manager.ForceStateChange(IDLE); return; }
 		if (CurrentWeapon != nullptr) {
 			CurrentWeapon->ChangeState(WPN_SPL_ATTACK);
 			CurrentWeapon->Hide = true;
@@ -219,7 +224,10 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 }
 
 void Character::Update(const double dt, sf::RenderWindow& window) {
-//CurrentStateUpdate();
+	if (HealthPoints <= 0) {
+		DEBUG_INFO("DED");
+	}
+	if (ManaPoints < 100) ManaPoints += 4 * dt;
 	if (TimeSinceLastState < MAX_LAST_TIME) {
 		TimeSinceLastState += dt;
 	}
@@ -548,6 +556,7 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 		AttackHitBox.Center = Position + RealVector2D(dx, dy);
 		AttackHitBox.KnockOutPower = CurrentSheet->HBData[CorrectIndex].KnockPower;
 		AttackHitBox.KnockUpPower = CurrentSheet->HBData[CorrectIndex].KnockPowerUp;
+		AttackHitBox.Damage = CurrentSheet->HBData[CorrectIndex].damage;
 		AttackHitBox.DrawBox(window);
 	}
 	else {
@@ -581,10 +590,12 @@ void Character::OnCollision(int otherID, int selfID) {
 						}
 						else {
 							State_Manager.TryStateChange(FALLINGBACK, other->KnockOutPower, other->KnockUpPower);
+							HealthPoints -= other->Damage;
 						}
 					}
 					else {
 						State_Manager.TryStateChange(FALLINGFRONT, other->KnockOutPower, other->KnockUpPower);
+						HealthPoints -= other->Damage;
 					}
 				}
 				else {
@@ -596,6 +607,7 @@ void Character::OnCollision(int otherID, int selfID) {
 					}
 					else {
 						State_Manager.TryStateChange(GETTING_HIT, Direction * other->Game_Object->Direction, -other->KnockOutPower * other->Game_Object->Direction);
+						HealthPoints -= other->Damage;
 					}
 				}
 				break;
@@ -612,6 +624,7 @@ void Character::OnCollision(int otherID, int selfID) {
 						CurrentSheet = &BurningSheet;
 						BurningHitBox.Center = Position;
 						BurningHitBox.IsActive = true;
+						HealthPoints -= other->Damage;
 						SetInvincible();
 					}
 				}
@@ -620,6 +633,7 @@ void Character::OnCollision(int otherID, int selfID) {
 					CurrentSheet = &BurningSheet;
 					BurningHitBox.Center = Position;
 					BurningHitBox.IsActive = true;
+					HealthPoints -= other->Damage;
 					SetInvincible();
 				}
 				break;
@@ -634,6 +648,7 @@ void Character::OnCollision(int otherID, int selfID) {
 					else {
 						WallHitBox.IsActive = true;
 						DamageHitBox.SetSize(66, 74);
+						HealthPoints -= other->Damage;
 						State_Manager.TryStateChange(FREEZED, Direction * other->Game_Object->Direction);
 						if (CurrentState == FREEZED) {
 							Stop();
@@ -643,6 +658,7 @@ void Character::OnCollision(int otherID, int selfID) {
 				else {
 					WallHitBox.IsActive = true;
 					DamageHitBox.SetSize(66, 74);
+					HealthPoints -= other->Damage;
 					State_Manager.TryStateChange(FREEZED, Direction * other->Game_Object->Direction);
 					if (CurrentState == FREEZED) {
 						Stop();
@@ -669,68 +685,6 @@ void Character::OnCollision(int otherID, int selfID) {
 	else if(self->Type == HB_TYPE_ATTACK && other->Game_Object != this) {
 
 	}
-	/*if (HitBoxIDArray[otherID]->Game_Object == HitBoxIDArray[selfID]->Game_Object || HitBoxIDArray[otherID]->Type == HB_TYPE_TRIGGER) {
-		if (HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Weapon && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
-			WeaponsInRangeID.push_back(HitBoxIDArray[otherID]->Game_Object->ID);
-			//DEBUG_INFO("WPN of ID = {} entered", HitBoxIDArray[otherID]->Game_Object->ID);
-		}
-		return;
-	}
-	if (HitBoxIDArray[selfID]->Type == HB_TYPE_WALL) {
-		CanCollide[otherID][selfID] = true;
-		CanCollide[selfID][otherID] = true;
-	}
-	if (HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && HitBoxIDArray[otherID]->Type == HB_TYPE_WALL) {
-		WallIDs.push(otherID);
-	}
-	if ((HitBoxIDArray[otherID]->KnockOutPower > 0) && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE && (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK || (HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE && !BurningHitBox.IsActive))) {
-		if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
-			State_Manager.TryStateChange(FALLINGBACK,HitBoxIDArray[otherID]->KnockOutPower,HitBoxIDArray[otherID]->KnockUpPower);
-			WallHitBox.Disable();
-		}
-		else {
-			State_Manager.TryStateChange(FALLINGFRONT,HitBoxIDArray[otherID]->KnockOutPower, HitBoxIDArray[otherID]->KnockUpPower);
-			WallHitBox.Disable();
-		}
-		if (HitBoxIDArray[otherID]->Type == HB_TYPE_FIRE) {
-			CurrentSheet = &BurningSheet;
-			BurningHitBox.Center = Position;
-			BurningHitBox.IsActive = true;
-			SetInvincible();
-		}
-	}
-	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ICE && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
-		if (CurrentState == FREEZED) {
-			WallHitBox.Disable();
-			DamageHitBox.SetSize(42, 74);
-			if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
-				State_Manager.TryStateChange(FALLINGBACK,60,300);
-			}
-			else {
-				State_Manager.TryStateChange(FALLINGFRONT,60,300);
-			}
-		}
-		else {
-			WallHitBox.IsActive = true;
-			DamageHitBox.SetSize(66, 74);
-			State_Manager.ForceStateChange(FREEZED);
-			Stop();
-		}
-	}
-	else if (HitBoxIDArray[otherID]->Type == HB_TYPE_ATTACK && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
-		if (Z_Position != Position.get_y() || CurrentState == FREEZED) {
-			WallHitBox.Disable();
-			DamageHitBox.SetSize(42, 74);
-			if (Direction * HitBoxIDArray[otherID]->Game_Object->Direction < 0) {
-				State_Manager.TryStateChange(FALLINGBACK, 100, 300);
-			}
-			else {
-				State_Manager.TryStateChange(FALLINGFRONT, 100, 300);
-			}
-			return;
-		}
-		State_Manager.TryStateChange(GETTING_HIT,0,-HitBoxIDArray[otherID]->KnockOutPower*HitBoxIDArray[otherID]->Game_Object->Direction);
-	}*/
 }
 
 void Character::OnCollisionExit(int otherID, int selfID){
@@ -832,6 +786,7 @@ void Character::FreezeCalculations(const double dt, const double t) {
 	}
 	else {
 		if (Velocity.Magnitude() > 350) {
+			HealthPoints -= 10;
 			DeFreeze();
 			State_Manager.TryStateChange(FALLINGBACK, 50, 300);
 			Position = RealVector2D(Position.get_x(), Z_Position);
@@ -853,6 +808,7 @@ void Character::SetInvincible() {
 }
 
 void Character::DeFreeze(){
+	HealthPoints -= 10;
 	WallHitBox.Disable();
 	WallHitBox.IgnoreObjectID = -1;
 	DamageHitBox.SetSize(42, 74);

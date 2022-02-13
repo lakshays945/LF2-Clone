@@ -13,25 +13,6 @@ InputManager::InputManager() {
 		DoubleKeyToState[i] = IDLE;
 		KeyData[i] = 0;
 	}
-	//Set Controls and key related stuff
-	/*KeyToState[sf::Keyboard::W] = WALKING;
-	KeyToState[sf::Keyboard::A] = WALKING;
-	KeyToState[sf::Keyboard::S] = WALKING;
-	KeyToState[sf::Keyboard::D] = WALKING;
-	KeyToState[sf::Keyboard::Q] = HITTING;
-	KeyToState[sf::Keyboard::Space] = JUMPING;
-	KeyToState[sf::Keyboard::T] = SPECIALATTACK1;
-	KeyToState[sf::Keyboard::Y] = SPECIALATTACK2;
-	KeyToState[sf::Keyboard::F] = FALLINGFRONT;
-	KeyToState[sf::Keyboard::G] = FALLINGBACK;
-	DoubleKeyToState[sf::Keyboard::D] = RUNNING;
-	DoubleKeyToState[sf::Keyboard::A] = RUNNING;
-	DoubleKeyTimes[sf::Keyboard::D] = 0.3;
-	DoubleKeyTimes[sf::Keyboard::A] = 0.3;
-	KeyData[sf::Keyboard::D] = 1;
-	KeyData[sf::Keyboard::A] = -1;
-	KeyData[sf::Keyboard::Space] = 1;*/
-
 }
 
 void InputManager::AssignPlayer(Character* player) {

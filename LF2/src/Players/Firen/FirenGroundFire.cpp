@@ -98,12 +98,17 @@ void FirenGroundFire::OnCollisionExit(int otherID, int selfID)
 GroundFireHitBox::GroundFireHitBox() {
 	IsActive = false;
 	AttackHitBox = HitBox(Position, 25, 25, HB_TYPE_FIRE);
-	AttackHitBox.KnockOutPower = 100;
+	AttackHitBox.KnockOutPower = 30;
+	AttackHitBox.Damage = 15;
+	LeadingHitBox = HitBox(Position, 25, 25, HB_TYPE_FIRE);
+	LeadingHitBox.KnockOutPower = 120;
+	LeadingHitBox.Damage = 45;
 }
 
 void GroundFireHitBox::AssignParent(Firen* parent) {
 	Parent = parent;
 	AttackHitBox.IgnoreObjectID = Parent->ID;
+	LeadingHitBox.IgnoreObjectID = Parent->ID;
 	ParentSpeed = Parent->FireRunSpeed;
 	SpawnRate = Parent->FireRunSpawnRate;
 }
@@ -115,6 +120,7 @@ void GroundFireHitBox::Instantiate(RealVector2D position) {
 	Z_Position = Position.get_y();
 	AttackHitBox.IsActive = true;
 	AttackHitBox.SetSize(30, 30);
+	LeadingHitBox.IsActive = true;
 	Velocity = Parent->Velocity*(0.5);
 	Direction = Parent->Direction;
 	Stopped = false;
@@ -129,6 +135,9 @@ void GroundFireHitBox::Animate(sf::RenderWindow& window, const double dt) {
 	if (!Stopped) {
 		Position = Position + Velocity * dt;
 	}
+	else {
+		LeadingHitBox.Disable();
+	}
 	TotalTime += dt;
 	if (TotalTime > MaxTime+0.8 + SpawnRate * Extinguished) {
 		Extinguished++;
@@ -138,6 +147,7 @@ void GroundFireHitBox::Animate(sf::RenderWindow& window, const double dt) {
 		}
 	}
 	AttackHitBox.Center = Position;
+	LeadingHitBox.Center = Parent->Position + RealVector2D(10 * Direction, 0);
 	if (TotalTime > Spawned * SpawnRate && !Stopped) {
 		Spawned++;
 		AttackHitBox.SetSize(Parent->FireRunSpeed * Parent->FireRunSpawnRate * (Spawned-Extinguished), 10);
@@ -150,6 +160,7 @@ void GroundFireHitBox::Animate(sf::RenderWindow& window, const double dt) {
 		Stopped = true;
 	}
 	AttackHitBox.DrawBox(window);
+	LeadingHitBox.DrawBox(window);
 }
 
 void GroundFireHitBox::OnCollision(int otherID, int selfID) {

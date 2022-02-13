@@ -209,27 +209,20 @@ Dennis::Dennis() {
 	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
-	JumpingAttackSheet.AssignHitbox(1, { 20,12 }, 40, 26,200);
-	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38);
-	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52);
-	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50,200);
-	SpecialAttack3Sheet.AssignHitbox(2, { 20,9 }, 60, 37,-350);
-	SpecialAttack3Sheet.AssignHitbox(4, { -14.0f,15.0f }, 41, 38,-350);
-	SpecialAttack3Sheet.AssignHitbox(6, { 20,12 }, 60, 32,-350);
-	SpecialAttack4Sheet.AssignHitbox(0, { 9,16 }, 50, 43, -80);
-	SpecialAttack4Sheet.AssignHitbox(2, { 17,12 }, 40, 47, -80);
-	SpecialAttack4Sheet.AssignHitbox(4, { 10,9 }, 50, 56, -80);
-	SpecialAttack4Sheet.AssignHitbox(7, { 0,12 }, 53, 56, 100,150);
+	JumpingAttackSheet.AssignHitbox(1, { 20,12 }, 40, 26,200,200,35);
+	HittingSheet[0].AssignHitbox(2, { 17,14 }, 40, 38,-10,300,30);
+	HittingSheet[1].AssignHitbox(1, { 19,13 }, 46, 52,-10,300,30);
+	HittingSheet[2].AssignHitbox(2, { 14,14 }, 50, 50,200,300,70);
+	SpecialAttack3Sheet.AssignHitbox(2, { 20,9 }, 60, 37,-350,300,35);
+	SpecialAttack3Sheet.AssignHitbox(4, { -14.0f,15.0f }, 41, 38,-350,300,35);
+	SpecialAttack3Sheet.AssignHitbox(6, { 20,12 }, 60, 32,-350,300,35);
+	SpecialAttack4Sheet.AssignHitbox(0, { 9,16 }, 50, 43, -80,300,27);
+	SpecialAttack4Sheet.AssignHitbox(2, { 17,12 }, 40, 47, -80,300,27);
+	SpecialAttack4Sheet.AssignHitbox(4, { 10,9 }, 50, 56, -80,300,27);
+	SpecialAttack4Sheet.AssignHitbox(7, { 0,12 }, 53, 56, 100,150,27);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
-
-	//Variable Assignment
-	MaxSpeed = 200;
-	RunSpeed = 500;
-	JumpSpeedY = -600;
-	DashSpeedX = 600;
-	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
 
 	RegisterGameObject(GO_Character);
 	RegisterCharacter();
@@ -263,6 +256,17 @@ Dennis::Dennis() {
 	Helicopter_Kick.ProjectileReboundHitBox.RegisterID();
 	Helicopter_Kick.ProjectileReboundHitBox.AssignPlayer(&Helicopter_Kick);
 	Helicopter_Kick.AssignParent(this);
+
+	//Variable Assignment
+	MaxSpeed = 200;
+	RunSpeed = 500;
+	JumpSpeedY = -600;
+	DashSpeedX = 600;
+	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
+	SpecialAttackMP[0] = 8;
+	SpecialAttackMP[1] = 15;
+	SpecialAttackMP[2] = 20;
+	SpecialAttackMP[3] = 15;
 }
 
 void Dennis::SpecialAttack1Calculations(const double dt, const double t) {
@@ -288,7 +292,7 @@ void Dennis::SpecialAttack2Calculations(const double dt, const double t) {
 }
 
 void Dennis::SpecialAttack3Calculations(const double dt, const double t){
-	if ((Input_Manager.IsKeyPressed(PlayerControl.LeftKey) || Input_Manager.IsKeyPressed(PlayerControl.RightKey)) && t > 0.8) {
+	if (ManaPoints <= 0 || (Input_Manager.IsKeyPressed(PlayerControl.LeftKey) || Input_Manager.IsKeyPressed(PlayerControl.RightKey)) && t > 0.8) {
 		if (CurrentSheet->Time < 1) {
 			CurrentSheet->Time = 1.1;
 			Stop();
@@ -307,6 +311,7 @@ void Dennis::SpecialAttack3Calculations(const double dt, const double t){
 		Velocity = RealVector2D(250 * Direction, 0);
 	}
 	Translate(dt);
+	ManaPoints -= 15 * dt;
 }
 
 void Dennis::SpecialAttack4Calculations(const double dt, const double t){

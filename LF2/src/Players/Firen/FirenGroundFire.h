@@ -17,6 +17,7 @@ public:
 	GroundFireHitBox();
 	Firen* Parent = nullptr;
 	HitBox AttackHitBox;
+	HitBox LeadingHitBox;
 	void AssignParent(Firen* parent);
 	void Instantiate(RealVector2D position);
 	void Animate(sf::RenderWindow& window, const double dt);

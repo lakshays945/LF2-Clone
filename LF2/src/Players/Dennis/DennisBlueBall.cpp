@@ -20,6 +20,7 @@ DennisBlueBall::DennisBlueBall() {
 	ReboundHitBox = HitBox(Position, 45, 25, HB_TYPE_REBOUND);
 	MaxStrength = 150;
 	CurrentStrength = MaxStrength;
+	AttackHitBox.Damage = 30;
 }
 
 void DennisBlueBall::Animate(sf::RenderWindow& window, const double dt) {

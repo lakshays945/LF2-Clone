@@ -23,6 +23,7 @@ DestructoDisk::DestructoDisk(){
 	ReboundHitBox = HitBox(Position, 1, 1, HB_TYPE_REBOUND);
 	AttackHitBox.KnockOutPower = 200;
 	MaxStrength = 400;
+	AttackHitBox.Damage = 70;
 	CurrentStrength = MaxStrength;
 }
 

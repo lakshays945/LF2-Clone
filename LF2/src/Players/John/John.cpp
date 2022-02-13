@@ -203,21 +203,13 @@ John::John() {
 	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
-	JumpingAttackSheet.AssignHitbox(1, { 11,11 }, 41, 32, 200);
-	HittingSheet[0].AssignHitbox(1, { 10,19 }, 56, 41);
-	HittingSheet[1].AssignHitbox(1, { 9,18 }, 50, 45);
-	HittingSheet[2].AssignHitbox(2, { 16,6 }, 46, 65, 200);
+	JumpingAttackSheet.AssignHitbox(1, { 11,11 }, 41, 32, 200,200,45);
+	HittingSheet[0].AssignHitbox(1, { 10,19 }, 56, 41,-10,300,20);
+	HittingSheet[1].AssignHitbox(1, { 9,18 }, 50, 45,-10,300,20);
+	HittingSheet[2].AssignHitbox(2, { 16,6 }, 46, 65, 200,50);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
-
-	//Variable Assignment
-	MaxSpeed = 200;
-	RunSpeed = 500;
-	JumpSpeedY = -600;
-	DashSpeedX = 600;
-	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
-	WeaponHolderType = 1;
 
 	RegisterGameObject(GO_Character);
 	RegisterCharacter();
@@ -251,7 +243,17 @@ John::John() {
 		DiskArray[i].AttackHitBox.RegisterID();
 		DiskArray[i].ReboundHitBox.RegisterID();
 	}
-
+	//Variable Assignment
+	MaxSpeed = 200;
+	RunSpeed = 500;
+	JumpSpeedY = -600;
+	DashSpeedX = 600;
+	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
+	WeaponHolderType = 1;
+	SpecialAttackMP[0] = 15;
+	SpecialAttackMP[1] = 50;
+	SpecialAttackMP[2] = 20;
+	SpecialAttackMP[3] = 70;
 }
 
 void John::SpecialAttack1Calculations(const double dt, const double t){

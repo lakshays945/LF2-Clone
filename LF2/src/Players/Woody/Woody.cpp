@@ -210,27 +210,20 @@ Woody::Woody() {
 	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
-	JumpingAttackSheet.AssignHitbox(1, { 8,15 }, 40, 31, 200);
-	HittingSheet[0].AssignHitbox(1, { 14,9 }, 36, 55);
-	HittingSheet[1].AssignHitbox(1, { 17,9 }, 37, 53);
-	HittingSheet[2].AssignHitbox(1, { 9,5 }, 40, 65, 150, 350);
-	SpecialAttack2Sheet.AssignHitbox(3, { 8,5 }, 40, 70, 750, 250);
-	SpecialAttack2Sheet.AssignHitbox(4, { 8,5 }, 40, 70, 650, 250);
-	SpecialAttack2Sheet.AssignHitbox(5, { 8,5 }, 40, 70, 550, 250);
-	SpecialAttack2Sheet.AssignHitbox(6, { 8,5 }, 40, 70, 500, 250);
-	SpecialAttack3Sheet.AssignHitbox(2, { 0,6 }, 63, 65,-300);
-	SpecialAttack3Sheet.AssignHitbox(5, { 0,6 }, 63, 65,-300);
-	SpecialAttack3Sheet.AssignHitbox(8, { 0,6 }, 63, 65,100,300);
+	JumpingAttackSheet.AssignHitbox(1, { 8,15 }, 40, 31, 200,300,70);
+	HittingSheet[0].AssignHitbox(1, { 14,9 }, 36, 55,-10,300,20);
+	HittingSheet[1].AssignHitbox(1, { 17,9 }, 37, 53,20);
+	HittingSheet[2].AssignHitbox(1, { 9,5 }, 40, 65, 150, 350,70);
+	SpecialAttack2Sheet.AssignHitbox(3, { 8,5 }, 40, 70, 750, 250,80);
+	SpecialAttack2Sheet.AssignHitbox(4, { 8,5 }, 40, 70, 650, 250,80);
+	SpecialAttack2Sheet.AssignHitbox(5, { 8,5 }, 40, 70, 550, 250,80);
+	SpecialAttack2Sheet.AssignHitbox(6, { 8,5 }, 40, 70, 500, 250,80);
+	SpecialAttack3Sheet.AssignHitbox(2, { 0,6 }, 63, 65,-300,25);
+	SpecialAttack3Sheet.AssignHitbox(5, { 0,6 }, 63, 65,-300,25);
+	SpecialAttack3Sheet.AssignHitbox(8, { 0,6 }, 63, 65,100,300,25);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;
-
-	//Variable Assignment
-	MaxSpeed = 200;
-	RunSpeed = 500;
-	JumpSpeedY = -600;
-	DashSpeedX = 600;
-	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
 
 	RegisterGameObject(GO_Character);
 	RegisterCharacter();
@@ -247,6 +240,16 @@ Woody::Woody() {
 		BallArray[i].AttackHitBox.RegisterID();
 		BallArray[i].ReboundHitBox.RegisterID();
 	}
+	//Variable Assignment
+	MaxSpeed = 200;
+	RunSpeed = 500;
+	JumpSpeedY = -600;
+	DashSpeedX = 600;
+	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
+	SpecialAttackMP[0] = 25;
+	SpecialAttackMP[1] = 40;
+	SpecialAttackMP[2] = 10;
+	SpecialAttackMP[3] = 10;
 }
 
 void Woody::SpecialAttack1Calculations(const double dt, const double t){

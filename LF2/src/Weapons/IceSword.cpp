@@ -126,6 +126,7 @@ IceSword::IceSword(){
 	WobbleSheet.AssignTextures(IceSowrdTexFile, WobbleLocations, WobbleTimes, 47, 47);
 
 	AttackHitBox.Type = HB_TYPE_ICE;
+	AttackHitBox.Damage = 30;
 	HittingSheet[0].AssignHitbox(2, { 5.0f,0.f }, 40, 25);
 	HittingSheet[1].AssignHitbox(2, { 5.0f,0.f }, 40, 25);
 	JumpAttackSheet.AssignHitbox(2, { 5.0f,0.f }, 40, 25);

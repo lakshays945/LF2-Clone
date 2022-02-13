@@ -215,17 +215,17 @@ Deep::Deep() {
 	GuardSheet.OneTime = true;
 
 	//Assigning HitBoxes to Sheets
-	JumpingAttackSheet.AssignHitbox(1, { 14,11 }, 47, 46, 200);
-	HittingSheet[0].AssignHitbox(2, { 25,20 }, 49, 44);
-	HittingSheet[1].AssignHitbox(1, { 15,15 }, 42, 48);
-	HittingSheet[2].AssignHitbox(1, { 15,7 }, 49, 66,20,100);
-	SpecialAttack2Sheet.AssignHitbox(2, { 12,14 }, 53, 46,180,200);
-	SpecialAttack2Sheet.AssignHitbox(6, { 10,7 }, 63, 61, 180, 200);
-	SpecialAttack2Sheet.AssignHitbox(10, { 7,12 }, 50, 47, 180, 250);
-	SpecialAttack2Sheet.AssignHitbox(14, { 10,13 }, 63, 49, 400, 300);
-	SpecialAttack3Sheet.AssignHitbox(1, { 15,0 }, 50, 60, 100, 600);
-	SpecialAttack3Sheet.AssignHitbox(3, { -25,0 }, 40, 60, 50, 150);
-	SpecialAttack4Sheet.AssignHitbox(4, { 30,0 }, 50, 60,50,150);
+	JumpingAttackSheet.AssignHitbox(1, { 14,11 }, 47, 46, 200,300, 60);
+	HittingSheet[0].AssignHitbox(2, { 25,20 }, 49, 44,-10,300, 35);
+	HittingSheet[1].AssignHitbox(1, { 15,15 }, 42, 48,-10,300, 35);
+	HittingSheet[2].AssignHitbox(1, { 15,7 }, 49, 66,20,100, 70);
+	SpecialAttack2Sheet.AssignHitbox(2, { 12,14 }, 53, 46,180, 200,54);
+	SpecialAttack2Sheet.AssignHitbox(6, { 10,7 }, 63, 61, 180, 200,42);
+	SpecialAttack2Sheet.AssignHitbox(10, { 7,12 }, 50, 47, 180, 250,42);
+	SpecialAttack2Sheet.AssignHitbox(14, { 10,13 }, 63, 49, 400, 300,48);
+	SpecialAttack3Sheet.AssignHitbox(1, { 15,0 }, 50, 60, 100, 600,60);
+	SpecialAttack3Sheet.AssignHitbox(3, { -25,0 }, 40, 60, 50, 150,30);
+	SpecialAttack4Sheet.AssignHitbox(4, { 30,0 }, 50, 60,50, 150,40);
 
 	//Initialising CurrentSheet
 	CurrentSheet = &IdleSheet;

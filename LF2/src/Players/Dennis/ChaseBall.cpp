@@ -28,6 +28,7 @@ ChaseBall::ChaseBall() {
 	ReboundHitBox = HitBox(Position, 40, 40, HB_TYPE_REBOUND);
 	AttackHitBox.KnockOutPower = 300;
 	MaxStrength = 300;
+	AttackHitBox.Damage = 40;
 	CurrentStrength = MaxStrength;
 }
 

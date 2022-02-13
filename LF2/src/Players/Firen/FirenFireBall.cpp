@@ -24,6 +24,7 @@ FirenFireBall::FirenFireBall() {
 	InitialSheet.OneTime = true;
 	EndSheet.OneTime = true;
 	MaxStrength = 150;
+	AttackHitBox.Damage = 45;
 	CurrentStrength = MaxStrength;
 }
 

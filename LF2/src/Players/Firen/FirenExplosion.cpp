@@ -10,6 +10,7 @@ FirenExplosionBox::FirenExplosionBox() {
 	ExplosionHitBox = HitBox(Position, 55, 80, HB_TYPE_FIRE);
 	ExplosionHitBox.KnockOutPower = 200;
 	ExplosionHitBox.KnockUpPower = 500;
+	ExplosionHitBox.Damage = 125;
 }
 
 void FirenExplosionBox::AssignOffset(RealVector2D offset){

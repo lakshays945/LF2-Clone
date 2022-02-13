@@ -23,6 +23,7 @@ DavisBlueBall::DavisBlueBall() {
 	AttackHitBox = HitBox(Position, 60, 25, HB_TYPE_ATTACK);
 	ReboundHitBox = HitBox(Position, 70, 25, HB_TYPE_REBOUND);
 	MaxStrength = 150;
+	AttackHitBox.Damage = 30;
 	CurrentStrength = MaxStrength;
 }
 

@@ -20,6 +20,7 @@ JohnBlueBall::JohnBlueBall() {
 	AttackHitBox = HitBox(Position, 30, 25, HB_TYPE_ATTACK);
 	ReboundHitBox = HitBox(Position, 45, 25, HB_TYPE_REBOUND);
 	MaxStrength = 150;
+	AttackHitBox.Damage = 55;
 	CurrentStrength = MaxStrength;
 }
 

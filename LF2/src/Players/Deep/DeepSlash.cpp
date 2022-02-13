@@ -20,6 +20,7 @@ DeepSlash::DeepSlash(){
 	AttackHitBox = HitBox(Position, 30, 25, HB_TYPE_ATTACK);
 	ReboundHitBox = HitBox(Position, 45, 25, HB_TYPE_REBOUND);
 	AttackHitBox.KnockOutPower = 150;
+	AttackHitBox.Damage = 55;
 	MaxStrength = 150;
 	CurrentStrength = MaxStrength;
 }
