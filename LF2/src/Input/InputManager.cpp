@@ -60,11 +60,12 @@ void InputManager::GetInputDown(sf::Keyboard::Key key) { //called when a key is 
 }
 
 void InputManager::GetInputUp(sf::Keyboard::Key key) {
+	if (!IsPressed[key]) return;
 	IsPressed[key] = false;
 	LastReleased[key] = 0; //reset to 0 at end of fxn
 }
 
-void InputManager::SetControls(Controls control) {
+void InputManager::SetControls(KeyboardControls control) {
 	KeyToState[control.UpKey] = WALKING;
 	KeyToState[control.DownKey] = WALKING;
 	KeyToState[control.RightKey] = WALKING;
@@ -85,4 +86,26 @@ void InputManager::SetControls(Controls control) {
 	KeyData[control.RightKey] = 1;
 	KeyData[control.LeftKey] = -1;
 	KeyData[control.JumpKey] = 1;
+}
+
+int GetJoystickButton(int val, int axis) {
+	DEBUG_INFO("axis = {}", axis);
+	if (axis == -1) return val;
+	sf::Joystick::Axis ax = (sf::Joystick::Axis)axis;
+	if (ax == 0) {
+		if (val >= 90) return 10;
+		if (val <= -90) return 11;
+		return 17;
+	}
+	else if (ax == 1) {
+		if (val >= 90) return 13;
+		if (val <= -90) return 12;
+		return 19;
+	}
+	/*else if (ax == sf::Joystick::Axis::Z) {
+		if (val >= 90) return 14;
+		if (val <= -90) return 15;
+		return 21;
+	}*/
+	return 16;
 }

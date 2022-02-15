@@ -43,7 +43,24 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 				return;
 			}
 		}
-
+		if (event.type == sf::Event::JoystickButtonPressed) {
+			Player1->Input_Manager.GetInputDown(Player1->JoystickToKeyboard[GetJoystickButton(event.joystickButton.button, -1)]);
+			DEBUG_INFO("BUtton = {}", event.joystickButton.button);
+		}
+		if (event.type == sf::Event::JoystickButtonReleased) {
+			Player1->Input_Manager.GetInputUp(Player1->JoystickToKeyboard[GetJoystickButton(event.joystickButton.button, -1)]);
+		}
+		if (event.type == sf::Event::JoystickMoved) {
+			int action = GetJoystickButton(sf::Joystick::getAxisPosition(0, event.joystickMove.axis), event.joystickMove.axis);
+			if (action >= 17) {
+				Player1->Input_Manager.GetInputUp(Player1->JoystickToKeyboard[action - 7]);
+				Player1->Input_Manager.GetInputUp(Player1->JoystickToKeyboard[action - 6]);
+			}
+			else {
+				Player1->Input_Manager.GetInputDown(Player1->JoystickToKeyboard[action]);
+			}
+			DEBUG_INFO("Button = {}", action);
+		}
 		if (event.type == sf::Event::KeyPressed && !Paused) {
 			Player1->Input_Manager.GetInputDown(event.key.code);
 			Player2->Input_Manager.GetInputDown(event.key.code);
@@ -56,6 +73,9 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 			//Player3.Input_Manager.GetInputUp(event.key.code);
 			//Player4.Input_Manager.GetInputUp(event.key.code);
 		}
+	}
+	if (!sf::Joystick::isConnected(0)) {
+		DEBUG_INFO("Dissconnected");
 	}
 	if (Paused) dt = 0;
 	Player1->Input_Manager.Update(dt);
@@ -76,6 +96,7 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 	Player7.Update(DeltaTime, window);*/
 	Temp = GameObjectIDArray;
 	std::sort(Temp.begin(), Temp.end(), SortObjects);
+	GameBG.Animate(window, dt);
 	for (int i = 0; i < GameObjectIDArray.size(); i++) {
 		Temp[i]->Animate(window, dt);
 	}
@@ -92,8 +113,8 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 void Scene_Game_Scene::StartGame(int player1, int player2){
 	Player1 = GetPlayerFromIndex(player1);
 	Player2 = GetPlayerFromIndex(player2);
-	Controls Player1Control;
-	Controls Player2Control;
+	KeyboardControls Player1Control;
+	KeyboardControls Player2Control;
 	{
 		Player1Control.UpKey = sf::Keyboard::W;
 		Player1Control.DownKey = sf::Keyboard::S;
@@ -106,6 +127,20 @@ void Scene_Game_Scene::StartGame(int player1, int player2){
 		Player1Control.SpecialAttack2Key = sf::Keyboard::Y;
 		Player1Control.SpecialAttack3Key = sf::Keyboard::U;
 		Player1Control.SpecialAttack4Key = sf::Keyboard::I;
+
+		Player1->JoystickToKeyboard[2] = Player1Control.JumpKey;
+		Player1->JoystickToKeyboard[1] = Player1Control.GuardKey;
+		Player1->JoystickToKeyboard[3] = Player1Control.AttackKey;
+		Player1->JoystickToKeyboard[0] = Player1Control.SpecialAttack1Key;
+		Player1->JoystickToKeyboard[5] = Player1Control.SpecialAttack2Key;
+		Player1->JoystickToKeyboard[7] = Player1Control.SpecialAttack3Key;
+		Player1->JoystickToKeyboard[6] = Player1Control.SpecialAttack4Key;
+		Player1->JoystickToKeyboard[10] = Player1Control.RightKey;
+		Player1->JoystickToKeyboard[11] = Player1Control.LeftKey;
+		Player1->JoystickToKeyboard[12] = Player1Control.UpKey;
+		Player1->JoystickToKeyboard[13] = Player1Control.DownKey;
+		Player1->JoystickToKeyboard[14] = Player1Control.SpecialAttack3Key;
+		Player1->JoystickToKeyboard[15] = Player1Control.SpecialAttack4Key;
 	}
 	{
 		Player2Control.UpKey = sf::Keyboard::Up;
@@ -119,12 +154,29 @@ void Scene_Game_Scene::StartGame(int player1, int player2){
 		Player2Control.SpecialAttack2Key = sf::Keyboard::L;
 		Player2Control.SpecialAttack3Key = sf::Keyboard::J;
 		Player2Control.SpecialAttack4Key = sf::Keyboard::H;
+
+		Player2->JoystickToKeyboard[0] = Player2Control.JumpKey;
+		Player2->JoystickToKeyboard[1] = Player2Control.GuardKey;
+		Player2->JoystickToKeyboard[2] = Player2Control.AttackKey;
+		Player2->JoystickToKeyboard[3] = Player2Control.SpecialAttack1Key;
+		//Player2->JoystickToKeyboard[4] = Player2Control.SpecialAttack1Key;
+		Player2->JoystickToKeyboard[5] = Player2Control.SpecialAttack2Key;
+		Player2->JoystickToKeyboard[10] = Player2Control.DownKey;
+		Player2->JoystickToKeyboard[11] = Player2Control.RightKey;
+		Player2->JoystickToKeyboard[12] = Player2Control.UpKey;
+		Player2->JoystickToKeyboard[13] = Player2Control.LeftKey;
+		Player2->JoystickToKeyboard[14] = Player2Control.SpecialAttack3Key;
+		Player2->JoystickToKeyboard[15] = Player2Control.SpecialAttack4Key;
 	}
 	Player1->SetControls(Player1Control);
 	Player2->SetControls(Player2Control);
 	Player1->Position = RealVector2D(100, 500);
+	Player1->Z_Position = Player1->Position.get_y();
 	Player2->Position = RealVector2D(1100, 500);
+	Player2->Z_Position = Player2->Position.get_y();
 	Player2->Direction = -1;
+	GameBG.LoadAnimationSheet(ForestBGSheet);
+	GameBG.Position = RealVector2D(600, 550);
 }
 
 void Scene_Game_Scene::ExitGameScene(){

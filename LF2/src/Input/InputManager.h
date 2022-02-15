@@ -2,9 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include "Common/AnimationSheet.h"
 
-struct Controls {
+struct KeyboardControls {
 	sf::Keyboard::Key UpKey, DownKey, LeftKey, RightKey, JumpKey, AttackKey, GuardKey, SpecialAttack1Key, SpecialAttack2Key, SpecialAttack3Key, SpecialAttack4Key;
 };
+
 
 class Character;
 class InputManager {
@@ -31,5 +32,7 @@ public:
 	void GetInputUp(sf::Keyboard::Key key);
 	bool IsKeyPressed(sf::Keyboard::Key key);
 	double GetLastPressed(sf::Keyboard::Key key);
-	void SetControls(Controls control);
+	void SetControls(KeyboardControls control);
 };
+
+int GetJoystickButton(int val, int axis);

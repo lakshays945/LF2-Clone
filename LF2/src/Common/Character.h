@@ -38,6 +38,10 @@ public:
 	int JumpSpeedY = -600;
 	int DashSpeedX = 600;
 	int RunSpeed = 300;
+	float WallRight = 1200;
+	float WallLeft = 0;
+	float WallUp = 460;
+	float WallDown = 800;
 	double JumpGravityFactor;
 	double FallDuration = 0.7;
 	double TimeSinceLastState = 0;
@@ -77,7 +81,7 @@ public:
 	HitBox AttackHitBox;
 	HitBox WallHitBox;
 	HitBox BurningHitBox;
-	Controls PlayerControl;
+	KeyboardControls PlayerControl;
 	Weapon* CurrentWeapon = nullptr;
 	int WeaponHolderType = 0;
 	RealVector2D WeaponPosOffsets[STATECOUNT];
@@ -86,6 +90,7 @@ public:
 	int HealthPoints = 600;
 	double ManaPoints = 100;
 	int SpecialAttackMP[4] = { 100,100,100,100 };
+	sf::Keyboard::Key JoystickToKeyboard[17];
 	//CONSTRUCTOR
 	Character();
 
@@ -115,7 +120,7 @@ public:
 	void FreezeCalculations(const double dt, const double t);
 	void SetInvincible();
 	void DeFreeze();
-	void SetControls(Controls control);
+	void SetControls(KeyboardControls control);
 	void PickWeapon();
 	//-----------------------------------PLAYER-SPECIFIC-METHODS----------------------------------------
 

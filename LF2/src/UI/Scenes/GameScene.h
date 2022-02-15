@@ -11,6 +11,7 @@
 #include "Weapons/BaseBallBat.h"
 #include "Weapons/HookWeapon.h"
 #include "Weapons/IceSword.h"
+#include "Backgrounds/Background.h"
 
 class UI_HealthBar : public UI_Element {
 public:
@@ -45,6 +46,7 @@ public:
 	UI_StaminaBar Player1StaminaBar;
 	UI_HealthBar Player2HealthBar;
 	UI_StaminaBar Player2StaminaBar;
+	BackGround GameBG;
 	std::vector<GameObject*> Temp;
 	bool Paused = false;
 	void Animate(sf::RenderWindow& window, const double dt);

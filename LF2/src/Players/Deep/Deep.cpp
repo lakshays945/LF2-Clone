@@ -238,6 +238,11 @@ Deep::Deep() {
 	JumpGravityFactor = -(JumpSpeedY * 2) / (DEFAULT_GRAVITY_CONSTANT * JUMP_DURATION);
 	WeaponPosOffsets[WALKING] = { -10,0 };
 	WeaponHolderType = 1;
+	SpecialAttackMP[0] = 15;
+	SpecialAttackMP[1] = 35;
+	SpecialAttackMP[2] = 15;
+	SpecialAttackMP[3] = 15;
+
 
 	RegisterGameObject(GO_Character);
 	RegisterCharacter();
@@ -286,7 +291,7 @@ void Deep::SpecialAttack4Calculations(const double dt, const double t){
 	if (t - dt <= 0) {
 		Velocity = RealVector2D(Direction * 200, 2*JumpSpeedY/3);
 	}
-	if (t > 0.1 && Input_Manager.IsKeyPressed(PlayerControl.AttackKey)) {
+	if (t > 0.1 && Input_Manager.IsKeyPressed(PlayerControl.AttackKey) && CurrentSheet->Time < 2.4) {
 		CurrentSheet->Time = 2.53;
 	}
 	if (Z_Position >= Position.get_y() || t < 0.2) {

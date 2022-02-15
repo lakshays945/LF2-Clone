@@ -305,7 +305,7 @@ void Woody::SpecialAttack4Calculations(const double dt, const double t){
 		double minDist = 10000;
 		RealVector2D minPos = Position;
 		for (int i = 0; i < CharacterIDArray.size(); i++) {
-			if (i == ID) {
+			if (i == CharacterID) {
 				continue;
 			}
 			if (minDist > Position.DistanceFrom(RealVector2D(CharacterIDArray[i]->Position.get_x(),CharacterIDArray[i]->Z_Position))) {

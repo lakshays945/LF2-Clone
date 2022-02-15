@@ -133,6 +133,7 @@ void HitBox::Disable(){
 }
 
 void HitBox::DrawBox(sf::RenderWindow& window) {
+	return;
 	if (!IsActive) {
 		return;
 	}

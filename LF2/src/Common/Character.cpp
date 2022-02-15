@@ -25,6 +25,9 @@ Character::Character() {
 	JumpSpeedY = DEFAULT_JUMP_VELOCITY;
 	DashSpeedX = DEFAULT_DASH_VELOCITY_X;
 	RunSpeed = DEFAULT_RUN_VELOCITY;
+	for (int i = 0; i < 17; i++) {
+		JoystickToKeyboard[i] = sf::Keyboard::Unknown;
+	}
 	for (int i = 0; i < STATECOUNT; i++) {
 		WeaponPosOffsets[i] = RealVector2D(0, 0);
 	}
@@ -486,6 +489,17 @@ void Character::AddForce(const double dt) { //for movement based upon inputs
 
 void Character::Translate(const double dt) {
 	Position = Position + Velocity * dt;
+	if (Z_Position < WallUp) {
+		Position = Position + RealVector2D(0, WallUp - Z_Position);
+		LastPosition = RealVector2D(LastPosition.get_x(), Position.get_y());
+		Z_Position = WallUp;
+	}
+	else if (Z_Position > WallDown) {
+		Position = Position + RealVector2D(0, WallDown - Z_Position);
+		LastPosition = RealVector2D(LastPosition.get_x(), Position.get_y());
+		Z_Position = WallDown;
+	}
+	Position = RealVector2D(std::max(std::min(WallRight, Position.get_x()), WallLeft),Position.get_y());
 	bool Xwall = false, Ywall = false;
 	while(!WallIDs.empty()) {
 		int WallID = WallIDs.front();
@@ -815,7 +829,7 @@ void Character::DeFreeze(){
 	SetInvincible();
 }
 
-void Character::SetControls(Controls control) {
+void Character::SetControls(KeyboardControls control) {
 	PlayerControl = control;
 	Input_Manager.SetControls(PlayerControl);
 }

@@ -300,7 +300,7 @@ void Davis::SpecialAttack4Calculations(const double dt, const double t){
 	if (t - dt <= 0) {
 		Velocity = RealVector2D(Direction * 200, 2*JumpSpeedY/3);
 	}
-	if (t > 0.1 && Input_Manager.IsKeyPressed(PlayerControl.AttackKey)) {
+	if (t > 0.1 && Input_Manager.IsKeyPressed(PlayerControl.AttackKey) && CurrentSheet->Time < 2.4) {
 		CurrentSheet->Time = 2.51;
 	}
 	if (Z_Position >= Position.get_y() || t < 0.2) {

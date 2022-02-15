@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Joystick.hpp>
 #include "UI/Scenes/GameScene.h"
 #include"UI/Scene.h"
 
@@ -13,6 +14,9 @@ int main() {
 	main_log = new DbgWindow("DebugWindow");
 	DEBUG_SUCCESS("Launching game......");
 	sf::Clock Clock;
+	if (sf::Joystick::isConnected(0)){
+		DEBUG_INFO("Joystick 0 Connected");
+	}
 	while (window.isOpen()) {
 		DeltaTime = (Clock.getElapsedTime()).asSeconds();
 		Clock.restart();
