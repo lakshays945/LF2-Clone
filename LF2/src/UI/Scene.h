@@ -47,3 +47,13 @@ public:
 	void Animate(sf::RenderWindow& window, const double dt);
 	void Update(const double dt);
 };
+
+class Scene_Game_Over : public UI_SCENE {
+	Scene_Game_Over();
+	UI_Button Buttons[2];
+	UI_Text Texts[5];
+	UI_Image Images[2];
+	UI_Image Background;
+	void Update(const double dt);
+	void Animate(sf::RenderWindow& window, const double dt);
+};

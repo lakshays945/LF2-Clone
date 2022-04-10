@@ -20,6 +20,8 @@ Scene_Main_Menu::Scene_Main_Menu() {
 	Background.AlignAtCenter();
 	Background.SetPosition(RealVector2D(600, 400));
 
+
+
 	for (int i = 1; i < NUMBEROF(Buttons); i++) {
 		Buttons[i].UpdateListenerSize();
 		Buttons[i].OnClick = [&]() {
@@ -179,4 +181,12 @@ void SceneManager::InitialisizeScenes(){
 	SceneIDArray.push_back(MainMenu);
 	SceneIDArray.push_back(CharacterSelect);
 	SceneIDArray.push_back(GameScene);
+}
+
+void Scene_Game_Over::Update(const double dt){
+
+}
+
+void Scene_Game_Over::Animate(sf::RenderWindow& window, const double dt){
+
 }

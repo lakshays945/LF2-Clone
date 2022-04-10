@@ -98,6 +98,7 @@ const std::vector<double> GuardTimes = { 0.8 };
 const std::vector<RealVector2D> WPNGuardOffsets = { {-5,-15} };
 
 Freeze::Freeze() {
+	Name = "Freeze";
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);

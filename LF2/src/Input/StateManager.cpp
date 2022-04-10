@@ -6,6 +6,7 @@ void StateManager::AssignPlayer(Character* player) {
 	Player = player;
 }
 void StateManager::TryStateChange(PlayerStates state, const double lastPressed, const int data, const double startTime) { //called when we try to change state by our input
+
 	if (IsChangePossible[Player->CurrentState][state]) {
 		if (state == HITTING && Player->WeaponsInRangeID.size() > 0 && Player->CurrentWeapon == nullptr) {
 			Player->ChangeState(WEAPONPICK,lastPressed,data);

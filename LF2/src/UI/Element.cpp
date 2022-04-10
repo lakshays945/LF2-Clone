@@ -4,10 +4,12 @@
 sf::Texture ButtonsTexFile;
 sf::Texture PlayersTexFile;
 sf::Texture BackGroundTexFile;
+sf::Texture GameOverTexFile;
 
 sf::Sprite ButtonsSpr;
 sf::Sprite PlayersSpr;
 sf::Sprite BackGroundSpr;
+sf::Sprite GameOverSpr;
 
 UI_Element::UI_Element(){
 	if (ButtonsTexFile.getSize() == sf::Vector2u(0, 0)) {
@@ -23,6 +25,10 @@ UI_Element::UI_Element(){
 		BackGroundTexFile.loadFromFile("Images/UIBack.jpg");
 		BackGroundSpr.setTexture(BackGroundTexFile);
 		BackGroundSpr.setScale(3, 2.23);
+	}
+	if (GameOverTexFile.getSize() == sf::Vector2u(0, 0)) {
+		GameOverTexFile.loadFromFile("Images/Rectangle.png");
+		GameOverSpr.setTexture(GameOverTexFile);
 	}
 }
 
@@ -42,7 +48,7 @@ void UI_Listener::Listen(const sf::RenderWindow &window) {
 		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 			CanClick = true;
 		}
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && CanClick) {
+		if ((sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) && CanClick) {
 			CanClick = false;
 			Clicked = true;
 		}

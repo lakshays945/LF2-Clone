@@ -22,6 +22,33 @@ Scene_Game_Scene::Scene_Game_Scene() {
 	Player2HealthBar.SetPosition(RealVector2D(1000, 100));
 	Player1StaminaBar.SetPosition(RealVector2D(100, 150));
 	Player2StaminaBar.SetPosition(RealVector2D(1000, 150));
+
+	//ending scenes 
+	EndImages[0].SetImage(GameOverSpr);
+	sf::Color color = EndImages[0].Image.getColor();
+	color.a = 200;
+	EndImages[0].Image.setColor(color);
+	EndImages[0].SetPosition({ 600,400 });
+	EndImages[0].AlignAtCenter();
+
+	EndTexts[0].SetText("Fonts/stocky.ttf", "WIN", 50);
+	EndTexts[1].SetText("Fonts/stocky.ttf", "LOSE", 50);
+	EndTexts[0].Text.setFillColor(sf::Color::Green);
+	EndTexts[1].Text.setFillColor(sf::Color::Red);
+	EndTexts[0].SetPosition({ 400,275 });
+	EndTexts[1].SetPosition({ 800,275 });
+	EndTexts[0].AlignAtCenter();
+	EndTexts[1].AlignAtCenter();
+
+	EndButtons[0] = UI_Button(ButtonsSpr, "Fonts/Roboto.ttf", "Play Again", 20);
+	EndButtons[0].B_Image.Image.setTextureRect(sf::IntRect(15, 425, 275, 55));
+	EndButtons[0].SetPosition({ 400,575 });
+	EndButtons[0].AlignAtCenter();
+
+	EndButtons[1] = UI_Button(ButtonsSpr, "Fonts/Roboto.ttf", "Main Menu", 20);
+	EndButtons[1].B_Image.Image.setTextureRect(sf::IntRect(15, 425, 275, 55));
+	EndButtons[1].SetPosition({ 800,575 });
+	EndButtons[1].AlignAtCenter();
 }
 
 void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
@@ -43,14 +70,14 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 				return;
 			}
 		}
-		if (event.type == sf::Event::JoystickButtonPressed) {
+		if (event.type == sf::Event::JoystickButtonPressed && !GameEnded && !Paused) {
 			Player1->Input_Manager.GetInputDown(Player1->JoystickToKeyboard[GetJoystickButton(event.joystickButton.button, -1)]);
 			DEBUG_INFO("BUtton = {}", event.joystickButton.button);
 		}
-		if (event.type == sf::Event::JoystickButtonReleased) {
+		if (event.type == sf::Event::JoystickButtonReleased && !GameEnded && !Paused) {
 			Player1->Input_Manager.GetInputUp(Player1->JoystickToKeyboard[GetJoystickButton(event.joystickButton.button, -1)]);
 		}
-		if (event.type == sf::Event::JoystickMoved) {
+		if (event.type == sf::Event::JoystickMoved && !GameEnded && !Paused) {
 			int action = GetJoystickButton(sf::Joystick::getAxisPosition(0, event.joystickMove.axis), event.joystickMove.axis);
 			if (action >= 17) {
 				Player1->Input_Manager.GetInputUp(Player1->JoystickToKeyboard[action - 7]);
@@ -61,39 +88,72 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 			}
 			DEBUG_INFO("Button = {}", action);
 		}
-		if (event.type == sf::Event::KeyPressed && !Paused) {
+		if (event.type == sf::Event::KeyPressed && !Paused && !GameEnded) {
 			Player1->Input_Manager.GetInputDown(event.key.code);
 			Player2->Input_Manager.GetInputDown(event.key.code);
-			//Player3.Input_Manager.GetInputDown(event.key.code);
-			//Player4.Input_Manager.GetInputDown(event.key.code);
 		}
-		if (event.type == sf::Event::KeyReleased) {
+		if (event.type == sf::Event::KeyReleased && !GameEnded) {
 			Player1->Input_Manager.GetInputUp(event.key.code);
 			Player2->Input_Manager.GetInputUp(event.key.code);
-			//Player3.Input_Manager.GetInputUp(event.key.code);
-			//Player4.Input_Manager.GetInputUp(event.key.code);
 		}
 	}
-	if (!sf::Joystick::isConnected(0)) {
-		DEBUG_INFO("Dissconnected");
-	}
 	if (Paused) dt = 0;
-	Player1->Input_Manager.Update(dt);
-	Player2->Input_Manager.Update(dt);
-	/*Player3.Input_Manager.Update(DeltaTime);
-	Player4.Input_Manager.Update(DeltaTime);
-	Player5.Input_Manager.Update(DeltaTime);
-	Player6.Input_Manager.Update(DeltaTime);
-	Player7.Input_Manager.Update(DeltaTime);*/
+	if (!GameEnded) {
+		Player1->Input_Manager.Update(dt);
+		Player2->Input_Manager.Update(dt);
+		if (Player1->HealthPoints <= 0 && Player2->HealthPoints <= 0) {
+			Player1->Input_Manager = InputManager();
+			Player2->Input_Manager = InputManager();
+			Result = 0;
+			GameEnded = true;
+		}
+		else if (Player1->HealthPoints <= 0) {
+			Player1->Input_Manager = InputManager();
+			Player2->Input_Manager = InputManager();
+			EndTexts[1].SetPosition({ 400,200 });
+			EndTexts[0].SetPosition({ 800,200 });
+			Result = -1;
+			GameEnded = true;
+		}
+		else if (Player2->HealthPoints <= 0) {
+			Player1->Input_Manager = InputManager();
+			Player2->Input_Manager = InputManager();
+			EndTexts[0].SetPosition({ 400,200 });
+			EndTexts[1].SetPosition({ 800,200 });
+			Result = 1;
+			GameEnded = true;
+		}
+	}
+	else {
+		double dec = std::pow(dt, 5);
+		for (int i = 0; i < GameBG.BGSheet.DrawTimes.size(); i++) {
+			sf::Color color = GameBG.BGSheet.Sprites[i].getColor();
+			if (color.r - dec < 70 || color.g - dec < 70 || color.b - dec < 70) break;
+			color.r -= dec;
+			color.g -= dec;
+			color.b -= dec;
+			GameBG.BGSheet.Sprites[i].setColor(color);
+		}
+		TimeSinceEnded += dt;
+		dt /= 2;
+		if (TimeSinceEnded > 5) {
+			if (Result == 1) Player1->State_Manager.ForceStateChange(IDLE);
+			if (Result == -1) Player2->State_Manager.ForceStateChange(IDLE);
+			if ((RealVector2D(400, 300) - Player1->Position).Magnitude() > 5)
+				Player1->Velocity = (RealVector2D(400, 300) - Player1->Position).GetUnit() * 500;
+			else Player1->Stop();
+			if ((RealVector2D(800, 300) - Player2->Position).Magnitude() > 5)
+				Player2->Velocity = (RealVector2D(800, 300) - Player2->Position).GetUnit() * 500;
+			else Player2->Stop();
+			Player1->WallUp = -100;
+			Player2->WallUp = -100;
+			Player1->Translate(dt);
+			Player2->Translate(dt);
+		}
+	}
 	HandleCollisions();
-	//UpdateInputs();
 	Player1->Update(dt, window);
 	Player2->Update(dt, window);
-	/*Player3.Update(DeltaTime, window);
-	Player4.Update(DeltaTime, window);
-	Player5.Update(DeltaTime, window);
-	Player6.Update(DeltaTime, window);
-	Player7.Update(DeltaTime, window);*/
 	Temp = GameObjectIDArray;
 	std::sort(Temp.begin(), Temp.end(), SortObjects);
 	GameBG.Animate(window, dt);
@@ -108,6 +168,13 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 	Player2HealthBar.Animate(window, dt);
 	Player1StaminaBar.Animate(window, dt);
 	Player2StaminaBar.Animate(window, dt);
+	if (TimeSinceEnded > 4) {
+		EndImages[0].Animate(window, dt);
+		EndTexts[0].Animate(window, dt);
+		EndTexts[1].Animate(window, dt);
+		Player1->Animate(window, 0);
+		Player2->Animate(window, 0);
+	}
 }
 
 void Scene_Game_Scene::StartGame(int player1, int player2){
@@ -177,6 +244,10 @@ void Scene_Game_Scene::StartGame(int player1, int player2){
 	Player2->Direction = -1;
 	GameBG.LoadAnimationSheet(ForestBGSheet);
 	GameBG.Position = RealVector2D(600, 550);
+	GameEnded = false;
+	Player2->HealthPoints = 2;
+	Player1->HealthPoints = 2;
+	TimeSinceEnded = 0;
 }
 
 void Scene_Game_Scene::ExitGameScene(){
@@ -205,7 +276,6 @@ UI_HealthBar::UI_HealthBar(){
 }
 
 void UI_HealthBar::UpdateSize(int hpPercent){
-	//DEBUG_INFO("Hp % = {}", hpPercent);
 	if (HpPrecent == hpPercent) return;
 	HpPrecent = std::max(hpPercent,0);
 	HealthBar.Image.setTextureRect(sf::IntRect(0, 80, (140 * HpPrecent) / 100, 40));
@@ -229,7 +299,6 @@ UI_StaminaBar::UI_StaminaBar() {
 }
 
 void UI_StaminaBar::UpdateSize(int staminaPercent) {
-	//DEBUG_INFO("Hp % = {}", hpPercent);
 	if (StaminaPrecent == staminaPercent) return;
 	StaminaPrecent = std::max(staminaPercent, 0);
 	StaminaBar.Image.setTextureRect(sf::IntRect(5, 185, (140 * StaminaPrecent) / 100, 40));

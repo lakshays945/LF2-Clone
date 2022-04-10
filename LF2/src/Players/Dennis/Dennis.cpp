@@ -98,6 +98,7 @@ const std::vector<RealVector2D> WPNGuardOffsets = { {25,-17} };
 
 
 Dennis::Dennis() {
+	Name = "Dennis";
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);

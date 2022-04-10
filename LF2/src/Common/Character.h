@@ -34,6 +34,7 @@ public:
 	int CharacterID;
 	RealVector2D LastPosition;
 	std::queue <int> WallIDs;
+	std::string Name = "";
 	float MaxSpeed = 200;
 	int JumpSpeedY = -600;
 	int DashSpeedX = 600;

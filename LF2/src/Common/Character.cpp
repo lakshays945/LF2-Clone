@@ -227,9 +227,6 @@ void Character::ChangeState(PlayerStates state, const double lastPressed, const 
 }
 
 void Character::Update(const double dt, sf::RenderWindow& window) {
-	if (HealthPoints <= 0) {
-		DEBUG_INFO("DED");
-	}
 	if (ManaPoints < 100) ManaPoints += 4 * dt;
 	if (TimeSinceLastState < MAX_LAST_TIME) {
 		TimeSinceLastState += dt;
@@ -540,9 +537,17 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
 	if (CorrectIndex == -1) {
-		Stop();
-		State_Manager.ForceStateChange(IDLE);
-		CorrectIndex = 0;
+		if (HealthPoints > 0) {
+			Stop();
+			State_Manager.ForceStateChange(IDLE);
+			CorrectIndex = 0;
+		}
+		else {
+			int index = CurrentSheet->DrawTimes.size() - 2;
+			CurrentSheet->Time = CurrentSheet->DrawTimes[index];
+			CorrectIndex = index + 1;
+		}
+		
 	}
 	sf::Sprite *current = &CurrentSheet->Sprites[CorrectIndex];
 	/*sf::CircleShape circle;
@@ -577,7 +582,7 @@ void Character::Animate(sf::RenderWindow& window, const double dt) { //give it a
 		AttackHitBox.Disable();
 	}
 	if (Invincible) {
-		if (CorrectIndex % 2 == 0 && CurrentState != FALLINGBACK && CurrentState != FALLINGFRONT) {
+		if (CorrectIndex % 2 == 0 && CurrentState != FALLINGBACK && CurrentState != FALLINGFRONT && HealthPoints>0) {
 			return;
 		}
 	}
@@ -594,7 +599,8 @@ void Character::OnCollision(int otherID, int selfID) {
 	if (self->Type == HB_TYPE_DAMAGE && other->Game_Object != this && CurrentSheet != &BurningSheet) {
 		switch (other->Type) {
 			case HB_TYPE_ATTACK:
-				if (other->KnockOutPower > 0) {
+				if (other->KnockOutPower > 0 || HealthPoints-other->Damage <= 0) {
+					if (other->KnockOutPower <= 0) other->KnockOutPower = 300;
 					if (Direction * other->Game_Object->Direction < 0) {
 						if (CurrentState == GUARD && GuardResistance > 0) {
 							CurrentSheet->Time = 0.3;
@@ -753,7 +759,7 @@ void Character::FallBackCalculations(const double dt, const double t) {
 	if (t > FallDuration) {
 		SetInvincible();
 		Stop();
-		Position = LastPosition;
+		if(HealthPoints > 0) Position = LastPosition;
 		return;
 	}
 	if(!WallIDs.empty()) {
@@ -776,7 +782,7 @@ void Character::FallFrontCalculations(const double dt, const double t) {
 	if (t > FallDuration) {
 		SetInvincible();
 		Stop();
-		Position = LastPosition;
+		if (HealthPoints > 0) Position = LastPosition;
 		return;
 	}
 	if(!WallIDs.empty()) {
@@ -809,13 +815,14 @@ void Character::FreezeCalculations(const double dt, const double t) {
 		Position = RealVector2D(Position.get_x(), Z_Position);
 		Stop();
 	}
-	if (t > 3.2) {
+	if (t > 3.2 && HealthPoints > 0) {
 		DeFreeze();
 		State_Manager.TryStateChange(FALLINGBACK, 50, 100);
 	}
 }
 
 void Character::SetInvincible() {
+	if (HealthPoints <= 0) return;
 	Invincible = true;
 	DamageHitBox.Disable();
 	InvincibleTime = 0;

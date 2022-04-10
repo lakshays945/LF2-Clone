@@ -38,6 +38,8 @@ public:
 class Scene_Game_Scene : public UI_SCENE {
 public:
 	Scene_Game_Scene();
+	bool GameEnded = false;
+	int Result = 0;
 	Character* Player1 = nullptr;
 	Character* Player2 = nullptr;
 	UI_Image Player1Image;
@@ -47,8 +49,14 @@ public:
 	UI_HealthBar Player2HealthBar;
 	UI_StaminaBar Player2StaminaBar;
 	BackGround GameBG;
+
+	UI_Button EndButtons[2];
+	UI_Image EndImages[3];
+	UI_Text EndTexts[5];
+
 	std::vector<GameObject*> Temp;
 	bool Paused = false;
+	double TimeSinceEnded = 0;
 	void Animate(sf::RenderWindow& window, const double dt);
 	void StartGame(int player1, int player2);
 	void ExitGameScene();

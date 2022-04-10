@@ -99,6 +99,7 @@ const std::vector<double> GuardTimes = { 0.8 };
 const std::vector<RealVector2D> WPNGuardOffsets = { {26,-13} };
 
 Woody::Woody() {
+	Name = "Woody";
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);

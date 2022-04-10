@@ -97,6 +97,7 @@ const std::vector<double> GuardTimes = { 0.8 };
 const std::vector<RealVector2D> WPNGuardOffsets = { {0,-7} };
 
 Firen::Firen() {
+	Name = "Firen";
 	//Manager Assignments
 	State_Manager.AssignPlayer(this);
 	Input_Manager.AssignPlayer(this);

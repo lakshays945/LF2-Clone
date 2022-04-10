@@ -13,6 +13,7 @@ extern sf::Texture BackGroundTexFile;
 extern sf::Sprite ButtonsSpr;
 extern sf::Sprite PlayersSpr;
 extern sf::Sprite BackGroundSpr;
+extern sf::Sprite GameOverSpr;
 
 class UI_Button;
 class Scene;
