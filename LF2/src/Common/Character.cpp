@@ -610,12 +610,12 @@ void Character::OnCollision(int otherID, int selfID) {
 						}
 						else {
 							State_Manager.TryStateChange(FALLINGBACK, other->KnockOutPower, other->KnockUpPower);
-							HealthPoints -= other->Damage;
+							TakeDamage(other->Damage);
 						}
 					}
 					else {
 						State_Manager.TryStateChange(FALLINGFRONT, other->KnockOutPower, other->KnockUpPower);
-						HealthPoints -= other->Damage;
+						TakeDamage(other->Damage);
 					}
 				}
 				else {
@@ -627,7 +627,7 @@ void Character::OnCollision(int otherID, int selfID) {
 					}
 					else {
 						State_Manager.TryStateChange(GETTING_HIT, Direction * other->Game_Object->Direction, -other->KnockOutPower * other->Game_Object->Direction);
-						HealthPoints -= other->Damage;
+						TakeDamage(other->Damage);
 					}
 				}
 				break;
@@ -644,7 +644,7 @@ void Character::OnCollision(int otherID, int selfID) {
 						CurrentSheet = &BurningSheet;
 						BurningHitBox.Center = Position;
 						BurningHitBox.IsActive = true;
-						HealthPoints -= other->Damage;
+						TakeDamage(other->Damage);
 						SetInvincible();
 					}
 				}
@@ -653,7 +653,7 @@ void Character::OnCollision(int otherID, int selfID) {
 					CurrentSheet = &BurningSheet;
 					BurningHitBox.Center = Position;
 					BurningHitBox.IsActive = true;
-					HealthPoints -= other->Damage;
+					TakeDamage(other->Damage);
 					SetInvincible();
 				}
 				break;
@@ -668,7 +668,7 @@ void Character::OnCollision(int otherID, int selfID) {
 					else {
 						WallHitBox.IsActive = true;
 						DamageHitBox.SetSize(66, 74);
-						HealthPoints -= other->Damage;
+						TakeDamage(other->Damage);
 						State_Manager.TryStateChange(FREEZED, Direction * other->Game_Object->Direction);
 						if (CurrentState == FREEZED) {
 							Stop();
@@ -678,7 +678,7 @@ void Character::OnCollision(int otherID, int selfID) {
 				else {
 					WallHitBox.IsActive = true;
 					DamageHitBox.SetSize(66, 74);
-					HealthPoints -= other->Damage;
+					TakeDamage(other->Damage);
 					State_Manager.TryStateChange(FREEZED, Direction * other->Game_Object->Direction);
 					if (CurrentState == FREEZED) {
 						Stop();
@@ -703,7 +703,7 @@ void Character::OnCollision(int otherID, int selfID) {
 		CanCollide[selfID][otherID] = true;
 	}
 	else if(self->Type == HB_TYPE_ATTACK && other->Game_Object != this) {
-
+		
 	}
 }
 
@@ -712,7 +712,6 @@ void Character::OnCollisionExit(int otherID, int selfID){
 	if (HitBoxIDArray[otherID]->Type == HB_TYPE_TRIGGER && HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Weapon && HitBoxIDArray[selfID]->Type == HB_TYPE_DAMAGE) {
 		for (int i = 0; i < WeaponsInRangeID.size(); i++) {
 			if (HitBoxIDArray[otherID]->Game_Object->ID == WeaponsInRangeID[i]) {
-				//DEBUG_INFO("WPN of ID = {} removed", HitBoxIDArray[otherID]->Game_Object->ID);
 				WeaponsInRangeID.erase(WeaponsInRangeID.begin() + i);
 				break;
 			}
@@ -852,6 +851,11 @@ void Character::PickWeapon(){
 	}
 	CurrentWeapon = (Weapon*)GameObjectIDArray[id];
 	CurrentWeapon->AssignParent(this);
+}
+
+void Character::TakeDamage(int damage){
+	HealthPoints -= damage;
+	DamageTaken += damage;
 }
 
 

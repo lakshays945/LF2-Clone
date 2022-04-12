@@ -18,10 +18,10 @@ Character* GetPlayerFromIndex(int index) {
 }
 
 Scene_Game_Scene::Scene_Game_Scene() {
-	Player1HealthBar.SetPosition(RealVector2D(100, 100));
-	Player2HealthBar.SetPosition(RealVector2D(1000, 100));
-	Player1StaminaBar.SetPosition(RealVector2D(100, 150));
-	Player2StaminaBar.SetPosition(RealVector2D(1000, 150));
+	Player1HealthBar.SetPosition(RealVector2D(140, 100));
+	Player2HealthBar.SetPosition(RealVector2D(850, 100));
+	Player1StaminaBar.SetPosition(RealVector2D(140, 150));
+	Player2StaminaBar.SetPosition(RealVector2D(850, 150));
 
 	//ending scenes 
 	EndImages[0].SetImage(GameOverSpr);
@@ -33,10 +33,16 @@ Scene_Game_Scene::Scene_Game_Scene() {
 
 	EndTexts[0].SetText("Fonts/stocky.ttf", "WIN", 50);
 	EndTexts[1].SetText("Fonts/stocky.ttf", "LOSE", 50);
+	EndTexts[2].SetText("Fonts/Roboto.ttf", "", 25);
+	EndTexts[3].SetText("Fonts/Roboto.ttf", "", 25);
 	EndTexts[0].Text.setFillColor(sf::Color::Green);
 	EndTexts[1].Text.setFillColor(sf::Color::Red);
+	EndTexts[2].Text.setFillColor(sf::Color::Black);
+	EndTexts[3].Text.setFillColor(sf::Color::Black);
 	EndTexts[0].SetPosition({ 400,275 });
 	EndTexts[1].SetPosition({ 800,275 });
+	EndTexts[2].SetPosition({ 400,400 });
+	EndTexts[3].SetPosition({ 800,400 });
 	EndTexts[0].AlignAtCenter();
 	EndTexts[1].AlignAtCenter();
 
@@ -116,30 +122,29 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 		Player1->Input_Manager.Update(dt);
 		Player2->Input_Manager.Update(dt);
 		if (Player1->HealthPoints <= 0 && Player2->HealthPoints <= 0) {
-			Player1->Input_Manager = InputManager();
-			Player2->Input_Manager = InputManager();
 			Result = 0;
-			GameEnded = true;
 		}
 		else if (Player1->HealthPoints <= 0) {
-			Player1->Input_Manager = InputManager();
-			Player2->Input_Manager = InputManager();
 			EndTexts[1].SetPosition({ 400,200 });
 			EndTexts[0].SetPosition({ 800,200 });
 			Result = -1;
-			GameEnded = true;
 		}
 		else if (Player2->HealthPoints <= 0) {
-			Player1->Input_Manager = InputManager();
-			Player2->Input_Manager = InputManager();
 			EndTexts[0].SetPosition({ 400,200 });
 			EndTexts[1].SetPosition({ 800,200 });
 			Result = 1;
+		}
+		if (Player1->HealthPoints <= 0 || Player2->HealthPoints <= 0) {
+			Player1->Input_Manager = InputManager();
+			Player2->Input_Manager = InputManager();
+			EndTexts[2].Text.setString("Damage Taken = " + std::to_string(Player1->DamageTaken));
+			EndTexts[3].Text.setString("Damage Taken = " + std::to_string(Player2->DamageTaken));
+			EndTexts[2].AlignAtCenter();
+			EndTexts[3].AlignAtCenter();
 			GameEnded = true;
 		}
 	}
 	else {
-		//double dec = TimeSinceEnded / 100;
 		for (int i = 0; i < GameBG.BGSheet.DrawTimes.size(); i++) {
 			if (TimeSinceEnded > 4) break;
 			sf::Color color = OriginalBG.Sprites[i].getColor();
@@ -174,14 +179,21 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 	for (int i = 0; i < GameObjectIDArray.size(); i++) {
 		Temp[i]->Animate(window, dt);
 	}
-	Player1HealthBar.UpdateSize(Player1->HealthPoints/6.0);
-	Player2HealthBar.UpdateSize(Player2->HealthPoints/6.0);
-	Player1StaminaBar.UpdateSize(Player1->ManaPoints);
-	Player2StaminaBar.UpdateSize(Player2->ManaPoints);
+	if (!GameEnded) {
+		Player1HealthBar.UpdateSize(Player1->HealthPoints / 6.0);
+		Player2HealthBar.UpdateSize(Player2->HealthPoints / 6.0);
+		Player1StaminaBar.UpdateSize(Player1->ManaPoints);
+		Player2StaminaBar.UpdateSize(Player2->ManaPoints);
+	}
 	Player1HealthBar.Animate(window, dt);
 	Player2HealthBar.Animate(window, dt);
 	Player1StaminaBar.Animate(window, dt);
 	Player2StaminaBar.Animate(window, dt);
+	Player1Image.Animate(window, dt);
+	Player1Image.SetPosition({ 70,100 });
+	Player2Image.SetPosition({ 1130,100 });
+
+	Player2Image.Animate(window, dt);
 	if (TimeSinceEnded > 4) {
 		EndImages[0].Animate(window, dt);
 		EndTexts[0].Animate(window, dt);
@@ -191,6 +203,8 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 		if (TimeSinceEnded > 6) {
 			EndButtons[0].Animate(window, 2 * dt);
 			EndButtons[1].Animate(window, 2 * dt);
+			EndTexts[2].Animate(window, dt);
+			EndTexts[3].Animate(window, dt);
 		}
 	}
 }
@@ -200,6 +214,14 @@ void Scene_Game_Scene::StartGame(int player1, int player2){
 	Player2Index = player2;
 	Player1 = GetPlayerFromIndex(player1);
 	Player2 = GetPlayerFromIndex(player2);
+
+	Player1Image.SetImage(PlayersSpr);
+	Player2Image.SetImage(PlayersSpr);
+	Player1Image.Image.setTextureRect(sf::IntRect(player1 * 120, 0, 120, 120));
+	Player2Image.Image.setTextureRect(sf::IntRect(player2 * 120, 0, 120, 120));
+	Player1Image.AlignAtCenter();
+	Player2Image.AlignAtCenter();
+
 	KeyboardControls Player1Control;
 	KeyboardControls Player2Control;
 	{
@@ -266,7 +288,7 @@ void Scene_Game_Scene::StartGame(int player1, int player2){
 	OriginalBG = GameBG.BGSheet;
 	GameBG.Position = RealVector2D(600, 550);
 	GameEnded = false;
-	//Player2->HealthPoints = 2;
+	Player2->HealthPoints = 2;
 	//Player1->HealthPoints = 2;
 	TimeSinceEnded = 0;
 }

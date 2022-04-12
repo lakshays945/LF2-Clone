@@ -41,11 +41,10 @@ void UI_Listener::AssignParent(UI_Button* parent){
 	Parent = parent;
 }
 
-
 void UI_Listener::Listen(const sf::RenderWindow &window) {
 	bool IsMouseOn = (abs(sf::Mouse::getPosition(window).x - Parent->Position.get_x()) <= (Width / 2) && abs(sf::Mouse::getPosition(window).y - Parent->Position.get_y()) <= (Height / 2));
 	if (IsMouseOn) {
-		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
 			CanClick = true;
 		}
 		if ((sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) && CanClick) {

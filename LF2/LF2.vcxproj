@@ -57,6 +57,7 @@
     <ClCompile Include="src\Players\John\John.cpp" />
     <ClCompile Include="src\Players\John\JohnBlueBall.cpp" />
     <ClCompile Include="src\Players\John\JohnShield.cpp" />
+    <ClCompile Include="src\Players\John\Sparkle.cpp" />
     <ClCompile Include="src\Players\Woody\Woody.cpp" />
     <ClCompile Include="src\Players\Woody\WoodyBall.cpp" />
     <ClCompile Include="src\UI\Button.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="src\Players\Freeze\Tornado.h" />
     <ClInclude Include="src\Players\Freeze\IceBerg.h" />
     <ClInclude Include="src\Players\John\DestructoDisk.h" />
+    <ClInclude Include="src\Players\John\Sparkle.h" />
     <ClInclude Include="src\Players\John\John.h" />
     <ClInclude Include="src\Players\John\JohnBlueBall.h" />
     <ClInclude Include="src\Players\John\JohnShield.h" />

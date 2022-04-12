@@ -63,6 +63,11 @@ const std::vector<RealVector2D> SpecialAttack3Locations = { {320,107}, {400,107}
 const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6 };
 const std::vector <RealVector2D> SpecialAttack3WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
 
+const std::vector<RealVector2D> SpecialAttack4Locations = { {0,27}, {80,27}, {160,27}, {240,27}, {320,27}, {400,27} };
+const std::vector <double> SpecialAttack4Times = { 0.1,0.2,0.3,0.4,0.5,0.6 };
+const std::vector <RealVector2D> SpecialAttack4WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
+
+
 const std::vector<RealVector2D> BurningLocations = { {720,80}, {720,480},{390,240} }; //x,y
 const std::vector <double> BurningTimes = { 0.25,0.5,2 };
 
@@ -182,6 +187,7 @@ John::John() {
 	SpecialAttack1Sheet.AssignTextures(JohnTexFile2, SpecialAttack1Locations, SpecialAttack1Times, 130, 80);
 	SpecialAttack2Sheet.AssignTextures(JohnTexFile2, SpecialAttack2Locations, SpecialAttack2Times, 80, 80);
 	SpecialAttack3Sheet.AssignTextures(JohnTexFile2, SpecialAttack3Locations, SpecialAttack3Times, 80, 80);
+	SpecialAttack4Sheet.AssignTextures(JohnTexFile2, SpecialAttack4Locations, SpecialAttack4Times, 80, 80);
 
 	//Setting One Time Animations
 	JumpingSheet.OneTime = true;
@@ -194,6 +200,7 @@ John::John() {
 	SpecialAttack1Sheet.OneTime = true;
 	SpecialAttack2Sheet.OneTime = true;
 	SpecialAttack3Sheet.OneTime = true;
+	SpecialAttack4Sheet.OneTime = true;
 	FallingBackSheet.OneTime = true;
 	FallingFrontSheet.OneTime = true;
 	BurningSheet.OneTime = true;
@@ -244,6 +251,13 @@ John::John() {
 		DiskArray[i].AttackHitBox.RegisterID();
 		DiskArray[i].ReboundHitBox.RegisterID();
 	}
+	for (int i = 0; i < 10; i++) {
+		SparkleArray.push_back(Sparkle());
+	}
+	for (int i = 0; i < 5; i++) {
+		SparkleArray[i].AssignParent(this);
+		SparkleArray[i].RegisterGameObject(GO_Projectile);
+	}
 	//Variable Assignment
 	MaxSpeed = 200;
 	RunSpeed = 500;
@@ -254,7 +268,7 @@ John::John() {
 	SpecialAttackMP[0] = 15;
 	SpecialAttackMP[1] = 50;
 	SpecialAttackMP[2] = 20;
-	SpecialAttackMP[3] = 70;
+	SpecialAttackMP[3] = 0;
 }
 
 void John::SpecialAttack1Calculations(const double dt, const double t){
@@ -299,6 +313,16 @@ void John::SpecialAttack3Calculations(const double dt, const double t){
 	}
 }
 
-void John::SpecialAttack4Calculations(const double dt, const double t)
-{
+void John::SpecialAttack4Calculations(const double dt, const double t){
+	if ((t - dt - 0.55) * (t - 0.55) < 0) {
+		HealthPoints = std::min(600, HealthPoints + 200);
+	}
+	if ((t - dt) * t <= 0) {
+		for (int i = 0; i < SparkleArray.size(); i++) {
+			if (!SparkleArray[i].IsActive) {
+				SparkleArray[i].Instantiate(Position);
+				return;
+			}
+		}
+	}
 }

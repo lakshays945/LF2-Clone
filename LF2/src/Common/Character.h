@@ -90,6 +90,8 @@ public:
 	int GuardResistance = 100;
 	int HealthPoints = 600;
 	double ManaPoints = 100;
+	int DamageTaken = 0;
+	int DamageGiven = 0;
 	int SpecialAttackMP[4] = { 100,100,100,100 };
 	sf::Keyboard::Key JoystickToKeyboard[17];
 	//CONSTRUCTOR
@@ -123,6 +125,7 @@ public:
 	void DeFreeze();
 	void SetControls(KeyboardControls control);
 	void PickWeapon();
+	void TakeDamage(int damage);
 	//-----------------------------------PLAYER-SPECIFIC-METHODS----------------------------------------
 
 	virtual void SpecialAttack1Calculations(const double dt, const double t) = 0;

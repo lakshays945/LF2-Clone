@@ -3,6 +3,7 @@
 #include "JohnBlueBall.h"
 #include "JohnShield.h"
 #include "DestructoDisk.h"
+#include "Sparkle.h"
 
 class John : public Character {
 public:
@@ -10,6 +11,7 @@ public:
 	std::vector<JohnBlueBall> BallArray;
 	std::vector<DestructoDisk> DiskArray;
 	std::vector<JohnShield> ShieldArray;
+	std::vector<Sparkle> SparkleArray;
 	void SpecialAttack1Calculations(const double dt, const double t);
 	void SpecialAttack2Calculations(const double dt, const double t);
 	void SpecialAttack3Calculations(const double dt, const double t);
