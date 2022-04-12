@@ -58,8 +58,8 @@ const std::vector<RealVector2D> SpecialAttack2Locations = { {80,335}, {160,335},
 const std::vector <double> SpecialAttack2Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.7 };
 const std::vector <RealVector2D> SpecialAttack2WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0} };
 
-const std::vector<RealVector2D> SpecialAttack3Locations = { {0,255}, {80,255}, {160,255}, {240,255}, {320,255}, {400,255}, {480,255}, {400,255}, {320,255}, {0,335}, {640,255} };
-const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.55,0.6,0.75,0.8,1,1.2,1.4};
+const std::vector<RealVector2D> SpecialAttack3Locations = { {0,255}, {80,255}, {160,255}, {240,255}, {320,255}, {400,255}, {480,255}, {240,255}, {320,255}, {0,335}, {640,255} };
+const std::vector <double> SpecialAttack3Times = { 0.1,0.2,0.3,0.4,0.5,0.6,0.75,0.8,1,1.2,1.4};
 const std::vector <RealVector2D> SpecialAttack3WPNOffsets = { {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0},{0,0}, {0,0}, {0,0}, {0,0}};
 
 const std::vector<RealVector2D> SpecialAttack4Locations = { {160,175}, {240,175}, {320,175}, {400,175}, {480,175}, {560,175},{640,175}, {720,175}, {720,255}, {640,255} };
@@ -302,7 +302,7 @@ void Dennis::SpecialAttack3Calculations(const double dt, const double t){
 		
 	}
 	if (CurrentSheet->Time > 0.9 && CurrentSheet->Time < 1.0) {
-		CurrentSheet->Time = 0.35;
+		CurrentSheet->Time = 0.401;
 	}
 	else if (t - dt <= 0) {
 		Velocity = RealVector2D(0, -50);

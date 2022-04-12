@@ -26,7 +26,7 @@ Scene_Game_Scene::Scene_Game_Scene() {
 	//ending scenes 
 	EndImages[0].SetImage(GameOverSpr);
 	sf::Color color = EndImages[0].Image.getColor();
-	color.a = 200;
+	color.a = 150;
 	EndImages[0].Image.setColor(color);
 	EndImages[0].SetPosition({ 600,400 });
 	EndImages[0].AlignAtCenter();
@@ -42,13 +42,27 @@ Scene_Game_Scene::Scene_Game_Scene() {
 
 	EndButtons[0] = UI_Button(ButtonsSpr, "Fonts/Roboto.ttf", "Play Again", 20);
 	EndButtons[0].B_Image.Image.setTextureRect(sf::IntRect(15, 425, 275, 55));
-	EndButtons[0].SetPosition({ 400,575 });
 	EndButtons[0].AlignAtCenter();
+	EndButtons[0].UpdateListenerSize();
+	EndButtons[0].SetPosition({ 400,575 });
+
+	EndButtons[0].OnClick = [&]() {
+		ExitGameScene();
+		StartGame(Player1Index, Player2Index);
+		return 0;
+	};
 
 	EndButtons[1] = UI_Button(ButtonsSpr, "Fonts/Roboto.ttf", "Main Menu", 20);
 	EndButtons[1].B_Image.Image.setTextureRect(sf::IntRect(15, 425, 275, 55));
 	EndButtons[1].SetPosition({ 800,575 });
 	EndButtons[1].AlignAtCenter();
+	EndButtons[1].UpdateListenerSize();
+
+	EndButtons[1].OnClick = [&]() {
+		ExitGameScene();
+		Manager->CurrentScene = 0;
+		return 0;
+	};
 }
 
 void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
@@ -125,13 +139,13 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 		}
 	}
 	else {
-		double dec = std::pow(dt, 5);
+		//double dec = TimeSinceEnded / 100;
 		for (int i = 0; i < GameBG.BGSheet.DrawTimes.size(); i++) {
-			sf::Color color = GameBG.BGSheet.Sprites[i].getColor();
-			if (color.r - dec < 70 || color.g - dec < 70 || color.b - dec < 70) break;
-			color.r -= dec;
-			color.g -= dec;
-			color.b -= dec;
+			if (TimeSinceEnded > 4) break;
+			sf::Color color = OriginalBG.Sprites[i].getColor();
+			color.r = color.r / 3 + (1 / 8.0) * color.r * (4 - TimeSinceEnded);
+			color.g = color.g / 3 + (1 / 8.0) * color.g * (4 - TimeSinceEnded);
+			color.b = color.b / 3 + (1 / 8.0) * color.b * (4 - TimeSinceEnded);
 			GameBG.BGSheet.Sprites[i].setColor(color);
 		}
 		TimeSinceEnded += dt;
@@ -174,10 +188,16 @@ void Scene_Game_Scene::Animate(sf::RenderWindow& window, double dt) {
 		EndTexts[1].Animate(window, dt);
 		Player1->Animate(window, 0);
 		Player2->Animate(window, 0);
+		if (TimeSinceEnded > 6) {
+			EndButtons[0].Animate(window, 2 * dt);
+			EndButtons[1].Animate(window, 2 * dt);
+		}
 	}
 }
 
 void Scene_Game_Scene::StartGame(int player1, int player2){
+	Player1Index = player1;
+	Player2Index = player2;
 	Player1 = GetPlayerFromIndex(player1);
 	Player2 = GetPlayerFromIndex(player2);
 	KeyboardControls Player1Control;
@@ -243,10 +263,11 @@ void Scene_Game_Scene::StartGame(int player1, int player2){
 	Player2->Z_Position = Player2->Position.get_y();
 	Player2->Direction = -1;
 	GameBG.LoadAnimationSheet(ForestBGSheet);
+	OriginalBG = GameBG.BGSheet;
 	GameBG.Position = RealVector2D(600, 550);
 	GameEnded = false;
-	Player2->HealthPoints = 2;
-	Player1->HealthPoints = 2;
+	//Player2->HealthPoints = 2;
+	//Player1->HealthPoints = 2;
 	TimeSinceEnded = 0;
 }
 

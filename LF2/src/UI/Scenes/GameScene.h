@@ -49,7 +49,9 @@ public:
 	UI_HealthBar Player2HealthBar;
 	UI_StaminaBar Player2StaminaBar;
 	BackGround GameBG;
-
+	AnimationSheet OriginalBG;
+	int Player1Index = 1;
+	int Player2Index = 1;
 	UI_Button EndButtons[2];
 	UI_Image EndImages[3];
 	UI_Text EndTexts[5];
