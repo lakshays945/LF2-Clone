@@ -93,7 +93,15 @@ public:
 extern DbgWindow* main_log;
 
 #define DEBUG_TRACE(message,...) (main_log->log_trace(##message,__VA_ARGS__))
+#define DEBUG_TRACE_FXN(message,...) (main_log->log_trace(__FUNCTION__ "(): "##message,__VA_ARGS__))
 #define DEBUG_INFO(message,...) (main_log->log_info(##message,__VA_ARGS__))
+#define DEBUG_INFO_FXN(message,...) (main_log->log_info(__FUNCTION__ "(): "##message,__VA_ARGS__))
 #define DEBUG_SUCCESS(message,...) (main_log->log_success(##message,__VA_ARGS__))
+#define DEBUG_SUCCESS_FXN(message,...) (main_log->log_success(__FUNCTION__ "(): "##message,__VA_ARGS__))
 #define DEBUG_WARNING(message,...) (main_log->log_warning(##message,__VA_ARGS__))
+#define DEBUG_WARNING_FXN(message,...) (main_log->log_warning(__FUNCTION__ "(): "##message,__VA_ARGS__))
 #define DEBUG_ERROR(message,...) (main_log->log_error(##message,__VA_ARGS__))
+#define DEBUG_ERROR_FXN(message,...) (main_log->log_error(__FUNCTION__ "(): "##message,__VA_ARGS__))
+
+//@Lakshay ho gya FXN() use kro toh            FXN() : msg              karke print hoga
+//mai chala

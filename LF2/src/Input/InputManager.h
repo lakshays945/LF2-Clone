@@ -2,6 +2,11 @@
 #include <SFML/Graphics.hpp>
 #include "Common/AnimationSheet.h"
 
+struct KeyboardControls {
+	sf::Keyboard::Key UpKey, DownKey, LeftKey, RightKey, JumpKey, AttackKey, GuardKey, SpecialAttack1Key, SpecialAttack2Key, SpecialAttack3Key, SpecialAttack4Key;
+};
+
+
 class Character;
 class InputManager {
 private:
@@ -20,10 +25,14 @@ public:
 	//constructor
 	InputManager();
 	void AssignPlayer(Character* player);
+	sf::Keyboard::Key JustPressedKey;
 	//fxn to increase lastpressed and lastreleased of each key by dt
 	void Update(const double dt);
 	void GetInputDown(sf::Keyboard::Key key);
 	void GetInputUp(sf::Keyboard::Key key);
 	bool IsKeyPressed(sf::Keyboard::Key key);
 	double GetLastPressed(sf::Keyboard::Key key);
+	void SetControls(KeyboardControls control);
 };
+
+int GetJoystickButton(int val, int axis);

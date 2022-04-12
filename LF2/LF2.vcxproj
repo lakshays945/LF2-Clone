@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ThirdParty\fmt-8.0.1\src\format.cc" />
+    <ClCompile Include="src\Backgrounds\Background.cpp" />
+    <ClCompile Include="src\Common\ProjectileBall.cpp" />
     <ClCompile Include="src\Dbg\Logging.cpp" />
     <ClCompile Include="src\Effects\EffectManager.cpp" />
     <ClCompile Include="src\FileBus\FileBusCommon.cpp" />
@@ -34,12 +36,48 @@
     <ClCompile Include="src\Common\Character.cpp" />
     <ClCompile Include="src\Common\AnimationSheet.cpp" />
     <ClCompile Include="src\Players\Davis\Davis.cpp" />
-    <ClCompile Include="src\Players\Dennis\BlueBall.cpp" />
+    <ClCompile Include="src\Players\Davis\DavisBlueBall.cpp" />
+    <ClCompile Include="src\Players\Deep\Deep.cpp" />
+    <ClCompile Include="src\Players\Deep\DeepSlash.cpp" />
+    <ClCompile Include="src\Players\Dennis\DennisBlueBall.cpp" />
     <ClCompile Include="src\Players\Dennis\ChaseBall.cpp" />
     <ClCompile Include="src\Players\Dennis\Dennis.cpp" />
     <ClCompile Include="src\Common\HitBox.cpp" />
+    <ClCompile Include="src\Players\Dennis\HelicopterKick.cpp" />
+    <ClCompile Include="src\Players\Firen\Firen.cpp" />
+    <ClCompile Include="src\Players\Firen\FirenExplosion.cpp" />
+    <ClCompile Include="src\Players\Firen\FirenGroundFire.cpp" />
+    <ClCompile Include="src\Players\Firen\FirenFireBall.cpp" />
+    <ClCompile Include="src\Players\Firen\FlameThrow.cpp" />
+    <ClCompile Include="src\Players\Freeze\Freeze.cpp" />
+    <ClCompile Include="src\Players\Freeze\FreezeBall.cpp" />
+    <ClCompile Include="src\Players\Freeze\IceBerg.cpp" />
+    <ClCompile Include="src\Players\Freeze\Tornado.cpp" />
+    <ClCompile Include="src\Players\John\DestructoDisk.cpp" />
+    <ClCompile Include="src\Players\John\John.cpp" />
+    <ClCompile Include="src\Players\John\JohnBlueBall.cpp" />
+    <ClCompile Include="src\Players\John\JohnShield.cpp" />
+    <ClCompile Include="src\Players\John\Sparkle.cpp" />
+    <ClCompile Include="src\Players\Woody\Woody.cpp" />
+    <ClCompile Include="src\Players\Woody\WoodyBall.cpp" />
+    <ClCompile Include="src\UI\Button.cpp" />
+    <ClCompile Include="src\UI\Element.cpp" />
+    <ClCompile Include="src\UI\Image.cpp" />
+    <ClCompile Include="src\UI\Scene.cpp" />
+    <ClCompile Include="src\UI\Scenes\GameScene.cpp" />
+    <ClCompile Include="src\UI\Text.cpp" />
+    <ClCompile Include="src\Weapons\BaseBallBat.cpp" />
+    <ClCompile Include="src\Weapons\HookWeapon.cpp" />
+    <ClCompile Include="src\Weapons\IceSword.cpp" />
+    <ClCompile Include="src\Weapons\Weapon.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Backgrounds\Background.h" />
+    <ClInclude Include="src\Common\ProjectileBall.h" />
     <ClInclude Include="src\Dbg\Logging.h" />
     <ClInclude Include="src\Effects\EffectManager.h" />
     <ClInclude Include="src\FileBus\FileBus.h" />
@@ -53,10 +91,41 @@
     <ClInclude Include="src\Math\Utilities.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\Players\Davis\Davis.h" />
-    <ClInclude Include="src\Players\Dennis\BlueBall.h" />
+    <ClInclude Include="src\Players\Davis\DavisBlueBall.h" />
+    <ClInclude Include="src\Players\Deep\Deep.h" />
+    <ClInclude Include="src\Players\Deep\DeepSlash.h" />
+    <ClInclude Include="src\Players\Dennis\DennisBlueBall.h" />
     <ClInclude Include="src\Players\Dennis\ChaseBall.h" />
     <ClInclude Include="src\Players\Dennis\Dennis.h" />
     <ClInclude Include="src\Common\HitBox.h" />
+    <ClInclude Include="src\Players\Dennis\HelicopterKick.h" />
+    <ClInclude Include="src\Players\Firen\Firen.h" />
+    <ClInclude Include="src\Players\Firen\FirenExplosion.h" />
+    <ClInclude Include="src\Players\Firen\FirenGroundFire.h" />
+    <ClInclude Include="src\Players\Firen\FirenFireBall.h" />
+    <ClInclude Include="src\Players\Firen\FlameThrow.h" />
+    <ClInclude Include="src\Players\Freeze\Freeze.h" />
+    <ClInclude Include="src\Players\Freeze\FreezeBall.h" />
+    <ClInclude Include="src\Players\Freeze\Tornado.h" />
+    <ClInclude Include="src\Players\Freeze\IceBerg.h" />
+    <ClInclude Include="src\Players\John\DestructoDisk.h" />
+    <ClInclude Include="src\Players\John\Sparkle.h" />
+    <ClInclude Include="src\Players\John\John.h" />
+    <ClInclude Include="src\Players\John\JohnBlueBall.h" />
+    <ClInclude Include="src\Players\John\JohnShield.h" />
+    <ClInclude Include="src\Players\Woody\Woody.h" />
+    <ClInclude Include="src\Players\Woody\WoodyBall.h" />
+    <ClInclude Include="src\UI\Button.h" />
+    <ClInclude Include="src\UI\Element.h" />
+    <ClInclude Include="src\UI\Image.h" />
+    <ClInclude Include="src\UI\Scene.h" />
+    <ClInclude Include="src\UI\Scenes\GameScene.h" />
+    <ClInclude Include="src\UI\Text.h" />
+    <ClInclude Include="src\Weapons\BaseBallBat.h" />
+    <ClInclude Include="src\Weapons\HookWeapon.h" />
+    <ClInclude Include="src\Weapons\IceSword.h" />
+    <ClInclude Include="src\Weapons\Weapon.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LF2.rc" />
@@ -173,7 +242,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\SFML-2.5.1\include;$(SolutionDir)\LF2\src;$(SolutionDir)\ThirdParty\fmt-8.0.1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <ForcedIncludeFiles>Dbg\Logging.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>Dbg\Logging.h;stdafx.h</ForcedIncludeFiles>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -196,7 +266,8 @@ call $(SolutionDir)Scripts\PostBuild.bat "$(ProjectDir)src\Resource\" "$(OutDir)
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\ThirdParty\SFML-2.5.1\include;$(SolutionDir)\LF2\src;$(SolutionDir)\ThirdParty\fmt-8.0.1\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <ForcedIncludeFiles>Dbg\Logging.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>Dbg\Logging.h;stdafx.h</ForcedIncludeFiles>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

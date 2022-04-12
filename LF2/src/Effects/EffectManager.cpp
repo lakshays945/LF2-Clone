@@ -22,6 +22,7 @@ int EffectAnimation::GetCorrectIndex() { //returns index of correct sprite
 }
 
 EffectManager::EffectManager(sf::RenderWindow* window) {
+	srand(time(NULL));
 	Window = window;
 	BloodSheet.loadFromFile("Resource/bloodEffect.png");
 	Blood_1.setTexture(BloodSheet);
@@ -56,7 +57,6 @@ EffectManager::EffectManager(sf::RenderWindow* window) {
 void EffectManager::DrawEffect(EffectTypeImage type, RealVector2D position, double totalTime, int random) {
 
 	//adding Randomness
-	srand(time(NULL));
 	int randomnessX = rand() % RANDOM_SCALE; randomnessX *= random;
 	int randomnessY = rand() % RANDOM_SCALE; randomnessY *= random;
 	int dirX = rand() % 2;

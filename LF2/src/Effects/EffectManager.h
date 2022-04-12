@@ -15,7 +15,7 @@ const double BloodAnimationTimes[3] = { 0.1,0.2,0.3 };
 
 const int ImpactAnimationLocations[3][2] = { {860,600}, {1100,598}, {1860,580} };
 const int ImpactAnimationSizes[3][2] = { {80,70}, {85,80}, {130,120} };
-const double ImpactAnimationTimes[3] = { 0.1,0.2,0.3 };
+const double ImpactAnimationTimes[3] = { 0.05,0.1,0.15 };
 
 enum EffectTypeImage {
 	EFFECT_IMAGE_BLOOD = 0, EFFECT_IMAGE_FIRE = 1, 

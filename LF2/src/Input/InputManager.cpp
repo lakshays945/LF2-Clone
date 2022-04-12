@@ -13,24 +13,6 @@ InputManager::InputManager() {
 		DoubleKeyToState[i] = IDLE;
 		KeyData[i] = 0;
 	}
-	//Set Controls and key related stuff
-	KeyToState[sf::Keyboard::W] = WALKING;
-	KeyToState[sf::Keyboard::A] = WALKING;
-	KeyToState[sf::Keyboard::S] = WALKING;
-	KeyToState[sf::Keyboard::D] = WALKING;
-	KeyToState[sf::Keyboard::Q] = HITTING;
-	KeyToState[sf::Keyboard::Space] = JUMPING;
-	KeyToState[sf::Keyboard::T] = SPECIALATTACK1;
-	KeyToState[sf::Keyboard::Y] = SPECIALATTACK2;
-	KeyToState[sf::Keyboard::F] = FALLINGFRONT;
-	DoubleKeyToState[sf::Keyboard::D] = RUNNING;
-	DoubleKeyToState[sf::Keyboard::A] = RUNNING;
-	DoubleKeyTimes[sf::Keyboard::D] = 0.3;
-	DoubleKeyTimes[sf::Keyboard::A] = 0.3;
-	KeyData[sf::Keyboard::D] = 1;
-	KeyData[sf::Keyboard::A] = -1;
-	KeyData[sf::Keyboard::Space] = 1;
-
 }
 
 void InputManager::AssignPlayer(Character* player) {
@@ -78,6 +60,52 @@ void InputManager::GetInputDown(sf::Keyboard::Key key) { //called when a key is 
 }
 
 void InputManager::GetInputUp(sf::Keyboard::Key key) {
+	if (!IsPressed[key]) return;
 	IsPressed[key] = false;
 	LastReleased[key] = 0; //reset to 0 at end of fxn
+}
+
+void InputManager::SetControls(KeyboardControls control) {
+	KeyToState[control.UpKey] = WALKING;
+	KeyToState[control.DownKey] = WALKING;
+	KeyToState[control.RightKey] = WALKING;
+	KeyToState[control.LeftKey] = WALKING;
+	KeyToState[control.AttackKey] = HITTING;
+	KeyToState[control.JumpKey] = JUMPING;
+	KeyToState[control.SpecialAttack1Key] = SPECIALATTACK1;
+	KeyToState[control.SpecialAttack2Key] = SPECIALATTACK2;
+	KeyToState[control.SpecialAttack3Key] = SPECIALATTACK3;
+	KeyToState[control.SpecialAttack4Key] = SPECIALATTACK4;
+	KeyToState[control.GuardKey] = GUARD;
+	KeyToState[sf::Keyboard::F] = FREEZED;
+	KeyToState[sf::Keyboard::G] = FALLINGBACK;
+	DoubleKeyToState[control.RightKey] = RUNNING;
+	DoubleKeyToState[control.LeftKey] = RUNNING;
+	DoubleKeyTimes[control.RightKey] = 0.3;
+	DoubleKeyTimes[control.LeftKey] = 0.3;
+	KeyData[control.RightKey] = 1;
+	KeyData[control.LeftKey] = -1;
+	KeyData[control.JumpKey] = 1;
+}
+
+int GetJoystickButton(int val, int axis) {
+	DEBUG_INFO("axis = {}", axis);
+	if (axis == -1) return val;
+	sf::Joystick::Axis ax = (sf::Joystick::Axis)axis;
+	if (ax == 0) {
+		if (val >= 90) return 10;
+		if (val <= -90) return 11;
+		return 17;
+	}
+	else if (ax == 1) {
+		if (val >= 90) return 13;
+		if (val <= -90) return 12;
+		return 19;
+	}
+	/*else if (ax == sf::Joystick::Axis::Z) {
+		if (val >= 90) return 14;
+		if (val <= -90) return 15;
+		return 21;
+	}*/
+	return 16;
 }

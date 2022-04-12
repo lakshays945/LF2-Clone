@@ -6,6 +6,8 @@
 #include "HitBox.h"
 #include <vector>
 #include "GameObject/GameObject.h"
+#include "Weapons/Weapon.h"
+#include <queue>
 
 #define JUMP_DURATION 0.8
 #define INITIAL_JUMP_PAUSE 0.2
@@ -21,52 +23,84 @@
 #define MAX_LAST_TIME 20
 #define JUMP_GRAVITY_FACTOR -(DEFAULT_JUMP_VELOCITY*2)/(DEFAULT_GRAVITY_CONSTANT*JUMP_DURATION)
 #define DASH_GRAVITY_SCALE -(DEFAULT_DASH_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*DASH_DURATION)
-#define FALL_DURATION 0.7
+
 #define FALL_VELOCITY_Y 300
 #define FALL_VELOCITY_X 200
-#define FALL_GRAVITY_SCALE -(FALL_VELOCITY_Y*2)/(DEFAULT_GRAVITY_CONSTANT*FALL_DURATION)
-
 
 class Character: public GameObject  {
 protected:
-	static int nextCharacterID;
 public:
+	static int nextCharacterID;
 	int CharacterID;
 	RealVector2D LastPosition;
+	std::queue <int> WallIDs;
+	std::string Name = "";
 	float MaxSpeed = 200;
 	int JumpSpeedY = -600;
 	int DashSpeedX = 600;
 	int RunSpeed = 300;
+	float WallRight = 1200;
+	float WallLeft = 0;
+	float WallUp = 460;
+	float WallDown = 800;
 	double JumpGravityFactor;
+	double FallDuration = 0.7;
 	double TimeSinceLastState = 0;
 	bool JustStateChanged = false;
+	bool Invincible = false;
+	double InvincibleTime = 10;
+	double Z_Velocity = 0;
 	AnimationSheet IdleSheet;
 	AnimationSheet WalkingSheet;
 	AnimationSheet RunningSheet;
 	AnimationSheet JumpingSheet;
 	AnimationSheet HittingSheet[3];
-	AnimationSheet Getting_HitSheet;
+	AnimationSheet Getting_HitSheet[2];
 	AnimationSheet FallingBackSheet;
 	AnimationSheet FallingFrontSheet;
 	AnimationSheet JumpingAttackSheet;
 	AnimationSheet DashSheet;
 	AnimationSheet SpecialAttack1Sheet;
 	AnimationSheet SpecialAttack2Sheet;
+	AnimationSheet SpecialAttack3Sheet;
+	AnimationSheet SpecialAttack4Sheet;
+	AnimationSheet BurningSheet;
+	AnimationSheet FreezedSheet;
+	AnimationSheet WPNAttackSheet[2];
+	AnimationSheet WPNJumpAttackSheet;
+	AnimationSheet WPNThrowSheet;
+	AnimationSheet WeaponPickSheet;
+	AnimationSheet GuardSheet;
 	AnimationSheet* CurrentSheet;
 	int Up = 0, Down = 0, Right = 0, Left = 0;
 	int ComboStreak = 0; //the index of hitting_animation sheet
 	PlayerStates CurrentState = IDLE;
 	StateManager State_Manager;
 	InputManager Input_Manager;
+	InputManager* InputManagerPtr;
 	HitBox DamageHitBox;
 	HitBox AttackHitBox;
-
+	HitBox WallHitBox;
+	HitBox BurningHitBox;
+	KeyboardControls PlayerControl;
+	Weapon* CurrentWeapon = nullptr;
+	int WeaponHolderType = 0;
+	RealVector2D WeaponPosOffsets[STATECOUNT];
+	std::vector <int> WeaponsInRangeID;
+	int GuardResistance = 100;
+	int HealthPoints = 600;
+	double ManaPoints = 100;
+	int DamageTaken = 0;
+	int DamageGiven = 0;
+	int SpecialAttackMP[4] = { 100,100,100,100 };
+	sf::Keyboard::Key JoystickToKeyboard[17];
 	//CONSTRUCTOR
 	Character();
 
 	//-----------------------------------------METHODS----------------------------------------
 
 	void RegisterCharacter();
+	void SetScale(RealVector2D scale);
 	void ChangeState(PlayerStates state, const double lastPressed, const double data = 0, const double startTime = 0);
 	void Update(const double dt, sf::RenderWindow& window);
 	void Attack(const double lastPressed);
@@ -78,17 +112,26 @@ public:
 	void Stop();
 	void AddForce(const double dt);
 	void Translate(const double dt);
+	void GettingHitCalculations(const double dt, const double t);
 	void Animate(sf::RenderWindow& window, const double dt);
 	void OnCollision(int otherID, int selfID);
-	void FallBack();
-	void FallFront();
+	void OnCollisionExit(int otherID, int selfID);
+	void FallBack(int SpeedX, int SpeedY = 300);
+	void FallFront(int SpeedX, int SpeedY = 300);
 	void FallBackCalculations(const double dt, const double t);
 	void FallFrontCalculations(const double dt, const double t);
-
+	void FreezeCalculations(const double dt, const double t);
+	void SetInvincible();
+	void DeFreeze();
+	void SetControls(KeyboardControls control);
+	void PickWeapon();
+	void TakeDamage(int damage);
 	//-----------------------------------PLAYER-SPECIFIC-METHODS----------------------------------------
 
 	virtual void SpecialAttack1Calculations(const double dt, const double t) = 0;
 	virtual void SpecialAttack2Calculations(const double dt, const double t) = 0;
+	virtual void SpecialAttack3Calculations(const double dt, const double t) = 0;
+	virtual void SpecialAttack4Calculations(const double dt, const double t) = 0;
 };
 
 extern std::vector <Character*> CharacterIDArray;

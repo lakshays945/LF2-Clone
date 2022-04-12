@@ -1,12 +1,8 @@
 #pragma once
-#include "GameObject/GameObject.h"
-#include "Common/AnimationSheet.h"
-#include "Common/HitBox.h"
+#include "Common/ProjectileBall.h"
 #include "Common/Character.h"
 
-class ChaseBall : public GameObject {
-private:
-	GameObject* Parent = nullptr;
+class ChaseBall : public ProjectileBall {
 public:
 	ChaseBall();
 	double TotalTime = 0;
@@ -14,16 +10,9 @@ public:
 	double InitialY;
 	bool BeforeMean = true;
 	Character* Target = nullptr;
-	AnimationSheet InitialSheet;
-	AnimationSheet ChaseModeSheet;
-	AnimationSheet FastModeSheet;
-	AnimationSheet EndSheet;
-	AnimationSheet* CurrentSheet;
-	HitBox AttackHitBox;
 	void Animate(sf::RenderWindow& window, const double dt);
-	void Instantiate(RealVector2D velocity = { 0,0 });
-	void GoBack();
-	void AssignParent(GameObject* parent);
+	bool SetTarget();
 	void OnCollision(int otherID, int selfID);
+	void OnCollisionExit(int otherID, int selfID);
 	void CalculateVelocity(const double dt);
 };

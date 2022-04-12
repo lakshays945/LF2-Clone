@@ -26,16 +26,35 @@ void AnimationSheet::AssignTextures(sf::Texture &textureSheet, const  std::vecto
 		Sprites.push_back(sf::Sprite());
 		Sprites[i].setTexture(textureSheet);
 		Sprites[i].setTextureRect(sf::IntRect(locations[i].get_x(), locations[i].get_y(), sizeX, sizeY));
-		Sprites[i].setOrigin(sf::Vector2f(sizeX/2, sizeY/2));
+		Sprites[i].setOrigin(sf::Vector2f(abs(sizeX/2), sizeY/2));
+	}
+	for (int i = 0; i < times.size(); i++) {
+		Sprites[i].setScale(sf::Vector2f(2, 2));
 	}
 }
 void AnimationSheet::AssignPlayer(GameObject* player) {
 	Player = player;
 }
-void AnimationSheet::AssignHitbox(const int index, RealVector2D offset, const int width, const int height, bool canKnock) {
+void AnimationSheet::AssignHitbox(const int index, RealVector2D offset, const int width, const int height, int knockPower, int knockPowerUp, int damage) {
 	HasHitBox[index] = true;
-	HBData[index].width = width;
-	HBData[index].height = height;
-	HBData[index].offset = offset;
-	HBData[index].CanKnock = canKnock;
+	HBData[index].width = width*Player->Scale.get_x();
+	HBData[index].height = height*Player->Scale.get_x();
+	HBData[index].offset = offset*Player->Scale;
+	HBData[index].KnockPower = knockPower;
+	HBData[index].KnockPowerUp = knockPowerUp;
+	HBData[index].damage = damage;
+}
+
+void AnimationSheet::AssignWPNOffsets(const std::vector<RealVector2D>& offsets){
+	WeaponOffsets = offsets;
+}
+
+void AnimationSheet::SetScale(RealVector2D scale) {
+	for (int i = 0; i < HBData.size(); i++) {
+		if (HasHitBox[i]) {
+			HBData[i].width *= scale.get_x();
+			HBData[i].height *= scale.get_y();
+			HBData[i].offset = HBData[i].offset * scale;
+		}
+	}
 }

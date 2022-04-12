@@ -20,21 +20,19 @@ ChaseBall::ChaseBall() {
 		ChaseBallTexFile.loadFromFile("Resource/ChaseBall.png");
 	}
 	InitialSheet.AssignTextures(ChaseBallTexFile, InitialLocations, InitialTimes, 75, 75);
-	ChaseModeSheet.AssignTextures(ChaseBallTexFile, ChaseModeLocations, ChaseModeTimes, 65, 75);
-	FastModeSheet.AssignTextures(ChaseBallTexFile, FastModeLocations, FastModeTimes, 66, 80);
+	InAirSheet.AssignTextures(ChaseBallTexFile, ChaseModeLocations, ChaseModeTimes, 65, 75);
+	FastSheet.AssignTextures(ChaseBallTexFile, FastModeLocations, FastModeTimes, 66, 80);
 	EndSheet.AssignTextures(ChaseBallTexFile, EndLocations, EndTimes, 55, 80);
-	EndSheet.OneTime = true;
-	InitialSheet.OneTime = true;
 	CurrentSheet = &InitialSheet;
-	AttackHitBox = HitBox(Position, 40, 40, TYPE_ATTACK);
-	AttackHitBox.CanKnockOut = true;
+	AttackHitBox = HitBox(Position, 40, 40, HB_TYPE_ATTACK);
+	ReboundHitBox = HitBox(Position, 40, 40, HB_TYPE_REBOUND);
+	AttackHitBox.KnockOutPower = 300;
+	MaxStrength = 300;
+	AttackHitBox.Damage = 40;
+	CurrentStrength = MaxStrength;
 }
 
-void ChaseBall::AssignParent(GameObject* parent) {
-	Parent = parent;
-}
-
-void ChaseBall::Instantiate(RealVector2D velocity) {
+bool ChaseBall::SetTarget() {
 	TotalTime = 0;
 	Target = nullptr;
 	int index = -1;
@@ -46,21 +44,15 @@ void ChaseBall::Instantiate(RealVector2D velocity) {
 		}
 	}
 	if (index == -1) {
-		return;
+		DEBUG_WARNING("No Target");
+		return false;
 	}
-	Position = Parent->Position;
-	AttackHitBox.IsActive = true;
-	InitialSheet.Time = 0;
-	ChaseModeSheet.Time = 0;
-	EndSheet.Time = 0;
-	FastModeSheet.Time = 0;
-	CurrentSheet = &InitialSheet;
-	IsActive = true;
 	Target = CharacterIDArray[index];
-	Velocity = velocity;
-	MeanY= (Target->Position.get_y() + Position.get_y())/2;
+	MeanY = (Target->Position.get_y() + Position.get_y()) / 2;
 	BeforeMean = true;
 	InitialY = Target->Position.get_y();
+	Rebounded = false;
+	return true;
 }
 
 void ChaseBall::CalculateVelocity(const double dt) {
@@ -68,7 +60,7 @@ void ChaseBall::CalculateVelocity(const double dt) {
 		DEBUG_WARNING("No Target for Dennis-ChaseBall");
 		return;
 	}
-	if (TotalTime > 3.2) {
+	if (TotalTime > 3.2 || Rebounded) {
 		Velocity.SetMagnitude(600);
 		return;
 	}
@@ -90,7 +82,7 @@ void ChaseBall::CalculateVelocity(const double dt) {
 		}
 	}
 	if (BeforeMean) {
-		RealVector2D Acc = { mul*400/(float)-log(MeanY), (float)MeanY - Position.get_y() };
+		RealVector2D Acc =  RealVector2D(mul*400/(-log(abs(MeanY)+1)), MeanY - Position.get_y());
 		Velocity = Velocity + Acc * 5 * dt;
 		if (abs(Position.get_y()-InitialY) <= 10 && TotalTime > 0.7) {
 			Velocity.Set({ Velocity.get_x(),0 });
@@ -102,9 +94,6 @@ void ChaseBall::CalculateVelocity(const double dt) {
 		if (Velocity.Magnitude() > 600) {
 			Velocity.SetMagnitude(600);
 		}
-	}
-	if ((TotalTime - dt - 3) * (TotalTime - 3) < 0) {
-		CurrentSheet = &FastModeSheet;
 	}
 }
 
@@ -122,12 +111,13 @@ void ChaseBall::Animate(sf::RenderWindow& window, const double dt) {
 		return;
 	}
 	AttackHitBox.Center = Position;
+	ReboundHitBox.Center = Position + RealVector2D(Direction * 15, 0);
 	Z_Position = Position.get_y();
 	CurrentSheet->Time += dt;
 	int CorrectIndex = CurrentSheet->GetCorrectIndex();
 	if (CorrectIndex == -1) {
 		if (CurrentSheet == &InitialSheet) {
-			CurrentSheet = &ChaseModeSheet;
+			CurrentSheet = &InAirSheet;
 			CorrectIndex = 0;
 		}
 		else {
@@ -143,22 +133,46 @@ void ChaseBall::Animate(sf::RenderWindow& window, const double dt) {
 	else if (Velocity.get_x() > 0) {
 		Direction = 1;
 	}
-	current->setScale(sf::Vector2f((float)Direction, 1.0f));
+	current->setScale(Scale.get_x() * Direction, Scale.get_y());
 	current->setPosition(sf::Vector2f(Position.get_x(), Position.get_y()));
 	window.draw(*current);
 	AttackHitBox.DrawBox(window);
+	ReboundHitBox.DrawBox(window);
 }
 
 void ChaseBall::OnCollision(int otherID, int selfID) {
-	if (HitBoxIDArray[otherID]->Type == TYPE_DAMAGE && HitBoxIDArray[otherID]->Game_Object != Parent) {
-		CurrentSheet = &EndSheet;
-		Velocity.SetMagnitude(0);
+	HitBox* self = HitBoxIDArray[selfID];
+	HitBox* other = HitBoxIDArray[otherID];
+	if (other->Game_Object->ID != self->IgnoreObjectID && other->Game_Object->ID != self->Game_Object->ID) {
+
+		if ((other->Type == HB_TYPE_DAMAGE || other->Type == HB_TYPE_WALL) && self->Type == HB_TYPE_ATTACK) {
+			if (other->Type == HB_TYPE_WALL) {
+				AttackHitBox.Disable();
+			}
+			CurrentSheet = &EndSheet;
+			Velocity.SetMagnitude(0);
+		}
+		else if (other->Game_Object->GO_Type == GO_Projectile && (other->Type == HB_TYPE_ATTACK || other->Type == HB_TYPE_FIRE || other->Type == HB_TYPE_ICE) && self->Type == HB_TYPE_ATTACK) {
+			ProjectileBall* ball = (ProjectileBall*)other->Game_Object;
+			if (ball->AttackHitBox.IgnoreObjectID == AttackHitBox.IgnoreObjectID) {
+				return;
+			}
+			CurrentStrength -= ball->MaxStrength;
+			if (CurrentStrength <= 0) {
+				CurrentSheet = &EndSheet;
+				Velocity.SetMagnitude(0);
+			}
+		}
+		else if (other->Type == HB_TYPE_ATTACK && self->Type == HB_TYPE_REBOUND && (HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Character || HitBoxIDArray[otherID]->Game_Object->GO_Type == GO_Weapon)) {
+			ReboundHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;
+			AttackHitBox.IgnoreObjectID = HitBoxIDArray[otherID]->Game_Object->ID;
+			Rebounded = true;
+			Rebound();
+		}
 	}
 }
 
-void ChaseBall::GoBack() {
-	IsActive = false;
-	Position = Parent->Position;
-	Velocity = { 0,0 };
-	AttackHitBox.IsActive = false;
+void ChaseBall::OnCollisionExit(int otherID, int selfID)
+{
 }
+
